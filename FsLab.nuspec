@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>FsLab</id>
+    <version>0.0.1-beta</version>
+    <authors>Tomas Petricek</authors>
+    <owners>Tomas Petricek</owners>
+    <summary>F# data science package</summary>
+    <description>F# data science package</description>
+    <releaseNotes>Experimental release</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>F# FSharp DataScience</tags>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="RProvider" version="1.0.3" />
+      <dependency id="FSharp.Data" version="1.1.10" />
+      <dependency id="FSharp.DataFrame" version="0.9.4-beta" />
+      <dependency id="FSharp.Charting" version="0.87" />
+    </dependencies>    
+  </metadata>
+  <files>
+    <file src="FsLab.fsx" target="lib" />
+  </files>
+</package>
+
