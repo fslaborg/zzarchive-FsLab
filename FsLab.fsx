@@ -3,15 +3,15 @@
 #I "../bin"
 #I "../../packages/FSharp.Charting.0.87/lib/net40"
 #I "../../packages/FSharp.Data.1.1.10/lib/net40"
-#I "../../packages/FSharp.DataFrame.0.9.3-beta/lib/net40"
+#I "../../packages/Deedle.0.9.4-beta/lib/net40"
 #I "../../packages/RProvider.1.0.3/lib"
 #I "../../../packages/FSharp.Charting.0.87/lib/net40"
 #I "../../../packages/FSharp.Data.1.1.10/lib/net40"
-#I "../../../packages/FSharp.DataFrame.0.9.4-beta/lib/net40"
+#I "../../../packages/Deedle.0.9.4-beta/lib/net40"
 #I "../../../packages/RProvider.1.0.3/lib"
 #r "FSharp.Charting.dll"
 #r "FSharp.Data.dll"
-#r "FSharp.DataFrame.dll"
+#r "Deedle.dll"
 #r "RProvider.dll"
 #r "RDotNet.dll"
 
@@ -24,7 +24,7 @@ module FsiAutoShow =
 
 namespace FSharp.Charting
 open FSharp.Charting
-open FSharp.DataFrame
+open Deedle
 
 [<AutoOpen>]
 module FsLabExtensions =
