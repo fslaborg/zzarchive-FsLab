@@ -2,11 +2,11 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>FsLab</id>
-    <version>0.0.1-beta</version>
-    <authors>Tomas Petricek</authors>
-    <owners>Tomas Petricek</owners>
-    <summary>F# data science package</summary>
-    <description>F# data science package</description>
+    <version>0.0.4</version>
+    <authors>F# Data Science Working Group</authors>
+    <owners>F# Data Science Working Group</owners>
+    <summary>F# data science package (TODO)</summary>
+    <description>F# data science package (TODO)</description>
     <releaseNotes>Experimental release</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>F# FSharp DataScience</tags>
