@@ -16,11 +16,10 @@
       <dependency id="FSharp.Data" version="1.1.10" />
       <dependency id="Deedle" version="0.9.4-beta" />
       <dependency id="FSharp.Charting" version="0.87" />
-      <dependency id="MathNet.Numerics.FSharp" version="2.6.0" />
+      <dependency id="MathNet.Numerics.FSharp" version="3.0.0-alpha5" />
     </dependencies>    
   </metadata>
   <files>
     <file src="FsLab.fsx" target="lib" />
   </files>
 </package>
-
