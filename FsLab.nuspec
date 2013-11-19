@@ -2,24 +2,25 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>FsLab</id>
-    <version>0.0.4-beta</version>
+    <version>0.0.6-beta</version>
     <authors>F# Data Science Working Group</authors>
     <owners>F# Data Science Working Group</owners>
-    <summary>F# data science package (TODO)</summary>
+    <summary>F# data science package</summary>
     <description>F# data science package (TODO)</description>
     <releaseNotes>Experimental release</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>F# FSharp DataScience</tags>
     <language>en-US</language>
     <dependencies>
-      <dependency id="RProvider" version="1.0.3" />
+      <dependency id="RProvider" version="1.0.5" />
       <dependency id="FSharp.Data" version="1.1.10" />
-      <dependency id="Deedle" version="0.9.4-beta" />
-      <dependency id="FSharp.Charting" version="0.87" />
+      <dependency id="Deedle" version="0.9.12" />
+      <dependency id="Deedle.RPlugin" version="0.9.12" />
+      <dependency id="FSharp.Charting" version="0.90.5" />
       <dependency id="MathNet.Numerics.FSharp" version="3.0.0-alpha5" />
     </dependencies>    
   </metadata>
   <files>
-    <file src="FsLab.fsx" target="lib" />
+    <file src="FsLab.fsx" target="." />
   </files>
 </package>
