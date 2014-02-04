@@ -2,19 +2,19 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>FsLab</id>
-    <version>0.0.7-beta</version>
+    <version>0.0.8-beta</version>
     <authors>F# Data Science Working Group</authors>
     <owners>F# Data Science Working Group</owners>
     <summary>F# data science package</summary>
-    <description>F# data science package (TODO)</description>
+    <description>F# data science package</description>
     <releaseNotes>Experimental release</releaseNotes>
-    <copyright>Copyright 2013</copyright>
+    <copyright>Copyright 2014</copyright>
     <tags>F# FSharp DataScience</tags>
     <language>en-US</language>
     <dependencies>
       <dependency id="Deedle" version="0.9.12" />
       <dependency id="Deedle.RPlugin" version="0.9.12" />
-      <dependency id="FSharp.Data" version="2.0.0-alpha4" />
+      <dependency id="FSharp.Data" version="2.0.0-alpha6" />
       <dependency id="FSharp.Charting" version="0.90.5" />
       <dependency id="MathNet.Numerics" version="3.0.0-alpha7" />
       <dependency id="MathNet.Numerics.FSharp" version="3.0.0-alpha7" />
