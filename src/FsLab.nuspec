@@ -11,6 +11,9 @@
     <copyright>Copyright 2014</copyright>
     <tags>@tags@</tags>
     <language>en-US</language>
+    <licenseUrl>http://github.com/tpetricek/FsLab/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>http://www.fslab.org</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/tpetricek/FsLab/master/misc/logo.png</iconUrl>
     <dependencies>
       <dependency id="R.NET" version="1.5.5" />
       <dependency id="RDotNet.FSharp" version="0.1.2.1" />
