@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <id>FsLab</id>
-    <version>0.0.9-beta</version>
-    <authors>F# Data Science Working Group</authors>
-    <owners>F# Data Science Working Group</owners>
-    <summary>F# data science package</summary>
-    <description>F# data science package</description>
-    <releaseNotes>Experimental release</releaseNotes>
+    <id>@project@</id>
+    <version>@build.number@</version>
+    <authors>@authors@</authors>
+    <owners>@authors@</owners>
+    <summary>@summary@</summary>
+    <description>@description@</description>
+    <releaseNotes>@releaseNotes@</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>F# FSharp DataScience</tags>
+    <tags>@tags@</tags>
     <language>en-US</language>
     <dependencies>
+      <dependency id="R.NET" version="1.5.5" />
+      <dependency id="RDotNet.FSharp" version="0.1.2.1" />
       <dependency id="Deedle" version="0.9.12" />
       <dependency id="Deedle.RPlugin" version="0.9.12" />
       <dependency id="FSharp.Data" version="2.0.0-alpha7" />
@@ -22,6 +24,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="FsLab.fsx" target="." />
+    <file src="../temp/FsLab.fsx" target="." />
   </files>
 </package>

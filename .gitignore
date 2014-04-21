@@ -1,2 +1,2 @@
-*.nupkg
-FsLab.fsx
+temp
+packages

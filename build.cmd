@@ -1,3 +1,7 @@
-@"%ProgramFiles(x86)%\Microsoft SDKs\F#\3.1\Framework\v4.0\fsi.exe" GenerateScripts.fsx
-del *.nupkg
-nuget\NuGet.exe pack FsLab.nuspec
+@echo off
+cls
+if not exist packages\FAKE\tools\Fake.exe ( 
+  .nuget\nuget.exe install FAKE -OutputDirectory packages -Version 2.1.440-alpha -ExcludeVersion  
+)
+packages\FAKE\tools\FAKE.exe build.fsx %*
+pause

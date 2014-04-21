@@ -1,0 +1,1 @@
+* 0.0.10-beta - Update RProvider and Deedle references
