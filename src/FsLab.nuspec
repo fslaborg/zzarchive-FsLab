@@ -17,16 +17,16 @@
     <dependencies>
       <dependency id="R.NET" version="1.5.5" />
       <dependency id="RDotNet.FSharp" version="0.1.2.1" />
-      <dependency id="Deedle" version="0.9.12" />
-      <dependency id="Deedle.RPlugin" version="0.9.12" />
-      <dependency id="FSharp.Data" version="2.0.0-alpha7" />
-      <dependency id="FSharp.Charting" version="0.90.5" />
-      <dependency id="MathNet.Numerics" version="3.0.0-alpha7" />
-      <dependency id="MathNet.Numerics.FSharp" version="3.0.0-alpha7" />
-      <dependency id="RProvider" version="1.0.5" />
+      <dependency id="Deedle" version="1.0.0-alpha2" />
+      <dependency id="Deedle.RPlugin" version="1.0.0-alpha2" />
+      <dependency id="FSharp.Data" version="2.0.5" />
+      <dependency id="FSharp.Charting" version="0.90.6" />
+      <dependency id="MathNet.Numerics" version="3.0.0-beta01" />
+      <dependency id="MathNet.Numerics.FSharp" version="3.0.0-beta01" />
+      <dependency id="RProvider" version="1.0.7-alpha" />
     </dependencies>
   </metadata>
   <files>
-    <file src="../temp/FsLab.fsx" target="." />
+    <file src="FsLab.fsx" target="." />
   </files>
 </package>

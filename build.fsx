@@ -46,7 +46,7 @@ let getAssemblies package =
     match package with
     | "Deedle.RPlugin" -> ["Deedle.RProvider.Plugin.dll"]
     | "FSharp.Charting" -> ["System.Windows.Forms.DataVisualization.dll"; "FSharp.Charting.dll"]
-    | "RProvider" -> ["RDotNet.dll"; "RDotNet.NativeLibrary.dll"; "RProvider.dll"]
+    | "RProvider" -> ["RDotNet.dll"; "RDotNet.NativeLibrary.dll"; "RProvider.Runtime.dll"; "RProvider.dll"]
     | "R.NET" -> []
     | package -> [package + ".dll"]
 
@@ -135,8 +135,35 @@ Target "NuGet" (fun _ ->
 )
 
 // --------------------------------------------------------------------------------------
+// Build the FsLab template project
+// --------------------------------------------------------------------------------------
+
+Target "GenerateTemplate" (fun _ ->
+  CopyRecursive "src/notebook" "temp/notebook/" true |> ignore
+  "misc/logo.png" |> CopyFile "temp/notebook/__TemplateIcon.png"
+  "misc/preview.png" |> CopyFile "temp/notebook/__PreviewImage.png"
+  !! "temp/notebook/**" |> Zip "temp/notebook" "temp/notebook.zip"
+
+  CopyRecursive "src/template" "temp/template/" true |> ignore
+  ensureDirectory "temp/template/ProjectTemplates"
+  "temp/notebook.zip" |> CopyFile "temp/template/FsLab Notebook.zip" 
+  "temp/notebook.zip" |> CopyFile "temp/template/ProjectTemplates/FsLab Notebook.zip" 
+  "misc/logo.png" |> CopyFile "temp/template/logo.png"
+  "misc/preview.png" |> CopyFile "temp/template/preview.png"
+)
+
+Target "BuildTemplate" (fun _ ->
+  !! "temp/template/FsLab.Template.sln" 
+  |> MSBuildDebug "" "Rebuild"
+  |> ignore
+)
 
 Target "All" DoNothing
+
+"Clean"
+  ==> "GenerateTemplate"
+//  ==> "BuildTemplate"
+  ==> "All"
 
 "Clean" 
   ==> "RestorePackages"
