@@ -64,28 +64,23 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSharpFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\CSharpFormat.dll</HintPath>
-      <HintPath>..\packages\FSharp.Formatting.2.4.6\lib\net40\CSharpFormat.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.6\lib\net40\CSharpFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Deedle">
-      <HintPath>packages\Deedle.1.0.0-alpha2\lib\net40\Deedle.dll</HintPath>
-      <HintPath>..\packages\Deedle.1.0.0-alpha2\lib\net40\Deedle.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\Deedle.1.0.0-alpha2\lib\net40\Deedle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Deedle.RProvider.Plugin">
-      <HintPath>packages\Deedle.RPlugin.1.0.0-alpha2\lib\net40\Deedle.RProvider.Plugin.dll</HintPath>
-      <HintPath>..\packages\Deedle.RPlugin.1.0.0-alpha2\lib\net40\Deedle.RProvider.Plugin.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\Deedle.RPlugin.1.0.0-alpha2\lib\net40\Deedle.RProvider.Plugin.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Charting">
-      <HintPath>packages\FSharp.Charting.0.90.6\lib\net40\FSharp.Charting.dll</HintPath>
-      <HintPath>..\packages\FSharp.Charting.0.90.6\lib\net40\FSharp.Charting.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Charting.0.90.6\lib\net40\FSharp.Charting.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.CodeFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.CodeFormat.dll</HintPath>
-      <HintPath>..\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.CodeFormat.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.CodeFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Compiler.Interactive.Settings">
@@ -94,38 +89,31 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Compiler.Service">
-      <HintPath>packages\FSharp.Compiler.Service.0.0.44\lib\net40\FSharp.Compiler.Service.dll</HintPath>
-      <HintPath>..\packages\FSharp.Compiler.Service.0.0.44\lib\net40\FSharp.Compiler.Service.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Compiler.Service.0.0.44\lib\net40\FSharp.Compiler.Service.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Data">
-      <HintPath>packages\FSharp.Data.2.0.5\lib\net40\FSharp.Data.dll</HintPath>
-      <HintPath>..\packages\FSharp.Data.2.0.5\lib\net40\FSharp.Data.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Data.2.0.5\lib\net40\FSharp.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Literate">
-      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Literate.dll</HintPath>
-      <HintPath>..\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Literate.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Literate.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Markdown">
-      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Markdown.dll</HintPath>
-      <HintPath>..\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Markdown.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Markdown.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.MetadataFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.MetadataFormat.dll</HintPath>
-      <HintPath>..\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.MetadataFormat.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.MetadataFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics">
-      <HintPath>packages\MathNet.Numerics.3.0.0-beta01\lib\net40\MathNet.Numerics.dll</HintPath>
-      <HintPath>..\packages\MathNet.Numerics.3.0.0-beta01\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.3.0.0-beta01\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics.FSharp">
-      <HintPath>packages\MathNet.Numerics.FSharp.3.0.0-beta01\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
-      <HintPath>..\packages\MathNet.Numerics.FSharp.3.0.0-beta01\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.FSharp.3.0.0-beta01\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -133,33 +121,27 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="RazorEngine">
-      <HintPath>packages\RazorEngine.3.3.0\lib\net40\RazorEngine.dll</HintPath>
-      <HintPath>..\packages\RazorEngine.3.3.0\lib\net40\RazorEngine.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\RazorEngine.3.3.0\lib\net40\RazorEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RDotNet">
-      <HintPath>packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
-      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\R.NET.1.5.5\lib\net40\RDotNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RDotNet.FSharp">
-      <HintPath>packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
-      <HintPath>..\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\RDotNet.FSharp.0.1.2.1\lib\net40\RDotNet.FSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RDotNet.NativeLibrary">
-      <HintPath>packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
-      <HintPath>..\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\R.NET.1.5.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RProvider">
-      <HintPath>packages\RProvider.1.0.7-alpha\lib\RProvider.dll</HintPath>
-      <HintPath>..\packages\RProvider.1.0.7-alpha\lib\RProvider.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\RProvider.1.0.7-alpha\lib\RProvider.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RProvider.Runtime">
-      <HintPath>packages\RProvider.1.0.7-alpha\lib\RProvider.Runtime.dll</HintPath>
-      <HintPath>..\packages\RProvider.1.0.7-alpha\lib\RProvider.Runtime.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\RProvider.1.0.7-alpha\lib\RProvider.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -168,8 +150,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Web.Razor">
-      <HintPath>packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
