@@ -14,6 +14,8 @@ open Fake.Git
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
 
+setEnvironVar "MSBuild" (ProgramFilesX86 @@ @"\MSBuild\12.0\Bin\MSBuild.exe")
+
 // --------------------------------------------------------------------------------------
 // FsLab packages and configuration
 // --------------------------------------------------------------------------------------
@@ -153,10 +155,9 @@ Target "GenerateTemplate" (fun _ ->
 )
 
 Target "BuildTemplate" (fun _ ->
-  //!! "temp/template/FsLab.Template.sln" 
-  //|> MSBuildDebug "" "Rebuild"
-  //|> ignore
-  ()
+  !! "temp/template/FsLab.Template.sln" 
+  |> MSBuildDebug "" "Rebuild"
+  |> ignore
 )
 
 Target "All" DoNothing
