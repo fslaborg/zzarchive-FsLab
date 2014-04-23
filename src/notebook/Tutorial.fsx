@@ -1,5 +1,6 @@
 ﻿(*** hide ***)
 (* BUILD (Ctrl+Shift+B) the project to restore NuGet packages first! *)
+#I ".."
 #load "packages/FsLab.0.0.13-beta/FsLab.fsx"
 (**
 

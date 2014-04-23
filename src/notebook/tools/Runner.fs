@@ -55,14 +55,23 @@ let generateFile (template:string) path (doc:LiterateDocument) title =
 // Process script files in the root folder & generate HTML files
 // ----------------------------------------------------------------------------
 
-// Get the root directory where the script files are
+// Get the root directory where the script files are.
+//
+// This is tricky. As a dirty hack, we use 'packages' folder as the output
+// so that all libraries are loaded from 'packages' using 'probing' in App.config.
+// (otherwise, they are loaded twice from different directories and things break).
+//
+// If 'packages' are in project directory, this is just '..', but if they are
+// in solution directory, this is '../UnknownProjectName'. So we just try looking 
+// for templates..
 let root = 
   let app = Assembly.GetExecutingAssembly().Location
-  Path.GetDirectoryName(app) @@ ".."
+  let appDir = Path.GetDirectoryName(app)
+  let probing = (appDir @@ "..")::(List.ofSeq (Directory.GetDirectories(appDir @@ "..")))
+  probing |> Seq.find (fun dir -> File.Exists(dir @@ "styles" @@ "template.html"))
 
 // Process scripts in the 'root' directory and put them into output
 let template() = File.ReadAllText(root @@ "output" @@ "styles" @@ "template.html")
-
 
 /// Creates the 'output' directory and puts all formatted script files there
 let processScriptFiles () =
