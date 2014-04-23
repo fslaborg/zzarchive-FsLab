@@ -4,19 +4,20 @@
 #load "packages/FsLab.0.0.13-beta/FsLab.fsx"
 (**
 
-FsLab Notebook demo
-===================
+My first FsLab notebook
+=======================
 
 FsLab notebook is a simple Visual Studio template that makes it easy to do 
 interactive data analysis using F# Interactive and produce nice HTML to 
-document you research.
+document you research. In this sample notebook, a script file `Tutorial.fsx`
+is turned into an HTML report that you can see when you hit **F5**.
 
-The FsLab notebook template automatically includes a reference to the [FsLab 
-NuGet package][fslab], so you can use all the great data science F# packages.
-The template also contains a runner that formats your script files nicely using
-[F# Formatting][fsfmt] and generates nice reports. To write your reports, you 
-can include Markdown-formatted text in comments starting with `**` such as 
-this one. The report is generated and opened automatically when you hit **F5**. 
+> The FsLab notebook template automatically includes a reference to the [FsLab 
+> NuGet package][fslab], so you can use all the great data science F# packages.
+> The template also contains a runner that formats your script files nicely using
+> [F# Formatting][fsfmt] and generates nice reports. To write your reports, you 
+> can include Markdown-formatted text in comments starting with `**` such as 
+> this one. The report is generated and opened automatically when you hit **F5**. 
 
 When you generate a report, your code is nicely formatted, executed and 
 the resulting charts and frames are embedded in the report. The rest of this 
@@ -33,8 +34,8 @@ The FsLab package automatically references the following F# libraries:
  * [F# Data][fsdata] with data-access with F# type providers
  * [Math.NET Numerics][mathnet] for writing numerical calculations
 
-Data access with F# Data
-------------------------
+Sample data access with F# Data
+-------------------------------
 
 The following snippet builds a simple Deedle data frame using data obtained 
 from the WorldBank type provider:
@@ -65,8 +66,8 @@ As you can see, you can even include simple F# expressions in the command. Here,
 we use `round(debts*100.0)/100.0)` to round the debt values to two decimal points
 for a nicer presentation.
 
-Data analysis with Deedle
--------------------------
+Sample data analysis with Deedle
+--------------------------------
 
 You can also use `define-output` to give a name to a code block. When the code 
 block is an expression that returns a value, you can use `include-it` to 
@@ -88,8 +89,8 @@ recent
 Here, we calculate means of debts over years starting with 2005, take the 8
 countries with the greatest average debt and round the debts.
 
-Embedding F# Charting charts
-----------------------------
+Embedding sample F# Charting charts
+-----------------------------------
 
 The generated report chan also automatically embed charts created using the 
 F# Charting library. Here, we plot the debts of the 3 countries with the largest
@@ -147,8 +148,8 @@ and the `R.last_dev()` helper:
 (*** include-value:R.last_dev() ***)
 
 (**
-FsLab notebook runner
----------------------
+More about the FsLab notebook runner
+------------------------------------
 
 When you hit **F5**, the FsLab notebook runner automatically processes all 
 `*.fsx` files in the root directory of your project. In this template, there is
