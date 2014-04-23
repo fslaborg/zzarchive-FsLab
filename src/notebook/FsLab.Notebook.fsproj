@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSharpFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.5\lib\net40\CSharpFormat.dll</HintPath>
+      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\CSharpFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Deedle">
@@ -79,7 +79,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.CodeFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.5\lib\net40\FSharp.CodeFormat.dll</HintPath>
+      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.CodeFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Compiler.Interactive.Settings">
@@ -95,15 +95,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Literate">
-      <HintPath>packages\FSharp.Formatting.2.4.5\lib\net40\FSharp.Literate.dll</HintPath>
+      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Literate.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.Markdown">
-      <HintPath>packages\FSharp.Formatting.2.4.5\lib\net40\FSharp.Markdown.dll</HintPath>
+      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.Markdown.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="FSharp.MetadataFormat">
-      <HintPath>packages\FSharp.Formatting.2.4.5\lib\net40\FSharp.MetadataFormat.dll</HintPath>
+      <HintPath>packages\FSharp.Formatting.2.4.6\lib\net40\FSharp.MetadataFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics">

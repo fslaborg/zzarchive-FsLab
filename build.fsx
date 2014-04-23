@@ -153,16 +153,17 @@ Target "GenerateTemplate" (fun _ ->
 )
 
 Target "BuildTemplate" (fun _ ->
-  !! "temp/template/FsLab.Template.sln" 
-  |> MSBuildDebug "" "Rebuild"
-  |> ignore
+  //!! "temp/template/FsLab.Template.sln" 
+  //|> MSBuildDebug "" "Rebuild"
+  //|> ignore
+  ()
 )
 
 Target "All" DoNothing
 
 "Clean"
   ==> "GenerateTemplate"
-//  ==> "BuildTemplate"
+  ==> "BuildTemplate"
   ==> "All"
 
 "Clean" 

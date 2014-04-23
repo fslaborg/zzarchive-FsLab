@@ -11,7 +11,7 @@ interactive data analysis using F# Interactive and produce nice HTML to
 document you research.
 
 The FsLab notebook template automatically includes a reference to the [FsLab 
-NuGet package][fslab], so you can use all the grata data science F# packages.
+NuGet package][fslab], so you can use all the great data science F# packages.
 The template also contains a runner that formats your script files nicely using
 [F# Formatting][fsfmt] and generates nice reports. To write your reports, you 
 can include Markdown-formatted text in comments starting with `**` such as 
