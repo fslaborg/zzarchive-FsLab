@@ -68,7 +68,7 @@ Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
 
 Target "Clean" (fun _ ->
-    CleanDirs ["temp"; "nuget"]
+    CleanDirs ["temp"; "nuget"; "bin"]
 )
 
 Target "RestorePackages" (fun _ ->
@@ -129,11 +129,12 @@ Target "NuGet" (fun _ ->
             Version = release.NugetVersion
             ReleaseNotes = String.concat " " release.Notes
             Tags = tags
-            OutputPath = "temp"
+            OutputPath = "bin"
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".nuspec")
+    DeleteFile "bin/FsLab.nuspec"
 )
 
 // --------------------------------------------------------------------------------------
@@ -158,6 +159,7 @@ Target "BuildTemplate" (fun _ ->
   !! "temp/template/FsLab.Template.sln" 
   |> MSBuildDebug "" "Rebuild"
   |> ignore
+  "temp/template/bin/Debug/FsLab.Template.vsix" |> CopyFile "bin/FsLab.Template.vsix"
 )
 
 Target "All" DoNothing

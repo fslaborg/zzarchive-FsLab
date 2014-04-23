@@ -27,6 +27,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="FsLab.fsx" target="." />
+    <file src="..\src\FsLab.fsx" target="." />
   </files>
 </package>
