@@ -13,6 +13,7 @@ open Fake
 open Fake.Git
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
+open Text.RegularExpressions
 
 setEnvironVar "MSBuild" (ProgramFilesX86 @@ @"\MSBuild\12.0\Bin\MSBuild.exe")
 
@@ -33,15 +34,21 @@ let tags = "F# fsharp deedle series statistics data science r type provider math
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages = 
-  [ "Deedle"
-    "Deedle.RPlugin"
-    "FSharp.Charting"
-    "FSharp.Data"
-    "MathNet.Numerics"
-    "MathNet.Numerics.FSharp"
-    "RProvider" 
-    "R.NET" 
-    "RDotNet.FSharp" ]
+  [ "Deedle", "1.0.0"
+    "Deedle.RPlugin", "1.0.0"
+    "FSharp.Charting", "0.90.6"
+    "FSharp.Data", "2.0.8"
+    "MathNet.Numerics", "3.0.0-beta01"
+    "MathNet.Numerics.FSharp", "3.0.0-beta01"
+    "RProvider", "1.0.9"
+    "R.NET", "1.5.5" 
+    "RDotNet.FSharp", "0.1.2.1" ]
+
+let notebookPackages = 
+  [ "FSharp.Compiler.Service", "0.0.44"
+    "FSharp.Formatting", "2.4.8" 
+    "Microsoft.AspNet.Razor", "2.0.30506.0"
+    "RazorEngine", "3.3.0" ]
 
 /// Returns assemblies that should be referenced for each package
 let getAssemblies package = 
@@ -66,26 +73,66 @@ let folders =
 // Read release notes & version info from RELEASE_NOTES.md
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
+let packageVersions = dict (packages @ notebookPackages)
 
 Target "Clean" (fun _ ->
     CleanDirs ["temp"; "nuget"; "bin"]
 )
 
+Target "UpdateVersions" (fun _ ->
+  let (!) n = XName.Get(n)
+
+  // Helpers for generating "packages.config" file
+  let makePackage (name, ver) = 
+    XElement(!"package", XAttribute(!"id", name), XAttribute(!"version", ver))
+  let makePackages packages = 
+    XDocument(XElement(! "packages", packages |> Seq.map makePackage))
+
+  // "src/packages.config" is used just for development (so that we can
+  // edit the "FsLab.fsx" file and get decent autocomplete)
+  makePackages(packages).Save("src/packages.config")
+ 
+  // "src/notebook/packages.config" lists the packages that 
+  // are referenced in the FsLab Notebook project
+  let allPackages = 
+    ["FsLab", release.NugetVersion] @ 
+    packages @ notebookPackages
+  makePackages(allPackages).Save("src/notebook/packages.config")
+
+  // "src/notebook/Tutorial.fsx" needs to be updated to 
+  // reference correct version of FsLab in the #load command
+  let pattern = "packages/FsLab.(.*)/FsLab.fsx"
+  let replacement = sprintf "packages/FsLab.%s/FsLab.fsx" release.NugetVersion
+  let path = "./src/notebook/Tutorial.fsx"
+  let text = File.ReadAllText(path)
+  let text = Regex.Replace(text, pattern, replacement)
+  File.WriteAllText(path, text)
+
+  // "src\notebook\FsLab.Notebook.fsproj" contains <HintPath> elements
+  // that points to the specific version in packages directory
+  // This bit goes over all the <HintPath> elements & updates them
+  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/msbuild/2003")
+  let path = "src/notebook/FsLab.Notebook.fsproj"
+  let fsproj = XDocument.Load(path)
+  let reg = Regex(@"\$\(SolutionDir\)\\packages\\([a-zA-Z\.]*)\.[^\\]*\\(.*)")
+  for hint in fsproj.Descendants(!"HintPath") do
+    let res = reg.Match(hint.Value)
+    if res.Success then
+      let package = res.Groups.[1].Value
+      let rest = res.Groups.[2].Value
+      let version = packageVersions.[package]
+      hint.Value <- sprintf @"$(SolutionDir)\packages\%s.%s\%s" package version rest
+  fsproj.Save(path + ".updated")  
+  DeleteFile path
+  Rename path (path + ".updated")
+)
+
 Target "RestorePackages" (fun _ ->
-    !! "./**/packages.config"
+    !! "./src/packages.config"
     |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
 )
 
 Target "GenerateFsLab" (fun _ ->
-  // Find package version information in 'FsLab.nuspec'
-  let nuspec = XElement.Load(__SOURCE_DIRECTORY__ + "/src/FsLab.nuspec")
-  let xn s = XName.Get(s, "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd")
-  let packageVersions = 
-    nuspec.Descendants(xn "dependency")
-    |> Seq.map (fun elem -> 
-        elem.Attribute(XName.Get "id").Value, elem.Attribute(XName.Get "version").Value)
-    |> dict
-
   // Get directory with binaries for a given package
   let getLibDir package =
     let baseDir = package + "." + packageVersions.[package]
@@ -102,13 +149,13 @@ Target "GenerateFsLab" (fun _ ->
   // Generate #I for all library, for all possible folder
   let includes = 
     [ for folder in folders do
-        for package in packages do
+        for package, _ in packages do
           yield sprintf "#I \"%s%s\"" folder (getLibDir package) ]
   
   // Generate #r for all libraries
   let references = 
     packages
-    |> List.collect getAssemblies
+    |> List.collect (fst >> getAssemblies)
     |> List.map (sprintf "#r \"%s\"")
 
   // Write everything to the 'temp/FsLab.fsx' file
@@ -122,6 +169,7 @@ Target "NuGet" (fun _ ->
     let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
+            Dependencies = packages
             Authors = authors
             Project = project
             Summary = summary
@@ -134,7 +182,6 @@ Target "NuGet" (fun _ ->
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".nuspec")
-    DeleteFile "bin/FsLab.nuspec"
 )
 
 // --------------------------------------------------------------------------------------
@@ -170,6 +217,7 @@ Target "All" DoNothing
   ==> "All"
 
 "Clean" 
+  ==> "UpdateVersions"
   ==> "RestorePackages"
   ==> "GenerateFsLab"
   ==> "NuGet"

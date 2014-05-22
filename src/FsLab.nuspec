@@ -14,17 +14,7 @@
     <licenseUrl>http://github.com/tpetricek/FsLab/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>http://www.fslab.org</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/tpetricek/FsLab/master/misc/logo.png</iconUrl>
-    <dependencies>
-      <dependency id="R.NET" version="1.5.5" />
-      <dependency id="RDotNet.FSharp" version="0.1.2.1" />
-      <dependency id="Deedle" version="1.0.0-alpha2" />
-      <dependency id="Deedle.RPlugin" version="1.0.0-alpha2" />
-      <dependency id="FSharp.Data" version="2.0.5" />
-      <dependency id="FSharp.Charting" version="0.90.6" />
-      <dependency id="MathNet.Numerics" version="3.0.0-beta01" />
-      <dependency id="MathNet.Numerics.FSharp" version="3.0.0-beta01" />
-      <dependency id="RProvider" version="1.0.7-alpha" />
-    </dependencies>
+    @dependencies@
   </metadata>
   <files>
     <file src="..\src\FsLab.fsx" target="." />
