@@ -3,8 +3,8 @@
 #load "packages/FsLab.0.0.14-beta/FsLab.fsx"
 (**
 
-FsLab Walkthrough (with R)
-==========================
+FsLab Walkthrough
+=================
 
 This file is a sample experiment that demonstrates the capabilities of FsLab
 journal. FsLab experiments automatically includes a reference to the [FsLab 
