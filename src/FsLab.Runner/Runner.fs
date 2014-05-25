@@ -4,6 +4,7 @@ open System.IO
 open FSharp.Literate
 open FSharp.Markdown
 open System.Reflection
+open System.Collections.Generic
 
 // ----------------------------------------------------------------------------
 // Directory and location helpers
@@ -24,6 +25,16 @@ let rec copyFiles source target =
     copyFiles f (target @@ Path.GetFileName(f))
   for f in Directory.GetFiles(source) do
     File.Copy(f, (target @@ Path.GetFileName(f)), true)
+
+/// Lookup a specified key in a dictionary, possibly
+/// ignoring newlines or spaces in the key.
+let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) = 
+  [ key; key.Replace("\r\n", ""); key.Replace("\r\n", " "); 
+    key.Replace("\n", ""); key.Replace("\n", " ") ]
+  |> Seq.tryPick (fun key ->
+    match dict.TryGetValue(key) with
+    | true, v -> Some v 
+    | _ -> None)
 
 /// Represents state passed around during processing
 type ProcessingContext = 
@@ -52,12 +63,29 @@ let rec extractTitle (pars:MarkdownParagraphs) =
     | Matching.ParagraphNested(_, pars) -> extractTitle (List.concat pars)
     | _ -> None )
 
+/// In LaTeX documents, we use the first heading as document name
+/// so we can remove it from the rest of the document
 let rec dropTitle (pars:MarkdownParagraphs) : MarkdownParagraphs = 
   pars |> List.collect (function
     | Heading(1, text) -> []
     | Matching.ParagraphNested(o, pars) -> 
         [ Matching.ParagraphNested(o, pars |> List.map dropTitle) ]
     | other -> [other] )
+
+/// When generating LaTeX, we need to save all files locally
+let rec downloadSpanImages (saver, links) = function 
+  | IndirectImage(body, _, LookupKey links (link, title)) 
+  | DirectImage(body, (link, title)) -> DirectImage(body, (saver link, title))
+  | Matching.SpanNode(s, spans) -> Matching.SpanNode(s, List.map (downloadSpanImages (saver, links)) spans)
+  | Matching.SpanLeaf(l) -> Matching.SpanLeaf(l) 
+
+let rec downloadImages ctx (pars:MarkdownParagraphs) : MarkdownParagraphs = 
+  pars |> List.map (function
+    | Matching.ParagraphSpans(s, spans) ->
+        Matching.ParagraphSpans(s, List.map (downloadSpanImages ctx) spans)
+    | Matching.ParagraphNested(o, pars) -> 
+        Matching.ParagraphNested(o, List.map (downloadImages ctx) pars)
+    | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
 /// Generate file for the specified document, using a given template and title
 let generateFile ctx path (doc:LiterateDocument) title = 
@@ -70,8 +98,26 @@ let generateFile ctx path (doc:LiterateDocument) title =
               .Replace("{page-title}", title)
     File.WriteAllText(path, html)
   else
+    // Download images so that they can be embedded
+    use wc = new System.Net.WebClient()
+    let counter = ref 0 
+    let saver (url:string) = 
+      if url.StartsWith("http") || url.StartsWith("https") then
+        incr counter
+        let ext = Path.GetExtension(url)
+        let fn = sprintf "./savedimages/saved%d%s" counter.Value ext
+        wc.DownloadFile(url, ctx.Root @@ "output" @@ fn)
+        fn
+      else url
+
+    ensureDirectory (ctx.Root @@ "output/savedimages" )
+    let pars = 
+      doc.Paragraphs
+      |> downloadImages (saver, doc.DefinedLinks) 
+      |> dropTitle
+
+    let doc = doc.With(paragraphs = pars)
     let template = texTemplate ctx
-    let doc = doc.With(paragraphs=dropTitle doc.Paragraphs)
     let tex = 
       template.Replace("{tooltips}", doc.FormattedTips)
               .Replace("{contents}", Literate.WriteLatex(doc))
@@ -144,9 +190,10 @@ let getDefaultFile ctx = function
   | generated ->
       // If there is custom default or index file, use it
       let existingDefault =
-        Directory.GetFiles(ctx.Root @@ "output") |> Seq.tryPick (fun f ->
-          match Path.GetFileName(f).ToLower() with 
-          | "default.html" | "index.html" -> Some(Path.GetFileName(f)) | _ -> None)
+        Directory.GetFiles(ctx.Root) |> Seq.tryPick (fun f ->
+          match Path.GetFileNameWithoutExtension(f).ToLower() with 
+          | "default" | "index" -> Some(Path.GetFileNameWithoutExtension(f) + ".html")
+          | _ -> None)
       match existingDefault with
       | None ->
           // Otherwise, generate simple page with list of all files

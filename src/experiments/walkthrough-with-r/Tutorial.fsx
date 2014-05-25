@@ -1,27 +1,24 @@
 (*** hide ***)
-(* BUILD (Ctrl+Shift+B) the project to restore NuGet packages first! *)
 #I ".."
 #load "packages/FsLab.0.0.14-beta/FsLab.fsx"
 (**
 
-My first FsLab notebook
-=======================
+FsLab Walkthrough (with R)
+==========================
 
-FsLab notebook is a simple Visual Studio template that makes it easy to do 
-interactive data analysis using F# Interactive and produce nice HTML to 
-document you research. In this sample notebook, a script file `Tutorial.fsx`
-is turned into an HTML report that you can see when you hit **F5**.
+This file is a sample experiment that demonstrates the capabilities of FsLab
+journal. FsLab experiments automatically includes a reference to the [FsLab 
+NuGet package][fslab], so you can use all the great data science F# packages.
+The template also contains a runner that formats your script files nicely using
+[F# Formatting][fsfmt] and generates nice HTML or LaTeX reports. To write your 
+experiments, you can include Markdown-formatted text in comments starting with 
+`**` such as this one. The report is generated and opened automatically when 
+you hit **F5**. 
 
-> The FsLab notebook template automatically includes a reference to the [FsLab 
-> NuGet package][fslab], so you can use all the great data science F# packages.
-> The template also contains a runner that formats your script files nicely using
-> [F# Formatting][fsfmt] and generates nice reports. To write your reports, you 
-> can include Markdown-formatted text in comments starting with `**` such as 
-> this one. The report is generated and opened automatically when you hit **F5**. 
-
-When you generate a report, your code is nicely formatted, executed and 
-the resulting charts and frames are embedded in the report. The rest of this 
-notebook shows how this is done.
+When you generate a report, the code in all scripts in the solution is executed,
+the resulting charts and tables are embedded and everything is nicely formatted.
+The rest of this experiment shows the available libraries and how to format 
+your experiments.
 
 FsLab libraries
 ---------------
@@ -38,7 +35,7 @@ Sample data access with F# Data
 -------------------------------
 
 The following snippet builds a simple Deedle data frame using data obtained 
-from the WorldBank type provider:
+from the WorldBank type provider from the F# Data library:
 
 *)
 open Deedle
@@ -64,7 +61,11 @@ the row index and country names as the column index. You can use the
 (**
 As you can see, you can even include simple F# expressions in the command. Here,
 we use `round(debts*100.0)/100.0)` to round the debt values to two decimal points
-for a nicer presentation.
+for a nicer presentation. You can also embed LaTeX in your reports and write
+(for more options [see the documentation](http://tpetricek.github.io/FSharp.Formatting/sideextensions.html)):
+
+$$$
+R = \frac{\mathit{round}(100 \times \mathit{debt})}{100}
 
 Sample data analysis with Deedle
 --------------------------------
@@ -74,19 +75,19 @@ block is an expression that returns a value, you can use `include-it` to
 include the formatted result:
 
 *)
-(*** define-output:top8 ***)
+(*** define-output:top4 ***)
 let recent = debts.Rows.[2005 ..]
 
 recent
 |> Stats.mean
 |> Series.sort
 |> Series.rev
-|> Series.take 8
+|> Series.take 4
 |> round
-(*** include-it:top8 ***)
+(*** include-it:top4 ***)
 
 (**
-Here, we calculate means of debts over years starting with 2005, take the 8
+Here, we calculate means of debts over years starting with 2005, take the 4
 countries with the greatest average debt and round the debts.
 
 Embedding sample F# Charting charts
@@ -112,56 +113,83 @@ Chart.Combine(
 Interoperating with R 
 ---------------------
 
-If you want to do some advanced calculation and you have R installed on your
-machine, you can use the R type provider too. Embedding graphical output is not
-directly supported yet, but you can already do it by defining the following 
-simple function that turns the last R output into a `Bitmap` object.
+If you have R installed, you can use the [R type provider][rprovider] in FsLab
+experiments. The FsLab runner captures drawing done on R graphical device 
+automatically and so you can also embed charts using the `include-output` command.
 
-> **NOTE**: To make this tutorial work on machines that do not have R installed,
-> the following code is embedded as a snippet in a comment. Uncomment the code
-> to run it if you have R installed!
-
-    open RProvider
-    open RProvider.``base``
-    open RProvider.grDevices
-
-    module R = 
-      let last_dev() =
-        let png = R.eval(R.parse(text="png"))
-        let file = System.IO.Path.GetTempFileName() + ".png"
-        let args = namedParams [ "device", box png; "filename", box file ]
-        R.dev_off(R.dev_copy(args)) |> ignore
-        R.graphics_off() |> ignore
-        System.Drawing.Bitmap.FromFile(file)
-
-Then you can call R functions to perform advanced statistics (to install a 
-package, just install it in your standard R environment). Here, we use `R.mean` 
-and `R.plot`. You can then embed the result of the plot using `include-value` 
-and the `R.last_dev()` helper:
-
-    open RProvider.graphics
-
-    R.mean(debts?Germany).Value
-    R.plot(debts?Germany)
+The R type provider looks at packages available in your R installation and makes
+them available as namespaces under `RProvider`. The following example imports a 
+couple of packages and then draws a histogram from all debts in the entire data set:
 *)
 
-(*** include-value:R.last_dev() ***)
+(*** define-output:hist ***)
+open RProvider
+open RProvider.graphics
+open RProvider.stats
+open RProvider.``base``
+
+R.hist(debts.GetAllValues<float>())
+(*** include-output:hist ***)
 
 (**
-More about the FsLab notebook runner
-------------------------------------
+R can be useful for drawing charts, but also for accessing a wide range of statistical
+functions that are not available in other F# libraries. For example, we can calculate 
+correlation between the different countries based on debts. We do this only for recent
+years and we first drop columns that contain missing values:
+*)
+let rdf = R.as_data_frame(R.cor(recent.DropSparseColumns()))
+let cors = rdf.GetValue<Frame<string, string>>()
+(**
+The `cor` function returns a matrix and we first convert it (in R) to data frame using
+`as_data_frame`. Then we convert the R data frame into Deedle frame using the 
+`GetValue` function, which takes a type parameter specifying the required type on the
+F# side.
 
-When you hit **F5**, the FsLab notebook runner automatically processes all 
-`*.fsx` files in the root directory of your project. In this template, there is
-just a single sample, which is `Tutorial.fsx`. The generated files are placed
-in the `output` folder (together with all the styles and JavaScript files that
-it requires). Then, the runner opens your default web browser with the generated
+Now, we can use `stack` function to get a frame containing row keys, column keys and 
+values. This gives us a list of pairs of countries and their correlation. We get only
+pairs where the first country is before the second (alphabetically) to remove self-correlations
+and dupliactes. Then we sort the countries and take the 5 most correlated:
+*)
+
+(*** define-output:cor ***)
+cors
+|> Frame.stack
+|> Frame.filterRowValues (fun row -> 
+    row.GetAs<string>("Row") < row.GetAs<string>("Column") )
+|> Frame.sortRowsBy "Value" ((*) -1.0)
+|> Frame.take 5
+(*** include-it:cor ***)
+
+(**
+More about the FsLab journal runner
+-----------------------------------
+
+When you hit **F5** in Visual Studio, the FsLab runner automatically processes all 
+`*.fsx` and `*.md` files in the root directory of your project. The generated files 
+are placed in the `output` folder (together with all the styles and JavaScript files 
+that it requires). Then, the runner opens your default web browser with the generated
 file.
 
 If you have multiple files, the runner automatically generates index file with
 links to all your notebooks and opens this instead. You can also create your 
 own index file by adding a file named `Index.fsx` or `Index.md` (if you only 
 want to write Markdown text in your index).
+
+### Command line
+
+The runner can be also invoked from command line - the template includes a simple
+[FAKE][fake] build script that is copied to the root directory of your project
+(if you modify this, it will be overwritten). The build script supports the following
+commands:
+
+ - `build html` Generate HTML output for all scripts 
+   and store the results in `output` folder
+
+ - `build latex` Generate LaTeX output for all scripts 
+   and store the results in `output` folder
+
+ - `build pdf` Generate LaTeX output as when using `build latex` and then run `pdflatex` 
+   on the files (this only works when you have `pdflatex` accessible in `PATH`
 
  [fslab]: http://www.nuget.org/packages/FsLab
  [fsfmt]: http://tpetricek.github.io/FSharp.Formatting/
@@ -170,5 +198,6 @@ want to write Markdown text in your index).
  [fschart]: http://fsharp.github.io/FSharp.Charting/
  [fsdata]: http://fsharp.github.io/FSharp.Data/
  [mathnet]: http://numerics.mathdotnet.com/
+ [fake]: http://fsharp.github.io/FAKE/
 
 *)

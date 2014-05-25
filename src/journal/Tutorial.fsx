@@ -21,7 +21,7 @@ Next steps
  * To add new experiments to your project, got to "Add", "New item" and choose
    new "FsLab Experiment". You can have multiple scripts in a single project.
 
- * To see how things work, hit "Ctrl + F5" and see how FsLab Journal turns this
+ * To see how things work, hit **F5** and see how FsLab Journal turns this
    Markdown document with simple F# script into a nice report!
 
  * To generate PDF from your experiments, you need to install `pdflatex` and 
@@ -47,11 +47,11 @@ printfn "Loaded '%s' of length %d" file contents.Length
 
 (**
 Now, we split the contents of the file into words, count the frequency of 
-each word occurring in the file and turn the result into a Deedle series:
+words longer than 3 letters and turn the result into a Deedle series:
 *)
 let words = 
-  contents.Split(' ', '\n', '\r', '|', '>', '*', '(', ')')
-  |> Array.filter (fun s -> s <> "")
+  contents.Split(' ', '"', '\n', '\r', '*')
+  |> Array.filter (fun s -> s.Length > 3)
   |> Array.map (fun s -> s.ToLower())
   |> Seq.countBy id
   |> series
@@ -73,5 +73,4 @@ Summary
 An image is worth a thousand words:
 
 ![](http://imgs.xkcd.com/comics/hofstadter.png)
-
 *)

@@ -105,13 +105,19 @@ let isEmptyBitmap (img:Bitmap) =
 
 let captureDevice f = 
   let file = Path.GetTempFileName() + ".png"   
-  R.png(file) |> ignore
-  let res = f()
-  R.dev_off() |> ignore
+  let isRavailable =
+    try R.png(file) |> ignore; true 
+    with _ -> false
 
-  let bmp = Image.FromStream(new MemoryStream(File.ReadAllBytes file)) :?> Bitmap
-  let img = if isEmptyBitmap bmp then None else Some bmp
-  File.Delete(file)
+  let res = f()
+  let img = 
+    if isRavailable then
+      R.dev_off() |> ignore
+      let bmp = Image.FromStream(new MemoryStream(File.ReadAllBytes file)) :?> Bitmap
+      File.Delete(file)
+      if isEmptyBitmap bmp then None else Some bmp 
+    else None
+
   { Results = res; CapturedImage = img } :> IFsiEvaluationResult
 
 // --------------------------------------------------------------------------------------
@@ -156,7 +162,7 @@ let createFsiEvaluator root output =
         // We need to reate host control, but it does not have to be visible
         ( use ctl = new ChartControl(chartStyle ch, Dock = DockStyle.Fill, Width=500, Height=300)
           ch.CopyAsBitmap().Save(output @@ "images" @@ file, System.Drawing.Imaging.ImageFormat.Png) )
-        Some [ Paragraph [DirectImage ("Chart", (root + "/images/" + file, None))]  ]
+        Some [ Paragraph [DirectImage ("", (root + "/images/" + file, None))]  ]
 
     | SeriesValues s ->
         // Pretty print series!

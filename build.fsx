@@ -52,7 +52,7 @@ let packages =
 
 let journalPackages = 
   [ "FSharp.Compiler.Service", "0.0.44"
-    "FSharp.Formatting", "2.4.9" 
+    "FSharp.Formatting", "2.4.10" 
     "Microsoft.AspNet.Razor", "2.0.30506.0"
     "RazorEngine", "3.3.0" ]
 

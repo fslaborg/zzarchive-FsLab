@@ -1,7 +1,7 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
   <TemplateData>
-    <DefaultName>FsLab Walkthrough.fsx</DefaultName>
-    <Name>FsLab Walkthrough with R</Name>
+    <DefaultName>FsLab Tutorial.fsx</DefaultName>
+    <Name>FsLab Tutorial (using R)</Name>
     <Description>Creates a tutorial that demonstrates how to write FsLab experiments and produce nice reports including tables and charts. This walkthrough uses R using the R type provider and works only wiht R installed.</Description>
     <ProjectType>FSharp</ProjectType>
     <SortOrder>10</SortOrder>

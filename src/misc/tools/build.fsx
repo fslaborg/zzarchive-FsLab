@@ -9,8 +9,7 @@
 //
 // --------------------------------------------------------------------------------------
 
-#I ".."
-#r "packages/FAKE/tools/FakeLib.dll"
+#r "build/FAKE/tools/FakeLib.dll"
 open System
 open System.IO
 open Fake
@@ -48,7 +47,7 @@ Target "latex" (fun _ ->
 Target "pdf" (fun _ ->
   for tex in !! (__SOURCE_DIRECTORY__ @@ "output/*.tex" ) do
     ExecProcess (fun info ->
-      info.Arguments <- "-interaction=nonstopmode " + (Path.GetFileName(tex))
+      info.Arguments <- "-interaction=nonstopmode \"" + (Path.GetFileName(tex)) + "\""
       info.WorkingDirectory <- __SOURCE_DIRECTORY__ @@ "output"
       info.FileName <- "pdflatex" ) TimeSpan.MaxValue |> ignore
 )
