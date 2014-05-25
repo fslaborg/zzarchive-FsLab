@@ -5,22 +5,20 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>81243959-5415-41cb-80a2-2bf468c0d6d0</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>$safeprojectname$</RootNamespace>
-    <AssemblyName>FsLab.Notebook</AssemblyName>
+    <ProjectGuid>af99159a-43c9-460d-98d1-4e0db7ec61fe</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FsLab.Runner</RootNamespace>
+    <AssemblyName>FsLab.Runner</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
-    <Name>FsLab.Test</Name>
-    <TargetFrameworkProfile />
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Name>FsLab.Runner</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>$(SolutionDir)\packages</OutputPath>
+    <OutputPath>../../bin</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile></DocumentationFile>
@@ -29,33 +27,11 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>../../bin</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FsLab.Test.XML</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup>
-    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
-  </PropertyGroup>
-  <Choose>
-    <When Condition="'$(VisualStudioVersion)' == '11.0'">
-      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
-        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
-        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <Import Project="$(FSharpTargetsPath)" />
-  <ItemGroup>
-    <None Include="Tutorial.fsx" />
-    <Compile Include="Main.fs" />
-    <None Include="packages.config" />
-    <None Include="app.config" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="CSharpFormat">
       <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.9\lib\net40\CSharpFormat.dll</HintPath>
@@ -99,10 +75,6 @@
     <Reference Include="FSharp.MetadataFormat">
       <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.9\lib\net40\FSharp.MetadataFormat.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="FsLab.Runner">
-      <HintPath>$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\lib\net40\FsLab.Runner.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>$(SolutionDir)\packages\MathNet.Numerics.3.0.0-beta01\lib\net40\MathNet.Numerics.dll</HintPath>
@@ -153,8 +125,33 @@
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\tools\build.fsx" DestinationFolder="." ContinueOnError="true" />
-    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\tools\build.cmd" DestinationFolder="." ContinueOnError="true" />
+  <ItemGroup>
+    <Compile Include="Formatters.fs" />
+    <Compile Include="Runner.fs" />
+    <Compile Include="Main.fs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(FSharpTargetsPath)" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
   </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -13,22 +13,14 @@
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
     <Icon>__TemplateIcon.png</Icon>
     <PreviewImage>__PreviewImage.png</PreviewImage>
+	<BuildProjectOnLoad>true</BuildProjectOnLoad>
   </TemplateData>
   <TemplateContent>
     <Project TargetFileName="FsLab.Notebook.fsproj" File="FsLab.Notebook.fsproj" ReplaceParameters="true">
-      <Folder Name="tools" TargetFolderName="tools">
-        <ProjectItem ReplaceParameters="true" TargetFileName="Formatters.fs">Formatters.fs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="Runner.fs">Runner.fs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="app.config">app.config</ProjectItem>
-      </Folder>
-      <Folder Name="styles" TargetFolderName="styles">
-        <ProjectItem ReplaceParameters="true" TargetFileName="template.html">template.html</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="style.css">style.css</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="deedle.css">deedle.css</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="tips.js">tips.js</ProjectItem>
-      </Folder>
       <ProjectItem ReplaceParameters="false" TargetFileName="Tutorial.fsx">Tutorial.fsx</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="packages.config">packages.config</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Main.fs">Main.fs</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="app.config">app.config</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="packages.config">packages.config</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

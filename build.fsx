@@ -22,13 +22,19 @@ setEnvironVar "MSBuild" (ProgramFilesX86 @@ @"\MSBuild\12.0\Bin\MSBuild.exe")
 // --------------------------------------------------------------------------------------
 
 let project = "FsLab"
+let projectRunner = "FsLab.Runner"
 let authors = ["F# Data Science Working Group"]
 let summary = "F# Data science package"
+let summaryRunner = "F# Data science report generator"
 let description = """
   FsLab is a single package that gives you all you need for doing data science with
   F#. FsLab includes explorative data manipulation library, type providers for easy
   data access, simple charting library, support for integration with R and numerical
   computing libraries. All available in a single package and ready to use!"""
+let descriptionRunner = """
+  This package contains a library for turning FsLab experiments written as script files
+  into HTML and LaTeX reports. The easiest way to use the library is to use the 
+  'FsLab Journal' Visual Studio template."""
 let tags = "F# fsharp deedle series statistics data science r type provider mathnet"
 
 /// List of packages included in FsLab
@@ -44,9 +50,10 @@ let packages =
     "R.NET", "1.5.5" 
     "RDotNet.FSharp", "0.1.2.1" ]
 
-let notebookPackages = 
-  [ "FSharp.Compiler.Service", "0.0.44"
-    "FSharp.Formatting", "2.4.8" 
+let journalPackages = 
+  [ //"FAKE", "2.17.3"
+    "FSharp.Compiler.Service", "0.0.44"
+    "FSharp.Formatting", "2.4.9" 
     "Microsoft.AspNet.Razor", "2.0.30506.0"
     "RazorEngine", "3.3.0" ]
 
@@ -73,16 +80,15 @@ let folders =
 // Read release notes & version info from RELEASE_NOTES.md
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
-let packageVersions = dict (packages @ notebookPackages)
+let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
 Target "Clean" (fun _ ->
     CleanDirs ["temp"; "nuget"; "bin"]
 )
 
 Target "UpdateVersions" (fun _ ->
-  let (!) n = XName.Get(n)
-
   // Helpers for generating "packages.config" file
+  let (!) n = XName.Get(n)
   let makePackage (name, ver) = 
     XElement(!"package", XAttribute(!"id", name), XAttribute(!"version", ver))
   let makePackages packages = 
@@ -91,12 +97,16 @@ Target "UpdateVersions" (fun _ ->
   // "src/packages.config" is used just for development (so that we can
   // edit the "FsLab.fsx" file and get decent autocomplete)
   makePackages(packages).Save("src/packages.config")
- 
+  
+  // "src/FsLab.Runner/packages.config" are packages used by the Journal runner
+  let allPackages = packages @ journalPackages
+  makePackages(allPackages).Save("src/FsLab.Runner/packages.config")
+
   // "src/notebook/packages.config" lists the packages that 
-  // are referenced in the FsLab Notebook project
+  // are referenced in the FsLab Journal project
   let allPackages = 
-    ["FsLab", release.NugetVersion] @ 
-    packages @ notebookPackages
+    [ "FsLab", release.NugetVersion
+      "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
   makePackages(allPackages).Save("src/notebook/packages.config")
 
   // "src/notebook/Tutorial.fsx" needs to be updated to 
@@ -108,27 +118,62 @@ Target "UpdateVersions" (fun _ ->
   let text = Regex.Replace(text, pattern, replacement)
   File.WriteAllText(path, text)
 
-  // "src\notebook\FsLab.Notebook.fsproj" contains <HintPath> elements
-  // that points to the specific version in packages directory
+  // "src\notebook\FsLab.Notebook.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
+  // contain <HintPath> elements that points to the specific version in packages directory
   // This bit goes over all the <HintPath> elements & updates them
   let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/msbuild/2003")
-  let path = "src/notebook/FsLab.Notebook.fsproj"
-  let fsproj = XDocument.Load(path)
-  let reg = Regex(@"\$\(SolutionDir\)\\packages\\([a-zA-Z\.]*)\.[^\\]*\\(.*)")
-  for hint in fsproj.Descendants(!"HintPath") do
-    let res = reg.Match(hint.Value)
-    if res.Success then
-      let package = res.Groups.[1].Value
-      let rest = res.Groups.[2].Value
-      let version = packageVersions.[package]
-      hint.Value <- sprintf @"$(SolutionDir)\packages\%s.%s\%s" package version rest
-  fsproj.Save(path + ".updated")  
+  let paths = [ "src/notebook/FsLab.Notebook.fsproj"; "src/FsLab.Runner/FsLab.Runner.fsproj" ]
+  for path in paths do 
+    let fsproj = XDocument.Load(path)
+    // Update contents of <HintPath>..</HintPath> and of <Copy SourceFiles=".." />
+    let xvalues = 
+      [ for copy in fsproj.Descendants(!"Copy") do 
+          let sf = copy.Attribute(XName.Get "SourceFiles")
+          yield sf.Value, sf.SetValue
+        for hint in fsproj.Descendants(!"HintPath") do
+          yield hint.Value, hint.SetValue ]
+
+    let reg = Regex(@"\$\(SolutionDir\)\\packages\\([a-zA-Z\.]*)\.[^\\]*\\(.*)")
+    for value, setter in xvalues do
+      let res = reg.Match(value)
+      if res.Success then
+        let package = res.Groups.[1].Value
+        let rest = res.Groups.[2].Value
+        let version = packageVersions.[package]
+        setter(sprintf @"$(SolutionDir)\packages\%s.%s\%s" package version rest)
+    fsproj.Save(path + ".updated")  
+    DeleteFile path
+    Rename path (path + ".updated")
+
+  // Specify <probing privatePath="..."> value in app.config of the journal
+  // project, so that it automatically loads references from packages
+  let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
+  let path = "src/notebook/app.config"
+  let appconfig = XDocument.Load(path)
+  let probing = appconfig.Descendants(!"probing").First()
+  let privatePath = probing.Attributes(XName.Get "privatePath").First()
+  let value = 
+    [ for p, v in packages @ journalPackages -> 
+        let sub = if p = "RProvider" then "lib" else "lib\\net40"
+        sprintf "%s.%s\\%s" p v sub ] |> String.concat ";"
+  privatePath.Value <- value
+  appconfig.Save(path + ".updated")
+  DeleteFile path
+  Rename path (path + ".updated")
+
+  /// Update version number in the VSIX manifest file of the template
+  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
+  let path = "src/template/source.extension.vsixmanifest"
+  let vsix = XDocument.Load(path)
+  let ident = vsix.Descendants(!"Identity").First()
+  ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
+  vsix.Save(path + ".updated")
   DeleteFile path
   Rename path (path + ".updated")
 )
 
 Target "RestorePackages" (fun _ ->
-    !! "./src/packages.config"
+    Seq.concat [!! "./src/packages.config"; !! "./src/FsLab.Runner/packages.config"]
     |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
 )
 
@@ -163,9 +208,16 @@ Target "GenerateFsLab" (fun _ ->
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
 )
 
+Target "BuildRunner" (fun _ ->
+    !! (project + ".sln")
+    |> MSBuildRelease "" "Rebuild"
+    |> ignore
+)
+
 Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
     let description = description.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
+    let descriptionRunner = descriptionRunner.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
@@ -182,6 +234,21 @@ Target "NuGet" (fun _ ->
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".nuspec")
+    NuGet (fun p -> 
+        { p with   
+            Dependencies = packages @ journalPackages
+            Authors = authors
+            Project = projectRunner
+            Summary = summaryRunner
+            Description = descriptionRunner
+            Version = release.NugetVersion
+            ReleaseNotes = String.concat " " release.Notes
+            Tags = tags
+            OutputPath = "bin"
+            ToolPath = nugetPath
+            AccessKey = getBuildParamOrDefault "nugetkey" ""
+            Publish = hasBuildParam "nugetkey" })
+        ("src/" + project + ".Runner.nuspec")
 )
 
 // --------------------------------------------------------------------------------------
@@ -189,6 +256,7 @@ Target "NuGet" (fun _ ->
 // --------------------------------------------------------------------------------------
 
 Target "GenerateTemplate" (fun _ ->
+  ensureDirectory "temp/notebook"
   CopyRecursive "src/notebook" "temp/notebook/" true |> ignore
   "misc/logo.png" |> CopyFile "temp/notebook/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/notebook/__PreviewImage.png"
@@ -211,16 +279,14 @@ Target "BuildTemplate" (fun _ ->
 
 Target "All" DoNothing
 
-"Clean"
-  ==> "GenerateTemplate"
-  ==> "BuildTemplate"
-  ==> "All"
-
 "Clean" 
   ==> "UpdateVersions"
   ==> "RestorePackages"
   ==> "GenerateFsLab"
+  ==> "BuildRunner"
   ==> "NuGet"
+  ==> "GenerateTemplate"
+  ==> "BuildTemplate"
   ==> "All"
 
 RunTargetOrDefault "All"

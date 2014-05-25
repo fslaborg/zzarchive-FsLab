@@ -1,4 +1,4 @@
-﻿module Runner
+﻿module internal FsLab.Runner
 
 open System.IO
 open FSharp.Literate
@@ -6,7 +6,7 @@ open FSharp.Markdown
 open System.Reflection
 
 // ----------------------------------------------------------------------------
-// Directory helpers
+// Directory and location helpers
 // ----------------------------------------------------------------------------
 
 /// Correctly combine two paths
@@ -24,6 +24,15 @@ let rec copyFiles source target =
     copyFiles f (target @@ Path.GetFileName(f))
   for f in Directory.GetFiles(source) do
     File.Copy(f, (target @@ Path.GetFileName(f)), true)
+
+/// Represents state passed around during processing
+type ProcessingContext = 
+  { Root : string 
+    OutputKind : OutputKind }
+
+// Process scripts in the 'root' directory and put them into output
+let htmlTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.html")
+let texTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.tex")
 
 // ----------------------------------------------------------------------------
 // Markdown document processing tools
@@ -43,42 +52,50 @@ let rec extractTitle (pars:MarkdownParagraphs) =
     | Matching.ParagraphNested(_, pars) -> extractTitle (List.concat pars)
     | _ -> None )
 
+let rec dropTitle (pars:MarkdownParagraphs) : MarkdownParagraphs = 
+  pars |> List.collect (function
+    | Heading(1, text) -> []
+    | Matching.ParagraphNested(o, pars) -> 
+        [ Matching.ParagraphNested(o, pars |> List.map dropTitle) ]
+    | other -> [other] )
+
 /// Generate file for the specified document, using a given template and title
-let generateFile (template:string) path (doc:LiterateDocument) title = 
-  let html = 
-    template.Replace("{tooltips}", doc.FormattedTips)
-            .Replace("{document}", Literate.WriteHtml(doc))
-            .Replace("{page-title}", title)
-  File.WriteAllText(path, html)
+let generateFile ctx path (doc:LiterateDocument) title = 
+  Formatters.currentOutputKind <- ctx.OutputKind
+  if ctx.OutputKind = OutputKind.Html then
+    let template = htmlTemplate ctx
+    let html = 
+      template.Replace("{tooltips}", doc.FormattedTips)
+              .Replace("{document}", Literate.WriteHtml(doc))
+              .Replace("{page-title}", title)
+    File.WriteAllText(path, html)
+  else
+    let template = texTemplate ctx
+    let doc = doc.With(paragraphs=dropTitle doc.Paragraphs)
+    let tex = 
+      template.Replace("{tooltips}", doc.FormattedTips)
+              .Replace("{contents}", Literate.WriteLatex(doc))
+              .Replace("{page-title}", title)
+    File.WriteAllText(Path.ChangeExtension(path, "tex"), tex)
 
 // ----------------------------------------------------------------------------
 // Process script files in the root folder & generate HTML files
 // ----------------------------------------------------------------------------
 
-// Get the root directory where the script files are.
-//
-// This is tricky. As a dirty hack, we use 'packages' folder as the output
-// so that all libraries are loaded from 'packages' using 'probing' in App.config.
-// (otherwise, they are loaded twice from different directories and things break).
-//
-// If 'packages' are in project directory, this is just '..', but if they are
-// in solution directory, this is '../UnknownProjectName'. So we just try looking 
-// for templates..
-let root = 
-  let app = Assembly.GetExecutingAssembly().Location
-  let appDir = Path.GetDirectoryName(app)
-  let probing = (appDir @@ "..")::(List.ofSeq (Directory.GetDirectories(appDir @@ "..")))
-  probing |> Seq.find (fun dir -> File.Exists(dir @@ "styles" @@ "template.html"))
-
-// Process scripts in the 'root' directory and put them into output
-let template() = File.ReadAllText(root @@ "output" @@ "styles" @@ "template.html")
-
 /// Creates the 'output' directory and puts all formatted script files there
-let processScriptFiles () =
+let processScriptFiles ctx =
   // Ensure 'output' directory exists
+  let root = ctx.Root
   ensureDirectory (root @@ "output")
-  // Copy content of 'styles' to the output
-  copyFiles (root @@ "styles") (root @@ "output" @@ "styles")
+
+  // Copy content of 'styles' to the output (from the NuGet package source)
+  let rootPackages = 
+    if Directory.Exists(root @@ "packages") then root @@ "packages"
+    else root @@ "../packages"
+  let runnerRoot = 
+    Directory.GetDirectories(rootPackages) |> Seq.find (fun p -> 
+      Path.GetFileName(p).StartsWith "FsLab.Runner")
+  copyFiles (runnerRoot @@ "styles") (root @@ "output" @@ "styles")
 
   // FSI evaluator will put images into 'output/images' and 
   // refernece them as './images/image1.png' in the HTML
@@ -90,7 +107,8 @@ let processScriptFiles () =
     // Get all *.fsx and *.md files and yield functions to parse them
     let files = 
       [ for f in Directory.GetFiles(indir, "*.fsx") do
-          yield f, fun () -> Literate.ParseScriptFile(f, fsiEvaluator=fsi)
+          if Path.GetFileNameWithoutExtension(f).ToLower() <> "build" then
+            yield f, fun () -> Literate.ParseScriptFile(f, fsiEvaluator=fsi)
         for f in Directory.GetFiles(indir, "*.md") do
           yield f, fun () -> Literate.ParseMarkdownFile(f, fsiEvaluator=fsi) ]
     
@@ -109,7 +127,7 @@ let processScriptFiles () =
         printfn "Generating '%s.html'" name
         let doc = func ()
         let title = defaultArg (extractTitle doc.Paragraphs) "Untitled"
-        generateFile (template()) output doc title
+        generateFile ctx output doc title
         yield (name + ".html"), title ]
 
   processDirectory root (root @@ "output")
@@ -120,13 +138,13 @@ let processScriptFiles () =
 // ----------------------------------------------------------------------------
 
 /// Find or generate a default file that we want to show in browser
-let getDefaultFile = function
+let getDefaultFile ctx = function
   | [] -> failwith "No script files found!"
   | [file, _] -> file // If there is just one file, return it
   | generated ->
       // If there is custom default or index file, use it
       let existingDefault =
-        Directory.GetFiles(root @@ "output") |> Seq.tryPick (fun f ->
+        Directory.GetFiles(ctx.Root @@ "output") |> Seq.tryPick (fun f ->
           match Path.GetFileName(f).ToLower() with 
           | "default.html" | "index.html" -> Some(Path.GetFileName(f)) | _ -> None)
       match existingDefault with
@@ -139,11 +157,6 @@ let getDefaultFile = function
             [ Heading(1, [Literal "FsLab Notebooks"])
               ListBlock(Unordered, items) ]
           let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)
-          generateFile (template()) (root @@ "output" @@ "index.html") doc "FsLab Notebooks"
+          generateFile ctx (ctx.Root @@ "output" @@ "index.html") doc "FsLab Notebooks"
           "index.html"
       | Some fn -> fn
-
-// Process all script files and get a list of produced files
-let builtFiles = processScriptFiles()
-let file = getDefaultFile builtFiles
-System.Diagnostics.Process.Start(root @@ "output" @@ file) |> ignore

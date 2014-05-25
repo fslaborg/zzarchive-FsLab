@@ -1,4 +1,4 @@
-﻿module Formatters
+﻿module internal FsLab.Formatters
 
 open System.IO
 open Deedle
@@ -76,8 +76,56 @@ let ensureDirectory dir =
 let (@@) a b = Path.Combine(a, b)
 
 // --------------------------------------------------------------------------------------
+// Handling of R
+// --------------------------------------------------------------------------------------
+
+open RDotNet
+open RProvider
+open RProvider.graphics
+open RProvider.grDevices
+open System.Drawing
+open System
+
+type ExtraEvaluationResult = 
+  { Results : IFsiEvaluationResult
+    CapturedImage : Bitmap option }
+  interface IFsiEvaluationResult
+
+let isEmptyBitmap (img:Bitmap) =
+  seq { 
+    let bits = img.LockBits(Rectangle(0,0,img.Width, img.Height), Imaging.ImageLockMode.ReadOnly, Imaging.PixelFormat.Format32bppArgb)
+    let ptr0 = bits.Scan0 : IntPtr
+    let stride = bits.Stride
+    for i in 0 .. img.Width - 1 do
+      for j in 0 .. img.Height - 1 do
+        let offset = i*4 + stride*j
+        if System.Runtime.InteropServices.Marshal.ReadInt32(ptr0,offset) <> -1 then
+          yield false }
+  |> Seq.isEmpty            
+
+let captureDevice f = 
+  let file = Path.GetTempFileName() + ".png"   
+  R.png(file) |> ignore
+  let res = f()
+  R.dev_off() |> ignore
+
+  let bmp = Image.FromStream(new MemoryStream(File.ReadAllBytes file)) :?> Bitmap
+  let img = if isEmptyBitmap bmp then None else Some bmp
+  File.Delete(file)
+  { Results = res; CapturedImage = img } :> IFsiEvaluationResult
+
+// --------------------------------------------------------------------------------------
 // Build FSI evaluator
 // --------------------------------------------------------------------------------------
+
+let mutable currentOutputKind = OutputKind.Html
+let InlineMultiformatBlock(html, latex) = 
+  let block =
+    { new MarkdownEmbedParagraphs with
+        member x.Render() = 
+          if currentOutputKind = OutputKind.Html then [ InlineBlock html ]
+          else [ InlineBlock latex ] }
+  EmbedParagraphs(block)
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
 let createFsiEvaluator root output =
@@ -96,7 +144,7 @@ let createFsiEvaluator root output =
         let file = "chart" + id + ".png"
         ensureDirectory (output @@ "images")
         img.Save(output @@ "images" @@ file, System.Drawing.Imaging.ImageFormat.Png) 
-        Some [ Paragraph [DirectImage ("Chart", (root + "/images/" + file, None))]  ]
+        Some [ Paragraph [DirectImage ("", (root + "/images/" + file, None))]  ]
 
     | :? ChartTypes.GenericChart as ch ->
         // Pretty print F# Chart - save the chart to the "images" directory 
@@ -115,9 +163,9 @@ let createFsiEvaluator root output =
         let heads  = s |> mapSteps sitms fst (function Some k -> td (k.ToString()) | _ -> td " ... ")
         let row    = s |> mapSteps sitms snd (function Some v -> formatValue "N/A" (OptionalValue.asOption v) | _ -> td " ... ")
         let aligns = s |> mapSteps sitms id (fun _ -> AlignDefault)
-        [ InlineBlock "<div class=\"deedleseries\">"
+        [ InlineMultiformatBlock("<div class=\"deedleseries\">", "\\vspace{1em}")
           TableBlock(Some ((td "Keys")::heads), AlignDefault::aligns, [ (td "Values")::row ]) 
-          InlineBlock "</div>" ] |> Some
+          InlineMultiformatBlock("</div>","\\vspace{1em}") ] |> Some
 
     | :? IFrame as f ->
       // Pretty print frame!
@@ -135,14 +183,29 @@ let createFsiEvaluator root output =
               let row = data |> mapSteps fcols id (function Some v -> formatValue def v | _ -> td " ... ")
               (td k)::row )
           Some [ 
-            InlineBlock "<div class=\"deedleframe\">"
+            InlineMultiformatBlock("<div class=\"deedleframe\">","\\vspace{1em}")
             TableBlock(Some ([]::heads), AlignDefault::aligns, rows) 
-            InlineBlock "</div>"
+            InlineMultiformatBlock("</div>","\\vspace{1em}")
           ] }
       |> f.Apply
     | _ -> None 
     
   // Create FSI evaluator, register transformations & return
-  let fsiEvaluator = FsiEvaluator()
+  let fsiEvaluator = FsiEvaluator() 
   fsiEvaluator.RegisterTransformation(transformation)
-  fsiEvaluator
+  let fsiEvaluator = fsiEvaluator :> IFsiEvaluator
+  { new IFsiEvaluator with
+      member x.Evaluate(text, asExpr, file) = 
+        captureDevice (fun () -> 
+          fsiEvaluator.Evaluate(text, asExpr, file))
+
+      member x.Format(res, kind) = 
+        let res = res :?> ExtraEvaluationResult
+        match kind, res.CapturedImage with
+        | FsiEmbedKind.Output, Some img -> 
+            [ match (res.Results :?> FsiEvaluationResult).Output with
+              | Some s  when not (String.IsNullOrWhiteSpace(s)) ->
+                  yield! fsiEvaluator.Format(res.Results, kind)
+              | _ -> ()
+              yield! transformation(img, typeof<Image>).Value ]
+        | _ -> fsiEvaluator.Format(res.Results, kind) }

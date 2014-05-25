@@ -1,4 +1,5 @@
 bin
+src/FsLab.Runner/obj
 temp
 packages
 *.suo
