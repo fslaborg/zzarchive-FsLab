@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{790C05AB-929
 	ProjectSection(SolutionItems) = preProject
 		src\FsLab.fsx = src\FsLab.fsx
 		src\FsLab.nuspec = src\FsLab.nuspec
+		src\FsLab.Runner.nuspec = src\FsLab.Runner.nuspec
 		src\packages.config = src\packages.config
 	EndProjectSection
 EndProject

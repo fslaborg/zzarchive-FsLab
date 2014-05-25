@@ -8,7 +8,7 @@
     <ProjectGuid>81243959-5415-41cb-80a2-2bf468c0d6d0</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>$safeprojectname$</RootNamespace>
-    <AssemblyName>FsLab.Notebook</AssemblyName>
+    <AssemblyName>FsLab.Journal</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>FsLab.Test</Name>

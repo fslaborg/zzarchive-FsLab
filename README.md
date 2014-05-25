@@ -9,7 +9,7 @@ computing libraries. All available in a single package and ready to use!"""
 Developer notes
 ---------------
 
-If you want to be able to build FsLab Notebook template, you'll need Visual Studio 2013 SDK.
+If you want to be able to build FsLab Journal template, you'll need Visual Studio 2013 SDK.
 
  * Add new line with version information to `RELEASE_NOTES.md`
  * Update versions of referenced packages at the beginning of `build.fsx`

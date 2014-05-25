@@ -4,7 +4,7 @@
 #load "packages/FsLab.0.0.14-beta/FsLab.fsx"
 (**
 
-My first FsLab notebook
+My first FsLab journal
 =======================
 
 FsLab notebook is a simple Visual Studio template that makes it easy to do 

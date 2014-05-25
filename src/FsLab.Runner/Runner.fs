@@ -154,9 +154,9 @@ let getDefaultFile ctx = function
             [ for file, title in generated ->
                 [Paragraph [ DirectLink([Literal title], (file,None)) ]] ]
           let pars = 
-            [ Heading(1, [Literal "FsLab Notebooks"])
+            [ Heading(1, [Literal "FsLab Journals"])
               ListBlock(Unordered, items) ]
           let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)
-          generateFile ctx (ctx.Root @@ "output" @@ "index.html") doc "FsLab Notebooks"
+          generateFile ctx (ctx.Root @@ "output" @@ "index.html") doc "FsLab Journals"
           "index.html"
       | Some fn -> fn

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="FsLab.Notebook-1" Version="0.0.14" Language="en-US" Publisher="F# Data Science working group" />
-    <DisplayName>FsLab Notebook</DisplayName>
+    <Identity Id="FsLab.Journal-1" Version="0.0.14" Language="en-US" Publisher="F# Data Science working group" />
+    <DisplayName>FsLab Journal</DisplayName>
     <Description xml:space="preserve">Template that makes it easy to do interactive data analysis using F# Interactive and produce nice HTML reports of your work.</Description>
     <MoreInfo>http://www.fslab.org</MoreInfo>
     <Icon>logo.png</Icon>
@@ -16,7 +16,7 @@
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
   </Dependencies>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" d:TargetPath="ProjectTemplates\FsLab Notebook.zip" />
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" d:TargetPath="ProjectTemplates\FsLab Journal.zip" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\walkthrough-with-r.zip" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\walkthrough.zip" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\experiment.zip" />

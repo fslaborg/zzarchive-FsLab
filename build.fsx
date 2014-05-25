@@ -101,27 +101,28 @@ Target "UpdateVersions" (fun _ ->
   let allPackages = packages @ journalPackages
   makePackages(allPackages).Save("src/FsLab.Runner/packages.config")
 
-  // "src/notebook/packages.config" lists the packages that 
+  // "src/journal/packages.config" lists the packages that 
   // are referenced in the FsLab Journal project
   let allPackages = 
     [ "FsLab", release.NugetVersion
       "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
-  makePackages(allPackages).Save("src/notebook/packages.config")
+  makePackages(allPackages).Save("src/journal/packages.config")
 
-  // "src/notebook/Tutorial.fsx" needs to be updated to 
+  // "src/journal/Tutorial.fsx" needs to be updated to 
   // reference correct version of FsLab in the #load command
   let pattern = "packages/FsLab.(.*)/FsLab.fsx"
   let replacement = sprintf "packages/FsLab.%s/FsLab.fsx" release.NugetVersion
-  let path = "./src/notebook/Tutorial.fsx"
-  let text = File.ReadAllText(path)
-  let text = Regex.Replace(text, pattern, replacement)
-  File.WriteAllText(path, text)
+  let paths = Seq.append (!! "./src/experiments/**/*.fsx") ["./src/journal/Tutorial.fsx"]
+  for path in paths do 
+    let text = File.ReadAllText(path)
+    let text = Regex.Replace(text, pattern, replacement)
+    File.WriteAllText(path, text)
 
-  // "src\notebook\FsLab.Notebook.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
+  // "src\journal\FsLab.Journal.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
   // contain <HintPath> elements that points to the specific version in packages directory
   // This bit goes over all the <HintPath> elements & updates them
   let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/msbuild/2003")
-  let paths = [ "src/notebook/FsLab.Notebook.fsproj"; "src/FsLab.Runner/FsLab.Runner.fsproj" ]
+  let paths = [ "src/journal/FsLab.Journal.fsproj"; "src/FsLab.Runner/FsLab.Runner.fsproj" ]
   for path in paths do 
     let fsproj = XDocument.Load(path)
     // Update contents of <HintPath>..</HintPath> and of <Copy SourceFiles=".." />
@@ -147,7 +148,7 @@ Target "UpdateVersions" (fun _ ->
   // Specify <probing privatePath="..."> value in app.config of the journal
   // project, so that it automatically loads references from packages
   let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
-  let path = "src/notebook/app.config"
+  let path = "src/journal/app.config"
   let appconfig = XDocument.Load(path)
   let probing = appconfig.Descendants(!"probing").First()
   let privatePath = probing.Attributes(XName.Get "privatePath").First()
@@ -267,11 +268,11 @@ Target "GenerateTemplate" (fun _ ->
     |> Zip ("temp/experiments/" + experiment) ("temp/experiments/" + experiment + ".zip")
 
   // Generate ZIP with project template
-  ensureDirectory "temp/notebook"
-  CopyRecursive "src/notebook" "temp/notebook/" true |> ignore
-  "misc/logo.png" |> CopyFile "temp/notebook/__TemplateIcon.png"
-  "misc/preview.png" |> CopyFile "temp/notebook/__PreviewImage.png"
-  !! "temp/notebook/**" |> Zip "temp/notebook" "temp/notebook.zip"
+  ensureDirectory "temp/journal"
+  CopyRecursive "src/journal" "temp/journal/" true |> ignore
+  "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
+  "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
+  !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
 
   // Create directory for the Template project
   CopyRecursive "src/template" "temp/template/" true |> ignore
@@ -281,8 +282,8 @@ Target "GenerateTemplate" (fun _ ->
   |> CopyFiles "temp/template/ItemTemplates"
   // Copy ProjectTemplates
   ensureDirectory "temp/template/ProjectTemplates"
-  "temp/notebook.zip" |> CopyFile "temp/template/FsLab Notebook.zip" 
-  "temp/notebook.zip" |> CopyFile "temp/template/ProjectTemplates/FsLab Notebook.zip" 
+  "temp/journal.zip" |> CopyFile "temp/template/FsLab Journal.zip" 
+  "temp/journal.zip" |> CopyFile "temp/template/ProjectTemplates/FsLab Journal.zip" 
   // Copy other files
   "misc/logo.png" |> CopyFile "temp/template/logo.png"
   "misc/preview.png" |> CopyFile "temp/template/preview.png"

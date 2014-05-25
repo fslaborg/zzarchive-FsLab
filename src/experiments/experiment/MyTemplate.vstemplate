@@ -1,8 +1,8 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
   <TemplateData>
     <DefaultName>FsLab Experiment.fsx</DefaultName>
-    <Name>FsLabExperiment</Name>
-    <Description>This template creates a new empty FsLab experiment</Description>
+    <Name>FsLab Experiment</Name>
+    <Description>Creates a blank FsLab experiment.</Description>
     <ProjectType>FSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.png</Icon>

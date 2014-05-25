@@ -2,7 +2,7 @@
   <TemplateData>
     <DefaultName>FsLab Walkthrough.fsx</DefaultName>
     <Name>FsLab Walkthrough</Name>
-    <Description>This tutorial demonstrates how to create FsLab experiments and produce nice reports including results and charts</Description>
+    <Description>Creates a tutorial that demonstrates how to write FsLab experiments and produce nice reports including tables and charts.</Description>
     <ProjectType>FSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.png</Icon>

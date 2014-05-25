@@ -1,13 +1,13 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>FsLab Notebook</Name>
+    <Name>FsLab Journal</Name>
     <Description>Template that makes it easy to do interactive data analysis using F# Interactive and produce nice HTML reports of your work.</Description>
     <ProjectType>FSharp</ProjectType>
     <ProjectSubType>
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>FsLab Notebook</DefaultName>
+    <DefaultName>FsLab Journal</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -16,7 +16,7 @@
 	<BuildProjectOnLoad>true</BuildProjectOnLoad>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="FsLab.Notebook.fsproj" File="FsLab.Notebook.fsproj" ReplaceParameters="true">
+    <Project TargetFileName="FsLab.Journal.fsproj" File="FsLab.Journal.fsproj" ReplaceParameters="true">
       <ProjectItem ReplaceParameters="false" TargetFileName="Tutorial.fsx">Tutorial.fsx</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Main.fs">Main.fs</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="app.config">app.config</ProjectItem>

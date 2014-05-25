@@ -2,7 +2,7 @@
   <TemplateData>
     <DefaultName>FsLab Walkthrough.fsx</DefaultName>
     <Name>FsLab Walkthrough with R</Name>
-    <Description>This tutorial demonstrates how to create FsLab experiments and produce nice reports including results. This walkthrough requires R to be installed.</Description>
+    <Description>Creates a tutorial that demonstrates how to write FsLab experiments and produce nice reports including tables and charts. This walkthrough uses R using the R type provider and works only wiht R installed.</Description>
     <ProjectType>FSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.png</Icon>
