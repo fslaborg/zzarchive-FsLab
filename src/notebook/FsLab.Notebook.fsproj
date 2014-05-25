@@ -51,10 +51,10 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <None Include="Tutorial.fsx" />
-    <Compile Include="Main.fs" />
-    <None Include="packages.config" />
     <None Include="app.config" />
+    <None Include="packages.config" />
+    <Compile Include="Main.fs" />
+    <None Include="Tutorial.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSharpFormat">
@@ -156,5 +156,6 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\tools\build.fsx" DestinationFolder="." ContinueOnError="true" />
     <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\tools\build.cmd" DestinationFolder="." ContinueOnError="true" />
+    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.14-beta\tools\NuGet.exe" DestinationFolder="build" ContinueOnError="true" />
   </Target>
 </Project>

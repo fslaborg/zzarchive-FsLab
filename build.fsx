@@ -51,8 +51,7 @@ let packages =
     "RDotNet.FSharp", "0.1.2.1" ]
 
 let journalPackages = 
-  [ //"FAKE", "2.17.3"
-    "FSharp.Compiler.Service", "0.0.44"
+  [ "FSharp.Compiler.Service", "0.0.44"
     "FSharp.Formatting", "2.4.9" 
     "Microsoft.AspNet.Razor", "2.0.30506.0"
     "RazorEngine", "3.3.0" ]
@@ -216,6 +215,7 @@ Target "BuildRunner" (fun _ ->
 
 Target "NuGet" (fun _ ->
     // Format the description to fit on a single line (remove \r\n and double-spaces)
+    CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
     let description = description.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     let descriptionRunner = descriptionRunner.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     let nugetPath = ".nuget/nuget.exe"
@@ -256,16 +256,34 @@ Target "NuGet" (fun _ ->
 // --------------------------------------------------------------------------------------
 
 Target "GenerateTemplate" (fun _ ->
+  // Generate ZIPs with item templates
+  ensureDirectory "temp/experiments"
+  for experiment in ["walkthrough-with-r"; "walkthrough"; "experiment"] do
+    ensureDirectory ("temp/experiments/" + experiment)
+    CopyRecursive ("src/experiments/" + experiment) ("temp/experiments/" + experiment)  true |> ignore
+    "misc/item.png" |> CopyFile ("temp/experiments/" + experiment + "/__TemplateIcon.png")
+    "misc/preview.png" |> CopyFile ("temp/experiments/" + experiment + "/__PreviewImage.png")
+    !! ("temp/experiments/" + experiment + "/**") 
+    |> Zip ("temp/experiments/" + experiment) ("temp/experiments/" + experiment + ".zip")
+
+  // Generate ZIP with project template
   ensureDirectory "temp/notebook"
   CopyRecursive "src/notebook" "temp/notebook/" true |> ignore
   "misc/logo.png" |> CopyFile "temp/notebook/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/notebook/__PreviewImage.png"
   !! "temp/notebook/**" |> Zip "temp/notebook" "temp/notebook.zip"
 
+  // Create directory for the Template project
   CopyRecursive "src/template" "temp/template/" true |> ignore
+  // Copy ItemTemplates
+  ensureDirectory "temp/template/ItemTemplates"
+  !! "temp/experiments/*.zip" 
+  |> CopyFiles "temp/template/ItemTemplates"
+  // Copy ProjectTemplates
   ensureDirectory "temp/template/ProjectTemplates"
   "temp/notebook.zip" |> CopyFile "temp/template/FsLab Notebook.zip" 
   "temp/notebook.zip" |> CopyFile "temp/template/ProjectTemplates/FsLab Notebook.zip" 
+  // Copy other files
   "misc/logo.png" |> CopyFile "temp/template/logo.png"
   "misc/preview.png" |> CopyFile "temp/template/preview.png"
 )

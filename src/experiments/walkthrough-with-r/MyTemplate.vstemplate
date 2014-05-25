@@ -1,0 +1,52 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>FsLab Walkthrough.fsx</DefaultName>
+    <Name>FsLab Walkthrough with R</Name>
+    <Description>This tutorial demonstrates how to create FsLab experiments and produce nice reports including results. This walkthrough requires R to be installed.</Description>
+    <ProjectType>FSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.png</Icon>
+    <PreviewImage>__PreviewImage.png</PreviewImage>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Deedle</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>Deedle.RProvider.Plugin</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>FSharp.Charting</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>FSharp.Core</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>FSharp.Data</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>MathNet.Numerics</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>MathNet.Numerics.FSharp</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>RDotNet</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>RDotNet.FSharp</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>RDotNet.NativeLibrary</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>RProvider</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>RProvider.Runtime</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.fsx" ReplaceParameters="false">Tutorial.fsx</ProjectItem>
+  </TemplateContent>
+</VSTemplate>
