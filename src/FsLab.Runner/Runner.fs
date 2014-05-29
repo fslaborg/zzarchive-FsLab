@@ -39,7 +39,8 @@ let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) =
 /// Represents state passed around during processing
 type ProcessingContext = 
   { Root : string 
-    OutputKind : OutputKind }
+    OutputKind : OutputKind 
+    TemplateLocation : string option }
 
 // Process scripts in the 'root' directory and put them into output
 let htmlTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.html")
@@ -134,14 +135,20 @@ let processScriptFiles ctx =
   let root = ctx.Root
   ensureDirectory (root @@ "output")
 
-  // Copy content of 'styles' to the output (from the NuGet package source)
-  let rootPackages = 
-    if Directory.Exists(root @@ "packages") then root @@ "packages"
-    else root @@ "../packages"
-  let runnerRoot = 
-    Directory.GetDirectories(rootPackages) |> Seq.find (fun p -> 
-      Path.GetFileName(p).StartsWith "FsLab.Runner")
-  copyFiles (runnerRoot @@ "styles") (root @@ "output" @@ "styles")
+  // use the provided template location or use one in the NuGet package source
+  let templateLocation = 
+    match ctx.TemplateLocation with
+    | Some loc -> loc
+    | _ ->      
+      let rootPackages = 
+        if Directory.Exists(root @@ "packages") then root @@ "packages"
+        else root @@ "../packages"
+      
+      Directory.GetDirectories(rootPackages) |> Seq.find (fun p -> 
+          Path.GetFileName(p).StartsWith "FsLab.Runner")
+  
+  // Copy content of 'styles' to the output
+  copyFiles (templateLocation @@ "styles") (root @@ "output" @@ "styles")
 
   // FSI evaluator will put images into 'output/images' and 
   // refernece them as './images/image1.png' in the HTML
