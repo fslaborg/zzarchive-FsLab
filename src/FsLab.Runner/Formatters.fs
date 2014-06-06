@@ -24,13 +24,13 @@ let startItemCount = 5
 let endItemCount = 3
 
 // How many columns and rows from a matrix should be rendered
-let matrixStartColumnCount = 6
+let matrixStartColumnCount = 5
 let matrixEndColumnCount = 2
 let matrixStartRowCount = 10
 let matrixEndRowCount = 4
 
 // How many items from a vector should be rendered
-let vectorStartItemCount = 6
+let vectorStartItemCount = 5
 let vectorEndItemCount = 2
 
 // --------------------------------------------------------------------------------------
@@ -134,31 +134,49 @@ let captureDevice f =
   { Results = res; CapturedImage = img } :> IFsiEvaluationResult
 
 // --------------------------------------------------------------------------------------
-// Handling of Math.NET Numerics Matrices/Vectors
+// Output-Dependent Blocks
+// --------------------------------------------------------------------------------------
+
+let mutable currentOutputKind = OutputKind.Html
+let InlineMultiformatBlock(html, latex) =
+  let block =
+    { new MarkdownEmbedParagraphs with
+        member x.Render() = 
+          if currentOutputKind = OutputKind.Html then [ InlineBlock html ] else [ InlineBlock latex ] }
+  EmbedParagraphs(block)
+
+// --------------------------------------------------------------------------------------
+// Handling of Math.NET Numerics Matrices
 // --------------------------------------------------------------------------------------
 
 open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 
-let mutable currentOutputKind = OutputKind.Html
-let InlineMultiformatBlock(html, latex) = 
+let MatrixBlock(matrix: Matrix<'T>, format: 'T -> string) =
+  let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
+  let buildHtmlBlocks () =
+    let aligns = List.init mappedColumnCount (fun _ -> AlignDefault)
+    let rows = matrix.EnumerateRows() |> mapSteps mrows id (function
+      | Some row -> row |> mapSteps mcols id (function Some v -> td (format v) | _ -> td " ... ")
+      | None -> List.init mappedColumnCount (fun _ -> td " ... "))
+    [ InlineBlock (sprintf "<div class=\"mathnetmatrix\"><p>%dx%d Matrix</p>" matrix.RowCount matrix.ColumnCount)
+      TableBlock (None, aligns, rows)
+      InlineBlock "</div>" ]
+  let buildLatexBlocks () =
+    let joinCells c = List.reduce (fun a b -> a + " & " + b) c
+    let joinCellRows c = List.reduce (fun a b -> a + "\\\\ " + Environment.NewLine + b) c
+    [ InlineBlock "\\[\\begin{bmatrix}"
+      matrix.EnumerateRows()
+        |> mapSteps mrows id (function
+          | Some row -> row |> mapSteps mcols id (function Some v -> format v | _ -> "\\cdots") |> joinCells
+          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> joinCells)
+        |> joinCellRows |> InlineBlock
+      InlineBlock "\\end{bmatrix}\\]" ]
   let block =
     { new MarkdownEmbedParagraphs with
         member x.Render() = 
-          if currentOutputKind = OutputKind.Html then [ InlineBlock html ]
-          else [ InlineBlock latex ] }
+          if currentOutputKind = OutputKind.Html then buildHtmlBlocks() else buildLatexBlocks() }
   EmbedParagraphs(block)
-
-let MatrixBlock(matrix: Matrix<'T>, format: 'T -> string) =
-  let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
-  let aligns = List.init mappedColumnCount (fun _ -> AlignDefault)
-  let rows = matrix.EnumerateRows() |> mapSteps mrows id (function
-    | Some row -> row |> mapSteps mcols id (function Some v -> td (format v) | _ -> td " ... ")
-    | None -> List.init mappedColumnCount (fun _ -> td " ... "))
-  [ InlineMultiformatBlock("<div class=\"mathnetmatrix\">","\\vspace{1em}")
-    Paragraph [Literal (sprintf "%dx%d Matrix" matrix.RowCount matrix.ColumnCount)]
-    TableBlock (None, aligns, rows)
-    InlineMultiformatBlock("</div>","\\vspace{1em}") ]
 
 // --------------------------------------------------------------------------------------
 // Build FSI evaluator
@@ -226,8 +244,8 @@ let createFsiEvaluator root output =
           ] }
       |> f.Apply
 
-    | :? Matrix<double> as m -> Some (MatrixBlock(m, fun v -> v.ToString("G6")))
-    | :? Matrix<float> as m -> Some (MatrixBlock(m, fun v -> v.ToString("G3")))
+    | :? Matrix<double> as m -> Some [ MatrixBlock(m, fun v -> v.ToString("G6")) ]
+    | :? Matrix<float> as m -> Some [ MatrixBlock(m, fun v -> v.ToString("G3")) ]
 
     | _ -> None 
     
