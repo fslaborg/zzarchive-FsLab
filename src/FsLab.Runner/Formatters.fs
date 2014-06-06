@@ -134,18 +134,6 @@ let captureDevice f =
   { Results = res; CapturedImage = img } :> IFsiEvaluationResult
 
 // --------------------------------------------------------------------------------------
-// Output-Dependent Blocks
-// --------------------------------------------------------------------------------------
-
-let mutable currentOutputKind = OutputKind.Html
-let InlineMultiformatBlock(html, latex) =
-  let block =
-    { new MarkdownEmbedParagraphs with
-        member x.Render() = 
-          if currentOutputKind = OutputKind.Html then [ InlineBlock html ] else [ InlineBlock latex ] }
-  EmbedParagraphs(block)
-
-// --------------------------------------------------------------------------------------
 // Handling of Math.NET Numerics Matrices
 // --------------------------------------------------------------------------------------
 
@@ -165,16 +153,19 @@ let MatrixBlock(matrix: Matrix<'T>, format: 'T -> string) =
             | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> joinCells)
           |> joinCellRows
         "\\end{bmatrix}" ]
-  let block =
-    { new MarkdownEmbedParagraphs with
-        member x.Render() = if currentOutputKind = OutputKind.Html
-                            then [ Paragraph [ LatexDisplayMath(latex) ] ]
-                            else [ InlineBlock "\\["; InlineBlock latex; InlineBlock "\\]" ] }
-  EmbedParagraphs(block)
+  Paragraph [ LatexDisplayMath latex ]
 
 // --------------------------------------------------------------------------------------
 // Build FSI evaluator
 // --------------------------------------------------------------------------------------
+
+let mutable currentOutputKind = OutputKind.Html
+let InlineMultiformatBlock(html, latex) =
+  let block =
+    { new MarkdownEmbedParagraphs with
+        member x.Render() =
+          if currentOutputKind = OutputKind.Html then [ InlineBlock html ] else [ InlineBlock latex ] }
+  EmbedParagraphs(block)
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
 let createFsiEvaluator root output =
