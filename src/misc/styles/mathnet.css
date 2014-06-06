@@ -1,0 +1,44 @@
+﻿#main .mathnetmatrix, #main .mathnetvector {
+  margin:0px 0px 20px 20px;
+}
+
+#main .mathnetmatrix td, #main .mathnetmatrix th {
+  padding:4px 10px 4px 10px;
+  min-width:50px;
+}
+#main .mathnetvector td, #main .mathnetvector th {
+  padding:4px 20px 4px 10px;
+}
+#main .mathnetvector thead th,
+#main .mathnetmatrix thead th {
+  padding:4px 20px 4px 10px;
+  text-align:left;
+  font-weight:bold;
+}
+#main .mathnetvector table,
+#main .mathnetmatrix table {
+  border-left:1px solid #e0e0e0;
+  border-top:1px solid #e0e0e0;
+}
+#main .mathnetvector td, #main .mathnetvector th,
+#main .mathnetmatrix td, #main .mathnetmatrix th {
+  border-right:1px solid #e0e0e0;
+  border-bottom:1px solid #e0e0e0;
+}
+#main .mathnetvector thead th,
+#main .mathnetmatrix thead th,
+#main .mathnetmatrix tr.even {
+  background:white;
+}
+#main .mathnetvector tr.odd,
+#main .mathnetmatrix tr.odd {
+  background:#f8f8f8;
+}
+
+#main .mathnetvector p,
+#main .mathnetmatrix p {
+  font-size:90%;
+  margin:0px;
+  padding:0px;
+  line-height:normal;
+}
