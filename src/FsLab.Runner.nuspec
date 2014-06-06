@@ -20,7 +20,6 @@
     <file src="..\bin\FsLab.Runner.dll" target="lib/net40" />
     <file src="..\bin\FsLab.Runner.pdb" target="lib/net40" />
     <file src="..\src\misc\styles\deedle.css" target="styles" />
-    <file src="..\src\misc\styles\mathnet.css" target="styles" />
     <file src="..\src\misc\styles\style.css" target="styles" />
     <file src="..\src\misc\styles\template.html" target="styles" />
     <file src="..\src\misc\styles\template.tex" target="styles" />

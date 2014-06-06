@@ -154,28 +154,22 @@ open MathNet.Numerics.LinearAlgebra
 
 let MatrixBlock(matrix: Matrix<'T>, format: 'T -> string) =
   let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
-  let buildHtmlBlocks () =
-    let aligns = List.init mappedColumnCount (fun _ -> AlignDefault)
-    let rows = matrix.EnumerateRows() |> mapSteps mrows id (function
-      | Some row -> row |> mapSteps mcols id (function Some v -> td (format v) | _ -> td " ... ")
-      | None -> List.init mappedColumnCount (fun _ -> td " ... "))
-    [ InlineBlock (sprintf "<div class=\"mathnetmatrix\"><p>%dx%d Matrix</p>" matrix.RowCount matrix.ColumnCount)
-      TableBlock (None, aligns, rows)
-      InlineBlock "</div>" ]
-  let buildLatexBlocks () =
-    let joinCells c = List.reduce (fun a b -> a + " & " + b) c
-    let joinCellRows c = List.reduce (fun a b -> a + "\\\\ " + Environment.NewLine + b) c
-    [ InlineBlock "\\[\\begin{bmatrix}"
-      matrix.EnumerateRows()
-        |> mapSteps mrows id (function
-          | Some row -> row |> mapSteps mcols id (function Some v -> format v | _ -> "\\cdots") |> joinCells
-          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> joinCells)
-        |> joinCellRows |> InlineBlock
-      InlineBlock "\\end{bmatrix}\\]" ]
+  let joinCells c = List.reduce (fun a b -> a + " & " + b) c
+  let joinCellRows c = List.reduce (fun a b -> a + "\\\\ " + Environment.NewLine + b) c
+  let latex =
+    String.concat Environment.NewLine
+      [ "\\begin{bmatrix}"
+        matrix.EnumerateRows()
+          |> mapSteps mrows id (function
+            | Some row -> row |> mapSteps mcols id (function Some v -> format v | _ -> "\\cdots") |> joinCells
+            | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> joinCells)
+          |> joinCellRows
+        "\\end{bmatrix}" ]
   let block =
     { new MarkdownEmbedParagraphs with
-        member x.Render() = 
-          if currentOutputKind = OutputKind.Html then buildHtmlBlocks() else buildLatexBlocks() }
+        member x.Render() = if currentOutputKind = OutputKind.Html
+                            then [ Paragraph [ LatexDisplayMath(latex) ] ]
+                            else [ InlineBlock "\\["; InlineBlock latex; InlineBlock "\\]" ] }
   EmbedParagraphs(block)
 
 // --------------------------------------------------------------------------------------
