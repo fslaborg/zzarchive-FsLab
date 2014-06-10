@@ -151,6 +151,14 @@ let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
         |> String.concat ("\\\\ " + Environment.NewLine)
       "\\end{bmatrix}" ]
 
+let formatVector (formatValue: 'T -> string) (vector: Vector<'T>) =
+  String.concat Environment.NewLine
+    [ "\\begin{bmatrix}"
+      vector.Enumerate()
+        |> mapSteps vitms id (function | Some v -> formatValue v | _ -> "\\cdots")
+        |> String.concat " & "
+      "\\end{bmatrix}" ]
+
 // --------------------------------------------------------------------------------------
 // Build FSI evaluator
 // --------------------------------------------------------------------------------------
@@ -227,8 +235,10 @@ let createFsiEvaluator root output =
           ] }
       |> f.Apply
 
-    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun v -> v.ToString("G6"))) ]
-    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun v -> v.ToString("G3"))) ]
+    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G6"))) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G3"))) ]
+    | :? Vector<double> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G6"))) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G3"))) ]
 
     | _ -> None 
     
