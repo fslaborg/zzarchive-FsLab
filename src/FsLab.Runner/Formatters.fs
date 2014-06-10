@@ -140,20 +140,16 @@ let captureDevice f =
 open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 
-let MatrixBlock(matrix: Matrix<'T>, format: 'T -> string) =
+let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
   let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
-  let joinCells c = List.reduce (fun a b -> a + " & " + b) c
-  let joinCellRows c = List.reduce (fun a b -> a + "\\\\ " + Environment.NewLine + b) c
-  let latex =
-    String.concat Environment.NewLine
-      [ "\\begin{bmatrix}"
-        matrix.EnumerateRows()
-          |> mapSteps mrows id (function
-            | Some row -> row |> mapSteps mcols id (function Some v -> format v | _ -> "\\cdots") |> joinCells
-            | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> joinCells)
-          |> joinCellRows
-        "\\end{bmatrix}" ]
-  Paragraph [ LatexDisplayMath latex ]
+  String.concat Environment.NewLine
+    [ "\\begin{bmatrix}"
+      matrix.EnumerateRows()
+        |> mapSteps mrows id (function
+          | Some row -> row |> mapSteps mcols id (function Some v -> formatValue v | _ -> "\\cdots") |> String.concat " & "
+          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> String.concat " & ")
+        |> String.concat ("\\\\ " + Environment.NewLine)
+      "\\end{bmatrix}" ]
 
 // --------------------------------------------------------------------------------------
 // Build FSI evaluator
@@ -166,6 +162,8 @@ let InlineMultiformatBlock(html, latex) =
         member x.Render() =
           if currentOutputKind = OutputKind.Html then [ InlineBlock html ] else [ InlineBlock latex ] }
   EmbedParagraphs(block)
+
+let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
 let createFsiEvaluator root output =
@@ -229,8 +227,8 @@ let createFsiEvaluator root output =
           ] }
       |> f.Apply
 
-    | :? Matrix<double> as m -> Some [ MatrixBlock(m, fun v -> v.ToString("G6")) ]
-    | :? Matrix<float> as m -> Some [ MatrixBlock(m, fun v -> v.ToString("G3")) ]
+    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun v -> v.ToString("G6"))) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun v -> v.ToString("G3"))) ]
 
     | _ -> None 
     
