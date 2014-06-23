@@ -49,8 +49,13 @@ let (|SeriesValues|_|) (value:obj) =
     Some(Seq.zip (Seq.cast<obj> keys) vector.ObjectSequence)
   else None
 
+let (|Float|_|) (v:obj) = if v :? float then Some(v :?> float) else None
+let (|Float32|_|) (v:obj) = if v :? float32 then Some(v :?> float32) else None
+
 /// Format value as a single-literal paragraph
-let formatValue def = function
+let formatValue (floatFormat:string) def = function
+  | Some(Float v) -> [ Paragraph [Literal (v.ToString(floatFormat)) ]] 
+  | Some(Float32 v) -> [ Paragraph [Literal (v.ToString(floatFormat)) ]] 
   | Some v -> [ Paragraph [Literal (v.ToString()) ]] 
   | _ -> [ Paragraph [Literal def] ]
 
@@ -177,7 +182,7 @@ let InlineMultiformatBlock(html, latex) =
 let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
-let createFsiEvaluator root output =
+let createFsiEvaluator root output (floatFormat:string) =
 
   /// Counter for saving files
   let imageCounter = 
@@ -210,7 +215,7 @@ let createFsiEvaluator root output =
     | SeriesValues s ->
         // Pretty print series!
         let heads  = s |> mapSteps sitms fst (function Some k -> td (k.ToString()) | _ -> td " ... ")
-        let row    = s |> mapSteps sitms snd (function Some v -> formatValue "N/A" (OptionalValue.asOption v) | _ -> td " ... ")
+        let row    = s |> mapSteps sitms snd (function Some v -> formatValue floatFormat "N/A" (OptionalValue.asOption v) | _ -> td " ... ")
         let aligns = s |> mapSteps sitms id (fun _ -> AlignDefault)
         [ InlineMultiformatBlock("<div class=\"deedleseries\">", "\\vspace{1em}")
           TableBlock(Some ((td "Keys")::heads), AlignDefault::aligns, [ (td "Values")::row ]) 
@@ -229,7 +234,7 @@ let createFsiEvaluator root output =
                 | Some(k, Some d) -> "N/A", k.ToString(), Series.observationsAll d |> Seq.map snd 
                 | Some(k, _) -> "N/A", k.ToString(), f.ColumnKeys |> Seq.map (fun _ -> None)
                 | None -> " ... ", " ... ", f.ColumnKeys |> Seq.map (fun _ -> None)
-              let row = data |> mapSteps fcols id (function Some v -> formatValue def v | _ -> td " ... ")
+              let row = data |> mapSteps fcols id (function Some v -> formatValue floatFormat def v | _ -> td " ... ")
               (td k)::row )
           Some [ 
             InlineMultiformatBlock("<div class=\"deedleframe\">","\\vspace{1em}")
@@ -238,10 +243,10 @@ let createFsiEvaluator root output =
           ] }
       |> f.Apply
 
-    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G6"))) ]
-    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G3"))) ]
-    | :? Vector<double> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G6"))) ]
-    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G3"))) ]
+    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString(floatFormat))) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString(floatFormat))) ]
+    | :? Vector<double> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString(floatFormat))) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString(floatFormat))) ]
 
     | _ -> None 
     

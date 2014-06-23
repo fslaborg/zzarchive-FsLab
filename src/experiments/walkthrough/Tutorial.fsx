@@ -1,6 +1,6 @@
 (*** hide ***)
 #I ".."
-#load "packages/FsLab.0.0.14-beta/FsLab.fsx"
+#load "packages/FsLab.0.0.16/FsLab.fsx"
 (**
 
 FsLab Walkthrough
@@ -56,12 +56,13 @@ the row index and country names as the column index. You can use the
 `include-value` command to include a table summarizing the frame data:
 *)
 
-(*** include-value:round(debts*100.0)/100.0 ***)
+(*** include-value:debts ***)
 
 (**
-As you can see, you can even include simple F# expressions in the command. Here,
-we use `round(debts*100.0)/100.0)` to round the debt values to two decimal points
-for a nicer presentation. You can also embed LaTeX in your reports and write
+As you can see, you can even include simple F# expressions in the command. By default,
+FsLab Journal uses the "G4" format string, but if you want to use other format string,
+you can specify it in the `Main.fs` file when calling `Journal.Process`. You can also 
+embed LaTeX in your reports and write
 (for more options [see the documentation](http://tpetricek.github.io/FSharp.Formatting/sideextensions.html)):
 
 $$$
@@ -89,6 +90,29 @@ recent
 (**
 Here, we calculate means of debts over years starting with 2005, take the 4
 countries with the greatest average debt and round the debts.
+
+Calculating with Math.NET
+-------------------------
+
+If you want to implement a more complex calculation, you can turn Deedle frame
+or series to Math.NET matrix or vector, respectively, and use the linear algebra
+features of Math.NET. For example:
+*)
+open MathNet.Numerics.LinearAlgebra
+
+// Create matrix from debts & vector from means
+let debtsMat = debts |> Frame.fillMissingWith 0.0 |> Frame.toMatrix
+let avgVect = debts |> Stats.mean |> Series.toVector
+
+// Multiply debts per year by means
+debtsMat * avgVect
+
+(*** include-value:debtsMat ***)
+(**
+FsLab Journal also supports embedding of matrices and vectors. Here, you can see
+how the matrix with debts (filled with zeros for missing values) is formatted as a
+matrix. Then, the code shows how to use a simple matrix multiplication using 
+Math.NET.
 
 Embedding sample F# Charting charts
 -----------------------------------

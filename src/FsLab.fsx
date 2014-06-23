@@ -59,17 +59,17 @@ open MathNet.Numerics.LinearAlgebra
 open Deedle
 
 module Matrix =
-  let toFrame matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
+  let inline toFrame matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
 module DenseMatrix =
-  let ofFrame frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
+  let inline ofFrame frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
 module SparseMatrix =
-  let ofFrame frame = frame |> Frame.toArray2D |> SparseMatrix.ofArray2
+  let inline ofFrame frame = frame |> Frame.toArray2D |> SparseMatrix.ofArray2
 module Vector =
-  let toSeries vector = vector |> Vector.toSeq |> Series.ofValues
+  let inline toSeries vector = vector |> Vector.toSeq |> Series.ofValues
 module DenseVector =
-  let ofSeries series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
+  let inline ofSeries series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
 module SparseVector =
-  let ofSeries series = series |> Series.values |> Seq.map (float) |> SparseVector.ofSeq
+  let inline ofSeries series = series |> Series.values |> Seq.map (float) |> SparseVector.ofSeq
 
 
 namespace Deedle
@@ -77,8 +77,8 @@ open Deedle
 open MathNet.Numerics.LinearAlgebra
 
 module Frame =
-  let ofMatrix matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
-  let toMatrix frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
+  let inline ofMatrix matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
+  let inline toMatrix frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
 module Series =
-  let ofVector vector = vector |> Vector.toSeq |> Series.ofValues
-  let toVector series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
+  let inline ofVector vector = vector |> Vector.toSeq |> Series.ofValues
+  let inline toVector series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq

@@ -40,15 +40,15 @@ let tags = "F# fsharp deedle series statistics data science r type provider math
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages = 
-  [ "Deedle", "1.0.0"
-    "Deedle.RPlugin", "1.0.0"
+  [ "Deedle", "1.0.1"
+    "Deedle.RPlugin", "1.0.1"
     "FSharp.Charting", "0.90.6"
-    "FSharp.Data", "2.0.8"
-    "MathNet.Numerics", "3.0.0-beta03"
-    "MathNet.Numerics.FSharp", "3.0.0-beta03"
-    "RProvider", "1.0.9"
-    "R.NET", "1.5.5" 
-    "RDotNet.FSharp", "0.1.2.1" ]
+    "FSharp.Data", "2.0.9"
+    "MathNet.Numerics", "3.0.0"
+    "MathNet.Numerics.FSharp", "3.0.0"
+    "RProvider", "1.0.13"
+    "R.NET.Community", "1.5.15" 
+    "R.NET.Community.FSharp", "0.1.8" ]
 
 let journalPackages = 
   [ "FSharp.Compiler.Service", "0.0.44"
@@ -61,8 +61,9 @@ let getAssemblies package =
     match package with
     | "Deedle.RPlugin" -> ["Deedle.RProvider.Plugin.dll"]
     | "FSharp.Charting" -> ["System.Windows.Forms.DataVisualization.dll"; "FSharp.Charting.dll"]
-    | "RProvider" -> ["RDotNet.dll"; "RDotNet.NativeLibrary.dll"; "RProvider.Runtime.dll"; "RProvider.dll"]
-    | "R.NET" -> []
+    | "RProvider" -> ["RProvider.Runtime.dll"; "RProvider.dll"]
+    | "R.NET.Community" -> ["RDotNet.dll"; "RDotNet.NativeLibrary.dll"]
+    | "R.NET.Community.FSharp" -> ["RDotNet.FSharp.dll"]
     | package -> [package + ".dll"]
 
 // Generate #I directive for the following folders:
@@ -154,8 +155,7 @@ Target "UpdateVersions" (fun _ ->
   let privatePath = probing.Attributes(XName.Get "privatePath").First()
   let value = 
     [ for p, v in packages @ journalPackages -> 
-        let sub = if p = "RProvider" then "lib" else "lib\\net40"
-        sprintf "%s.%s\\%s" p v sub ] |> String.concat ";"
+        sprintf "%s.%s\\lib\\net40" p v ] |> String.concat ";"
   privatePath.Value <- value
   appconfig.Save(path + ".updated")
   DeleteFile path
@@ -180,10 +180,7 @@ Target "RestorePackages" (fun _ ->
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
   let getLibDir package =
-    let baseDir = package + "." + packageVersions.[package]
-    match package with
-    | "RProvider" -> baseDir + "/lib"
-    | _ -> baseDir + "/lib/net40"
+    package + "." + packageVersions.[package] + "/lib/net40"
 
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""]

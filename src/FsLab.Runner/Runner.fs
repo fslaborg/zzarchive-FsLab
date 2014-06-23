@@ -40,6 +40,7 @@ let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) =
 type ProcessingContext = 
   { Root : string 
     OutputKind : OutputKind 
+    FloatFormat : string
     TemplateLocation : string option }
 
 // Process scripts in the 'root' directory and put them into output
@@ -152,7 +153,7 @@ let processScriptFiles ctx =
 
   // FSI evaluator will put images into 'output/images' and 
   // refernece them as './images/image1.png' in the HTML
-  let fsi = Formatters.createFsiEvaluator "." (root @@ "output")
+  let fsi = Formatters.createFsiEvaluator "." (root @@ "output") ctx.FloatFormat
 
   /// Recursively process all files in the directory tree
   let processDirectory indir outdir = 
