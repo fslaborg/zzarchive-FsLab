@@ -52,6 +52,13 @@ let (|SeriesValues|_|) (value:obj) =
 let (|Float|_|) (v:obj) = if v :? float then Some(v :?> float) else None
 let (|Float32|_|) (v:obj) = if v :? float32 then Some(v :?> float32) else None
 
+let inline (|PositiveInfinity|_|) (v: ^T) =
+  if (^T : (static member IsPositiveInfinity: 'T -> bool) (v)) then Some PositiveInfinity else None
+let inline (|NegativeInfinity|_|) (v: ^T) =
+  if (^T : (static member IsNegativeInfinity: 'T -> bool) (v)) then Some NegativeInfinity else None
+let inline (|NaN|_|) (v: ^T) =
+  if (^T : (static member IsNaN: 'T -> bool) (v)) then Some NaN else None
+
 /// Format value as a single-literal paragraph
 let formatValue (floatFormat:string) def = function
   | Some(Float v) -> [ Paragraph [Literal (v.ToString(floatFormat)) ]] 
@@ -148,6 +155,14 @@ let captureDevice f =
 open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 
+let inline formatMathValue (floatFormat:string) = function
+  | PositiveInfinity -> "\\infty"
+  | NegativeInfinity -> "-\\infty"
+  | NaN -> "\\times"
+  | Float v -> v.ToString(floatFormat)
+  | Float32 v -> v.ToString(floatFormat)
+  | v -> v.ToString()
+
 let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
   let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
   String.concat Environment.NewLine
@@ -243,10 +258,10 @@ let createFsiEvaluator root output (floatFormat:string) =
           ] }
       |> f.Apply
 
-    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString(floatFormat))) ]
-    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString(floatFormat))) ]
-    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString(floatFormat))) ]
-    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString(floatFormat))) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
+    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
+    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
 
     | _ -> None 
     
