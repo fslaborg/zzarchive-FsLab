@@ -86,6 +86,7 @@ open RProvider.grDevices
 open System.Drawing
 open System
 
+/// Evaluation context that also captures R exceptions
 type ExtraEvaluationResult = 
   { Results : IFsiEvaluationResult
     CapturedImage : Bitmap option }
@@ -113,9 +114,11 @@ let captureDevice f =
   let img = 
     if isRavailable then
       R.dev_off() |> ignore
-      let bmp = Image.FromStream(new MemoryStream(File.ReadAllBytes file)) :?> Bitmap
-      File.Delete(file)
-      if isEmptyBitmap bmp then None else Some bmp 
+      try
+        let bmp = Image.FromStream(new MemoryStream(File.ReadAllBytes file)) :?> Bitmap
+        File.Delete(file)
+        if isEmptyBitmap bmp then None else Some bmp 
+      with :? System.IO.IOException -> None
     else None
 
   { Results = res; CapturedImage = img } :> IFsiEvaluationResult
