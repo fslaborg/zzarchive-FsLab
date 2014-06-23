@@ -77,11 +77,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics">
-      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.3.0.0-beta01\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.3.0.0-beta03\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics.FSharp">
-      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.FSharp.3.0.0-beta01\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\MathNet.Numerics.FSharp.3.0.0-beta03\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib" />

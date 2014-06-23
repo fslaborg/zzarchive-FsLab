@@ -9,7 +9,7 @@ open FSharp.Charting
 
 // --------------------------------------------------------------------------------------
 // Implements Markdown formatters for common FsLab things - including Deedle series
-// and frames, F# Charting charts and System.Image values
+// and frames, F# Charting charts, System.Image values and Math.NET matrices & vectors
 // --------------------------------------------------------------------------------------
 
 // How many columns and rows from frame should be rendered
@@ -22,6 +22,16 @@ let endRowCount = 4
 // How many items from a series should be rendered
 let startItemCount = 5
 let endItemCount = 3
+
+// How many columns and rows from a matrix should be rendered
+let matrixStartColumnCount = 5
+let matrixEndColumnCount = 2
+let matrixStartRowCount = 10
+let matrixEndRowCount = 4
+
+// How many items from a vector should be rendered
+let vectorStartItemCount = 5
+let vectorEndItemCount = 2
 
 // --------------------------------------------------------------------------------------
 // Helper functions etc.
@@ -59,6 +69,9 @@ let mapSteps (startCount, endCount) f g input =
 let fcols = startColumnCount, endColumnCount
 let frows = startRowCount, endRowCount
 let sitms = startItemCount, endItemCount
+let mcols = matrixStartColumnCount, matrixEndColumnCount
+let mrows = matrixStartRowCount, matrixEndRowCount
+let vitms = vectorStartItemCount, vectorEndItemCount
 
 /// Reasonably nice default style for charts
 let chartStyle ch =
@@ -121,17 +134,44 @@ let captureDevice f =
   { Results = res; CapturedImage = img } :> IFsiEvaluationResult
 
 // --------------------------------------------------------------------------------------
+// Handling of Math.NET Numerics Matrices
+// --------------------------------------------------------------------------------------
+
+open MathNet.Numerics
+open MathNet.Numerics.LinearAlgebra
+
+let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
+  let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
+  String.concat Environment.NewLine
+    [ "\\begin{bmatrix}"
+      matrix.EnumerateRows()
+        |> mapSteps mrows id (function
+          | Some row -> row |> mapSteps mcols id (function Some v -> formatValue v | _ -> "\\cdots") |> String.concat " & "
+          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> String.concat " & ")
+        |> String.concat ("\\\\ " + Environment.NewLine)
+      "\\end{bmatrix}" ]
+
+let formatVector (formatValue: 'T -> string) (vector: Vector<'T>) =
+  String.concat Environment.NewLine
+    [ "\\begin{bmatrix}"
+      vector.Enumerate()
+        |> mapSteps vitms id (function | Some v -> formatValue v | _ -> "\\cdots")
+        |> String.concat " & "
+      "\\end{bmatrix}" ]
+
+// --------------------------------------------------------------------------------------
 // Build FSI evaluator
 // --------------------------------------------------------------------------------------
 
 let mutable currentOutputKind = OutputKind.Html
-let InlineMultiformatBlock(html, latex) = 
+let InlineMultiformatBlock(html, latex) =
   let block =
     { new MarkdownEmbedParagraphs with
-        member x.Render() = 
-          if currentOutputKind = OutputKind.Html then [ InlineBlock html ]
-          else [ InlineBlock latex ] }
+        member x.Render() =
+          if currentOutputKind = OutputKind.Html then [ InlineBlock html ] else [ InlineBlock latex ] }
   EmbedParagraphs(block)
+
+let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
 let createFsiEvaluator root output =
@@ -194,6 +234,12 @@ let createFsiEvaluator root output =
             InlineMultiformatBlock("</div>","\\vspace{1em}")
           ] }
       |> f.Apply
+
+    | :? Matrix<double> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G6"))) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (fun x -> x.ToString("G3"))) ]
+    | :? Vector<double> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G6"))) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (fun x -> x.ToString("G3"))) ]
+
     | _ -> None 
     
   // Create FSI evaluator, register transformations & return
