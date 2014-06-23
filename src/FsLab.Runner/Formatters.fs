@@ -24,13 +24,13 @@ let startItemCount = 5
 let endItemCount = 3
 
 // How many columns and rows from a matrix should be rendered
-let matrixStartColumnCount = 5
+let matrixStartColumnCount = 7
 let matrixEndColumnCount = 2
 let matrixStartRowCount = 10
 let matrixEndRowCount = 4
 
 // How many items from a vector should be rendered
-let vectorStartItemCount = 5
+let vectorStartItemCount = 7
 let vectorEndItemCount = 2
 
 // --------------------------------------------------------------------------------------
