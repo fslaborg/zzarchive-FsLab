@@ -76,7 +76,7 @@ let folders =
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
-let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
+let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
 Target "Clean" (fun _ ->
