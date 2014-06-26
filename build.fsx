@@ -206,10 +206,7 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    // Format the description to fit on a single line (remove \r\n and double-spaces)
     CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
-    let description = description.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    let descriptionRunner = descriptionRunner.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
