@@ -15,8 +15,6 @@ open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
 open System.Text.RegularExpressions
 
-setEnvironVar "MSBuild" (ProgramFilesX86 @@ @"\MSBuild\12.0\Bin\MSBuild.exe")
-
 // --------------------------------------------------------------------------------------
 // FsLab packages and configuration
 // --------------------------------------------------------------------------------------
