@@ -216,7 +216,7 @@ Target "NuGet" (fun _ ->
             Summary = summary
             Description = description
             Version = release.NugetVersion
-            ReleaseNotes = String.concat " " release.Notes
+            ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
             ToolPath = nugetPath
@@ -231,7 +231,7 @@ Target "NuGet" (fun _ ->
             Summary = summaryRunner
             Description = descriptionRunner
             Version = release.NugetVersion
-            ReleaseNotes = String.concat " " release.Notes
+            ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
             ToolPath = nugetPath
