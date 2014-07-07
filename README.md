@@ -4,7 +4,7 @@ FsLab
 FsLab is a single package that gives you all you need for doing data science with
 F#. FsLab includes explorative data manipulation library, type providers for easy
 data access, simple charting library, support for integration with R and numerical
-computing libraries. All available in a single package and ready to use!"""
+computing libraries. All available in a single package and ready to use!
 
 Developer notes
 ---------------
