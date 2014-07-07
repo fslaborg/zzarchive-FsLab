@@ -15,8 +15,6 @@ open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
 open System.Text.RegularExpressions
 
-setEnvironVar "MSBuild" (ProgramFilesX86 @@ @"\MSBuild\12.0\Bin\MSBuild.exe")
-
 // --------------------------------------------------------------------------------------
 // FsLab packages and configuration
 // --------------------------------------------------------------------------------------
@@ -78,8 +76,7 @@ let folders =
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
-Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
-let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
+let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
 Target "Clean" (fun _ ->
@@ -172,10 +169,7 @@ Target "UpdateVersions" (fun _ ->
   Rename path (path + ".updated")
 )
 
-Target "RestorePackages" (fun _ ->
-    Seq.concat [!! "./src/packages.config"; !! "./src/FsLab.Runner/packages.config"]
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" }))
-)
+Target "RestorePackages" RestorePackages
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
@@ -212,10 +206,7 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    // Format the description to fit on a single line (remove \r\n and double-spaces)
     CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
-    let description = description.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
-    let descriptionRunner = descriptionRunner.Replace("\r", "").Replace("\n", "").Replace("  ", " ")
     let nugetPath = ".nuget/nuget.exe"
     NuGet (fun p -> 
         { p with   
@@ -225,7 +216,7 @@ Target "NuGet" (fun _ ->
             Summary = summary
             Description = description
             Version = release.NugetVersion
-            ReleaseNotes = String.concat " " release.Notes
+            ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
             ToolPath = nugetPath
@@ -240,7 +231,7 @@ Target "NuGet" (fun _ ->
             Summary = summaryRunner
             Description = descriptionRunner
             Version = release.NugetVersion
-            ReleaseNotes = String.concat " " release.Notes
+            ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
             ToolPath = nugetPath
