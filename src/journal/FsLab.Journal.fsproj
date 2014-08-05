@@ -73,6 +73,10 @@
       <HintPath>$(SolutionDir)\packages\FSharp.Charting.0.90.6\lib\net40\FSharp.Charting.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Foogle.Charts">
+      <HintPath>$(SolutionDir)\packages\Foogle.Charts.0.0.2\lib\net40\Foogle.Charts.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FSharp.CodeFormat">
       <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.10\lib\net40\FSharp.CodeFormat.dll</HintPath>
       <Private>False</Private>
@@ -101,7 +105,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FsLab.Runner">
-      <HintPath>$(SolutionDir)\packages\FsLab.Runner.0.0.16\lib\net40\FsLab.Runner.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\FsLab.Runner.0.0.17\lib\net40\FsLab.Runner.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics">
@@ -154,8 +158,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.16\tools\build.fsx" DestinationFolder="." ContinueOnError="true" />
-    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.16\tools\build.cmd" DestinationFolder="." ContinueOnError="true" />
-    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.16\tools\NuGet.exe" DestinationFolder="build" ContinueOnError="true" />
+    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.17\tools\build.fsx" DestinationFolder="." ContinueOnError="true" />
+    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.17\tools\build.cmd" DestinationFolder="." ContinueOnError="true" />
+    <Copy SourceFiles="$(SolutionDir)\packages\FsLab.Runner.0.0.17\tools\NuGet.exe" DestinationFolder="build" ContinueOnError="true" />
   </Target>
 </Project>

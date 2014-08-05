@@ -5,3 +5,4 @@
 * 0.0.14-beta - Update references
 * 0.0.15 - Update references, improve Math.NET integration
 * 0.0.16 - Improve Math.NET integration
+* 0.0.17 - Include initial version of Foogle Charts

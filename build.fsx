@@ -42,6 +42,7 @@ let packages =
     "Deedle.RPlugin", "1.0.1"
     "FSharp.Charting", "0.90.6"
     "FSharp.Data", "2.0.9"
+    "Foogle.Charts", "0.0.2"
     "MathNet.Numerics", "3.0.0"
     "MathNet.Numerics.FSharp", "3.0.0"
     "RProvider", "1.0.13"
@@ -76,6 +77,7 @@ let folders =
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
+System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
@@ -169,7 +171,10 @@ Target "UpdateVersions" (fun _ ->
   Rename path (path + ".updated")
 )
 
-Target "RestorePackages" RestorePackages
+Target "RestorePackages" (fun _ -> 
+  Seq.concat [!! "./src/packages.config"; !! "./src/FsLab.Runner/packages.config"] 
+  |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" })) 
+)
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package

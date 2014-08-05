@@ -49,6 +49,10 @@
       <HintPath>$(SolutionDir)\packages\FSharp.Charting.0.90.6\lib\net40\FSharp.Charting.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Foogle.Charts">
+      <HintPath>$(SolutionDir)\packages\Foogle.Charts.0.0.2\lib\net40\Foogle.Charts.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FSharp.CodeFormat">
       <HintPath>$(SolutionDir)\packages\FSharp.Formatting.2.4.10\lib\net40\FSharp.CodeFormat.dll</HintPath>
       <Private>False</Private>
