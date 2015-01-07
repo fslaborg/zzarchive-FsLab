@@ -26,6 +26,6 @@
     <file src="..\src\misc\styles\tips.js" target="styles" />
     <file src="..\src\misc\tools\build.fsx" target="tools" />
     <file src="..\src\misc\tools\build.cmd" target="tools" />
-    <file src="..\bin\NuGet.exe" target="tools" />
+    <file src="..\bin\paket.bootstrapper.exe" target="tools" />
   </files>
 </package>

@@ -208,8 +208,7 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    CopyFile "bin/NuGet.exe" "packages/NuGet.CommandLine/tools/NuGet.exe"
-    let nugetPath = "packages/NuGet.CommandLine/tools/nuget.exe"
+    CopyFile "bin/paket.bootstrapper.exe" ".paket/paket.bootstrapper.exe"
     NuGet (fun p -> 
         { p with   
             Dependencies = packages
@@ -221,7 +220,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".nuspec")
@@ -236,7 +234,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".Runner.nuspec")
