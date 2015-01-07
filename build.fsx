@@ -38,22 +38,24 @@ let tags = "F# fsharp deedle series statistics data science r type provider math
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages = 
-  [ "Deedle", "1.0.1"
-    "Deedle.RPlugin", "1.0.1"
-    "FSharp.Charting", "0.90.6"
-    "FSharp.Data", "2.0.9"
-    "Foogle.Charts", "0.0.2"
-    "MathNet.Numerics", "3.0.0"
-    "MathNet.Numerics.FSharp", "3.0.0"
-    "RProvider", "1.0.13"
-    "R.NET.Community", "1.5.15" 
-    "R.NET.Community.FSharp", "0.1.8" ]
+  [ "Deedle"
+    "Deedle.RPlugin"
+    "FSharp.Charting"
+    "FSharp.Data"
+    "Foogle.Charts"
+    "MathNet.Numerics"
+    "MathNet.Numerics.FSharp"
+    "RProvider"
+    "R.NET.Community"
+    "R.NET.Community.FSharp" ]
+  |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 let journalPackages = 
-  [ "FSharp.Compiler.Service", "0.0.44"
-    "FSharp.Formatting", "2.4.10" 
-    "Microsoft.AspNet.Razor", "2.0.30506.0"
-    "RazorEngine", "3.3.0" ]
+  [ "FSharp.Compiler.Service"
+    "FSharp.Formatting"
+    "Microsoft.AspNet.Razor"
+    "RazorEngine"]
+ |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 /// Returns assemblies that should be referenced for each package
 let getAssemblies package = 
