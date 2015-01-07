@@ -175,8 +175,7 @@ Target "UpdateVersions" (fun _ ->
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
-  let getLibDir package =
-    package + "." + packageVersions.[package] + "/lib/net40"
+  let getLibDir package = package + "/lib/net40"
 
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""]
