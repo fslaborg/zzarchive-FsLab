@@ -171,11 +171,6 @@ Target "UpdateVersions" (fun _ ->
   Rename path (path + ".updated")
 )
 
-Target "RestorePackages" (fun _ -> 
-  Seq.concat [!! "./src/packages.config"; !! "./src/FsLab.Runner/packages.config"] 
-  |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" })) 
-)
-
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
   let getLibDir package =
@@ -293,7 +288,6 @@ Target "All" DoNothing
 
 "Clean" 
   ==> "UpdateVersions"
-  ==> "RestorePackages"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
   ==> "NuGet"
