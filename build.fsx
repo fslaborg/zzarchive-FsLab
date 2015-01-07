@@ -208,8 +208,8 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
-    let nugetPath = ".nuget/nuget.exe"
+    CopyFile "bin/NuGet.exe" "packages/NuGet.CommandLine/tools/NuGet.exe"
+    let nugetPath = "packages/NuGet.CommandLine/tools/nuget.exe"
     NuGet (fun p -> 
         { p with   
             Dependencies = packages
