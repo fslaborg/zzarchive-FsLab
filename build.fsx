@@ -110,33 +110,6 @@ Target "UpdateVersions" (fun _ ->
       "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
   makePackages(allPackages).Save("src/journal/packages.config")
 
-  // "src\journal\FsLab.Journal.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
-  // contain <HintPath> elements that points to the specific version in packages directory
-  // This bit goes over all the <HintPath> elements & updates them
-  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/msbuild/2003")
-  let paths = [ "src/journal/FsLab.Journal.fsproj"; "src/FsLab.Runner/FsLab.Runner.fsproj" ]
-  for path in paths do 
-    let fsproj = XDocument.Load(path)
-    // Update contents of <HintPath>..</HintPath> and of <Copy SourceFiles=".." />
-    let xvalues = 
-      [ for copy in fsproj.Descendants(!"Copy") do 
-          let sf = copy.Attribute(XName.Get "SourceFiles")
-          yield sf.Value, sf.SetValue
-        for hint in fsproj.Descendants(!"HintPath") do
-          yield hint.Value, hint.SetValue ]
-
-    let reg = Regex(@"\$\(SolutionDir\)\\packages\\([a-zA-Z\.]*)\.[^\\]*\\(.*)")
-    for value, setter in xvalues do
-      let res = reg.Match(value)
-      if res.Success then
-        let package = res.Groups.[1].Value
-        let rest = res.Groups.[2].Value
-        let version = packageVersions.[package]
-        setter(sprintf @"$(SolutionDir)\packages\%s.%s\%s" package version rest)
-    fsproj.Save(path + ".updated")  
-    DeleteFile path
-    Rename path (path + ".updated")
-
   // Specify <probing privatePath="..."> value in app.config of the journal
   // project, so that it automatically loads references from packages
   let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
