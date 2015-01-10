@@ -99,13 +99,6 @@ Target "UpdateVersions" (fun _ ->
   // edit the "FsLab.fsx" file and get decent autocomplete)
   makePackages(packages).Save("src/packages.config")
 
-  // "src/journal/packages.config" lists the packages that 
-  // are referenced in the FsLab Journal project
-  let allPackages = 
-    [ "FsLab", release.NugetVersion
-      "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
-  makePackages(allPackages).Save("src/journal/packages.config")
-
   // Specify <probing privatePath="..."> value in app.config of the journal
   // project, so that it automatically loads references from packages
   let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
