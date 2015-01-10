@@ -2,20 +2,20 @@ source https://nuget.org/api/v2
 
 nuget FAKE
 nuget Paket.Core
-nuget Nuget.CommandLine 2.8.3
-nuget Deedle 1.0.1
-nuget Deedle.RPlugin 1.0.1
-nuget Foogle.Charts 0.0.2
-nuget FSharp.Charting 0.90.6
-nuget FSharp.Compiler.Service 0.0.44
-nuget FSharp.Data 2.0.9
-nuget FSharp.Formatting 2.4.10
-nuget FsLab 0.0.17
-nuget FsLab.Runner 0.0.17
-nuget MathNet.Numerics 3.0.0
-nuget MathNet.Numerics.FSharp 3.0.0
-nuget Microsoft.AspNet.Razor 2.0.30506.0
-nuget R.NET.Community 1.5.15
-nuget R.NET.Community.FSharp 0.1.8
-nuget RazorEngine 3.3.0
-nuget RProvider 1.0.13
+nuget Nuget.CommandLine
+nuget Deedle
+nuget Deedle.RPlugin
+nuget Foogle.Charts
+nuget FSharp.Charting
+nuget FSharp.Compiler.Service
+nuget FSharp.Data
+nuget FSharp.Formatting
+nuget FsLab
+nuget FsLab.Runner
+nuget MathNet.Numerics
+nuget MathNet.Numerics.FSharp
+nuget Microsoft.AspNet.Razor
+nuget R.NET.Community
+nuget R.NET.Community.FSharp
+nuget RazorEngine
+nuget RProvider
