@@ -119,7 +119,7 @@ Target "UpdateVersions" (fun _ ->
   let privatePath = probing.Attributes(XName.Get "privatePath").First()
   let value = 
     [ for p, v in packages @ journalPackages -> 
-        sprintf "%s.%s\\lib\\net40" p v ] |> String.concat ";"
+        sprintf "%s\\lib\\net40" p ] |> String.concat ";"
   privatePath.Value <- value
   appconfig.Save(path + ".updated")
   DeleteFile path
