@@ -1,6 +1,7 @@
 source https://nuget.org/api/v2
 
 nuget FAKE
+nuget Paket.Core
 nuget Nuget.CommandLine 2.8.3
 nuget Deedle 1.0.1
 nuget Deedle.RPlugin 1.0.1

@@ -28,5 +28,6 @@
     <file src="..\src\misc\tools\build.cmd" target="tools" />
     <file src="..\bin\paket.bootstrapper.exe" target="tools" />
     <file src="..\temp\paket.dependencies" target="." />
+    <file src="..\temp\paket.lock" target="." />
   </files>
 </package>

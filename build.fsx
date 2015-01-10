@@ -4,6 +4,8 @@
 
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
+#r "packages/Paket.Core/lib/Paket.Core.dll"
+#r "packages/DotNetZip/lib/net20/Ionic.Zip.dll"
 #r "System.Xml.Linq"
 open System
 open System.IO
@@ -140,6 +142,20 @@ Target "GenerateFsLab" (fun _ ->
   let lines = nowarn @ includes @ references @ extraInit
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
 
+  // Generate paket.dependencies file with pinned version
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      for package, pinnedVersion in packages do
+        yield sprintf "nuget %s %s" package pinnedVersion ]
+
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
+
+  // Calculate paket.lock filebased on pinned version
+  let paket = Paket.Dependencies.Locate(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies")
+  paket.Install(false,false)
+
+  // Remove pins from paket.dependencies file in order to make updates easy for clients
   let dependencies =
     [ yield "source http://nuget.org/api/v2"
       yield ""
