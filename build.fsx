@@ -88,17 +88,6 @@ Target "Clean" (fun _ ->
 )
 
 Target "UpdateVersions" (fun _ ->
-  // Helpers for generating "packages.config" file
-  let (!) n = XName.Get(n)
-  let makePackage (name, ver) = 
-    XElement(!"package", XAttribute(!"id", name), XAttribute(!"version", ver))
-  let makePackages packages = 
-    XDocument(XElement(! "packages", packages |> Seq.map makePackage))
-
-  // "src/packages.config" is used just for development (so that we can
-  // edit the "FsLab.fsx" file and get decent autocomplete)
-  makePackages(packages).Save("src/packages.config")
-
   // Specify <probing privatePath="..."> value in app.config of the journal
   // project, so that it automatically loads references from packages
   let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
