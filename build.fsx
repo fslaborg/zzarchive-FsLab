@@ -98,10 +98,6 @@ Target "UpdateVersions" (fun _ ->
   // "src/packages.config" is used just for development (so that we can
   // edit the "FsLab.fsx" file and get decent autocomplete)
   makePackages(packages).Save("src/packages.config")
-  
-  // "src/FsLab.Runner/packages.config" are packages used by the Journal runner
-  let allPackages = packages @ journalPackages
-  makePackages(allPackages).Save("src/FsLab.Runner/packages.config")
 
   // "src/journal/packages.config" lists the packages that 
   // are referenced in the FsLab Journal project
