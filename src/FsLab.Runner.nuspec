@@ -27,5 +27,6 @@
     <file src="..\src\misc\tools\build.fsx" target="tools" />
     <file src="..\src\misc\tools\build.cmd" target="tools" />
     <file src="..\bin\paket.bootstrapper.exe" target="tools" />
+    <file src="..\temp\paket.dependencies" target="." />
   </files>
 </package>

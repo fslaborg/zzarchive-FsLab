@@ -110,16 +110,6 @@ Target "UpdateVersions" (fun _ ->
       "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
   makePackages(allPackages).Save("src/journal/packages.config")
 
-  // "src/journal/Tutorial.fsx" needs to be updated to 
-  // reference correct version of FsLab in the #load command
-  let pattern = "packages/FsLab.(.*)/FsLab.fsx"
-  let replacement = sprintf "packages/FsLab.%s/FsLab.fsx" release.NugetVersion
-  let paths = Seq.append (!! "./src/experiments/**/*.fsx") ["./src/journal/Tutorial.fsx"]
-  for path in paths do 
-    let text = File.ReadAllText(path)
-    let text = Regex.Replace(text, pattern, replacement)
-    File.WriteAllText(path, text)
-
   // "src\journal\FsLab.Journal.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
   // contain <HintPath> elements that points to the specific version in packages directory
   // This bit goes over all the <HintPath> elements & updates them
@@ -198,6 +188,14 @@ Target "GenerateFsLab" (fun _ ->
   // Write everything to the 'temp/FsLab.fsx' file
   let lines = nowarn @ includes @ references @ extraInit
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
+
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      for package, _ in packages do
+        yield sprintf "nuget %s" package ]
+
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
 )
 
 Target "BuildRunner" (fun _ ->
