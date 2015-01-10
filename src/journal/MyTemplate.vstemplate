@@ -20,7 +20,9 @@
       <ProjectItem ReplaceParameters="false" TargetFileName="Tutorial.fsx">Tutorial.fsx</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Main.fs">Main.fs</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="app.config">app.config</ProjectItem>
-      <ProjectItem ReplaceParameters="false" TargetFileName="packages.config">packages.config</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.references">paket.references</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.dependencies">paket.dependencies</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.lock">paket.lock</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

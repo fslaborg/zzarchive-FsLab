@@ -5,5 +5,3 @@ packages
 *.suo
 *.bak
 .paket/paket.exe
-src/FsLab.Runner/packages.config
-src/journal/packages.config

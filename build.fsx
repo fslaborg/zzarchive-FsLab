@@ -221,6 +221,10 @@ Target "GenerateTemplate" (fun _ ->
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
+  "temp/paket.dependencies" |> CopyFile "temp/journal/paket.dependencies"
+  "temp/paket.lock" |> CopyFile "temp/journal/paket.lock"
+  ensureDirectory "temp/journal/.paket"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/.paket/paket.bootstrapper.exe"  
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
@@ -238,6 +242,10 @@ Target "GenerateTemplate" (fun _ ->
   // Copy other files
   "misc/logo.png" |> CopyFile "temp/template/logo.png"
   "misc/preview.png" |> CopyFile "temp/template/preview.png"
+  "temp/paket.dependencies" |> CopyFile "temp/template/paket.dependencies"
+  "temp/paket.lock" |> CopyFile "temp/template/paket.lock"
+  ensureDirectory "temp/template/.paket"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/template/.paket/paket.bootstrapper.exe"
 )
 
 Target "BuildTemplate" (fun _ ->
