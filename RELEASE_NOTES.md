@@ -6,3 +6,5 @@
 * 0.0.15 - Update references, improve Math.NET integration
 * 0.0.16 - Improve Math.NET integration
 * 0.0.17 - Include initial version of Foogle Charts
+* 0.0.18 - Fix extension methods for Foogle Charts
+* 0.0.19 - Reference specific version of dependencies

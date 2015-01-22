@@ -107,6 +107,9 @@ module FsLabExtensions =
     static member Bar(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
       Chart.Bar(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
 
+namespace Foogle
+open Deedle
+
 [<AutoOpen>]
 module FoogleExtensions =
 

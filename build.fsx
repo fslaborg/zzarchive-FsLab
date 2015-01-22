@@ -213,9 +213,10 @@ Target "BuildRunner" (fun _ ->
 Target "NuGet" (fun _ ->
     CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
     let nugetPath = ".nuget/nuget.exe"
+    let specificVersion (name, version) = name, sprintf "[%s]" version
     NuGet (fun p -> 
         { p with   
-            Dependencies = packages
+            Dependencies = packages |> List.map specificVersion 
             Authors = authors
             Project = project
             Summary = summary
@@ -230,7 +231,7 @@ Target "NuGet" (fun _ ->
         ("src/" + project + ".nuspec")
     NuGet (fun p -> 
         { p with   
-            Dependencies = packages @ journalPackages
+            Dependencies = packages @ journalPackages |> List.map specificVersion
             Authors = authors
             Project = projectRunner
             Summary = summaryRunner
