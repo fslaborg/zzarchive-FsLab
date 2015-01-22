@@ -8,3 +8,5 @@
 * 0.0.17 - Include initial version of Foogle Charts
 * 0.0.18 - Fix extension methods for Foogle Charts
 * 0.0.19 - Reference specific version of dependencies
+* 0.1.0 - Updating to Paket-based projects
+* 0.1.1 - Fix issues in the load script (Foogle Charts mostly)

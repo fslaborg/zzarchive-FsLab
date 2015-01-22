@@ -37,6 +37,8 @@ let descriptionRunner = """
   'FsLab Journal' Visual Studio template."""
 let tags = "F# fsharp deedle series statistics data science r type provider mathnet"
 
+System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages = 
@@ -69,19 +71,11 @@ let getAssemblies package =
     | "R.NET.Community.FSharp" -> ["RDotNet.FSharp.dll"]
     | package -> [package + ".dll"]
 
-// Generate #I directive for the following folders:
-let folders = 
-  [ "packages/"           // new F# project in VS with create directory for solution disabled
-    "../packages/"        // new F# project in VS with create directory for solution enabled
-    "../../packages/"     // fsharp-project-scaffold template
-    "../../../packages/"] // just in case
-
 // --------------------------------------------------------------------------------------
 // FAKE build targets
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
-System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
@@ -119,18 +113,19 @@ Target "UpdateVersions" (fun _ ->
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
   let getLibDir package = package + "/lib/net40"
+  let getLibDirVer package = package + "." + packageVersions.[package] + "/lib/net40"
 
   // Additional lines to be included in FsLab.fsx
-  let nowarn = ["#nowarn \"211\""]
+  let nowarn = ["#nowarn \"211\""; "#I \".\""]
   let extraInitAll  = File.ReadLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx")  |> Array.ofSeq
   let startIndex = extraInitAll |> Seq.findIndex (fun s -> s.Contains "***FsLab.fsx***")
   let extraInit = extraInitAll .[startIndex + 1 ..] |> List.ofSeq
 
   // Generate #I for all library, for all possible folder
   let includes = 
-    [ for folder in folders do
-        for package, _ in packages do
-          yield sprintf "#I \"%s%s\"" folder (getLibDir package) ]
+    [ for package, _ in packages do
+        yield sprintf "#I \"../%s\"" (getLibDir package)
+        yield sprintf "#I \"../%s\"" (getLibDirVer package) ]
   
   // Generate #r for all libraries
   let references = 
@@ -141,28 +136,6 @@ Target "GenerateFsLab" (fun _ ->
   // Write everything to the 'temp/FsLab.fsx' file
   let lines = nowarn @ includes @ references @ extraInit
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
-
-  // Generate paket.dependencies file with pinned version
-  let dependencies =
-    [ yield "source http://nuget.org/api/v2"
-      yield ""
-      for package, pinnedVersion in packages do
-        yield sprintf "nuget %s %s" package pinnedVersion ]
-
-  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
-
-  // Calculate paket.lock filebased on pinned version
-  let paket = Paket.Dependencies.Locate(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies")
-  paket.Install(false,false)
-
-  // Remove pins from paket.dependencies file in order to make updates easy for clients
-  let dependencies =
-    [ yield "source http://nuget.org/api/v2"
-      yield ""
-      for package, _ in packages do
-        yield sprintf "nuget %s" package ]
-
-  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
 )
 
 Target "BuildRunner" (fun _ ->
@@ -208,6 +181,38 @@ Target "NuGet" (fun _ ->
 // Build the FsLab template project
 // --------------------------------------------------------------------------------------
 
+Target "GenerateFsLabJournal" (fun _ ->
+  // Generate paket.dependencies file for FsLab journal with pinned version
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      for package, pinnedVersion in packages @ journalPackages  do
+        yield sprintf "nuget %s %s" package pinnedVersion ]
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
+
+  // Calculate paket.lock filebased on pinned version
+  let paket = Paket.Dependencies.Locate(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies")
+  paket.Install(false,false)
+
+  // Manually add FsLab to the paket.lock file 
+  let lock = File.ReadAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.lock")
+  let lock = 
+    [ yield! lock
+      yield sprintf "    FsLab (%s)" release.NugetVersion
+      yield sprintf "    FsLab.Runner (%s)" release.NugetVersion ]
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.lock", lock)
+
+  // Remove pins from paket.dependencies file in order to make updates easy for clients
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      yield "nuget FsLab"
+      yield "nuget FsLab.Runner"
+      for package, _ in packages @ journalPackages  do
+        yield sprintf "nuget %s" package ]
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
+)
+
 Target "GenerateTemplate" (fun _ ->
   // Generate ZIPs with item templates
   ensureDirectory "temp/experiments"
@@ -224,8 +229,8 @@ Target "GenerateTemplate" (fun _ ->
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
   "temp/paket.dependencies" |> CopyFile "temp/journal/paket.dependencies"
   "temp/paket.lock" |> CopyFile "temp/journal/paket.lock"
-  ensureDirectory "temp/journal/.paket"
-  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/.paket/paket.bootstrapper.exe"  
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"  
+  ".paket/paket.targets" |> CopyFile "temp/journal/paket.targets"  
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
@@ -243,10 +248,6 @@ Target "GenerateTemplate" (fun _ ->
   // Copy other files
   "misc/logo.png" |> CopyFile "temp/template/logo.png"
   "misc/preview.png" |> CopyFile "temp/template/preview.png"
-  "temp/paket.dependencies" |> CopyFile "temp/template/paket.dependencies"
-  "temp/paket.lock" |> CopyFile "temp/template/paket.lock"
-  ensureDirectory "temp/template/.paket"
-  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/template/.paket/paket.bootstrapper.exe"
 )
 
 Target "BuildTemplate" (fun _ ->
@@ -262,6 +263,7 @@ Target "All" DoNothing
   ==> "UpdateVersions"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
+  ==> "GenerateFsLabJournal"
   ==> "NuGet"
   ==> "GenerateTemplate"
   ==> "BuildTemplate"

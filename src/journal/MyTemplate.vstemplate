@@ -17,6 +17,8 @@
   </TemplateData>
   <TemplateContent>
     <Project TargetFileName="FsLab.Journal.fsproj" File="FsLab.Journal.fsproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\paket.bootstrapper.exe">paket.bootstrapper.exe</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\paket.targets">paket.targets</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Tutorial.fsx">Tutorial.fsx</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Main.fs">Main.fs</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="app.config">app.config</ProjectItem>

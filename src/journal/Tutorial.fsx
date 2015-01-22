@@ -1,6 +1,5 @@
 (*** hide ***)
-#I ".."
-#load "packages/FsLab.0.0.19/FsLab.fsx"
+#load "packages/FsLab/FsLab.fsx"
 (**
 
 Welcome to FsLab journal

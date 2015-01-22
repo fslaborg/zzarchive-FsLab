@@ -233,7 +233,7 @@ let createFsiEvaluator root output (floatFormat:string) =
     | :? FoogleChart as fch -> 
 
         // TODO: Does not work for LaTex!
-        let fch = Foogle.Google.CreateGoogleChart(fch)
+        let fch = Foogle.Formatting.Google.CreateGoogleChart(fch)
 
         let count = foogleCounter()
         let id = "foogle_" + count.ToString()

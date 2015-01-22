@@ -1,44 +1,25 @@
 #nowarn "211"
-#I "packages/Deedle/lib/net40"
-#I "packages/Deedle.RPlugin/lib/net40"
-#I "packages/FSharp.Charting/lib/net40"
-#I "packages/FSharp.Data/lib/net40"
-#I "packages/Foogle.Charts/lib/net40"
-#I "packages/MathNet.Numerics/lib/net40"
-#I "packages/MathNet.Numerics/lib/net40"
-#I "packages/RProvider/lib/net40"
-#I "packages/R.NET.Community/lib/net40"
-#I "packages/R.NET.Community.FSharp/lib/net40"
-#I "../packages/Deedle/lib/net40"
-#I "../packages/Deedle.RPlugin/lib/net40"
-#I "../packages/FSharp.Charting/lib/net40"
-#I "../packages/FSharp.Data/lib/net40"
-#I "../packages/Foogle.Charts/lib/net40"
-#I "../packages/MathNet.Numerics/lib/net40"
-#I "../packages/MathNet.Numerics/lib/net40"
-#I "../packages/RProvider/lib/net40"
-#I "../packages/R.NET.Community/lib/net40"
-#I "../packages/R.NET.Community.FSharp/lib/net40"
-#I "../../packages/Deedle/lib/net40"
-#I "../../packages/Deedle.RPlugin/lib/net40"
-#I "../../packages/FSharp.Charting/lib/net40"
-#I "../../packages/FSharp.Data/lib/net40"
-#I "../../packages/Foogle.Charts/lib/net40"
-#I "../../packages/MathNet.Numerics/lib/net40"
-#I "../../packages/MathNet.Numerics/lib/net40"
-#I "../../packages/RProvider/lib/net40"
-#I "../../packages/R.NET.Community/lib/net40"
-#I "../../packages/R.NET.Community.FSharp/lib/net40"
-#I "../../../packages/Deedle/lib/net40"
-#I "../../../packages/Deedle.RPlugin/lib/net40"
-#I "../../../packages/FSharp.Charting/lib/net40"
-#I "../../../packages/FSharp.Data/lib/net40"
-#I "../../../packages/Foogle.Charts/lib/net40"
-#I "../../../packages/MathNet.Numerics/lib/net40"
-#I "../../../packages/MathNet.Numerics/lib/net40"
-#I "../../../packages/RProvider/lib/net40"
-#I "../../../packages/R.NET.Community/lib/net40"
-#I "../../../packages/R.NET.Community.FSharp/lib/net40"
+#I "."
+#I "../Deedle/lib/net40"
+#I "../Deedle.1.0.6/lib/net40"
+#I "../Deedle.RPlugin/lib/net40"
+#I "../Deedle.RPlugin.1.0.6/lib/net40"
+#I "../FSharp.Charting/lib/net40"
+#I "../FSharp.Charting.0.90.9/lib/net40"
+#I "../FSharp.Data/lib/net40"
+#I "../FSharp.Data.2.0.14/lib/net40"
+#I "../Foogle.Charts/lib/net40"
+#I "../Foogle.Charts.0.0.4/lib/net40"
+#I "../MathNet.Numerics/lib/net40"
+#I "../MathNet.Numerics.3.0.0/lib/net40"
+#I "../MathNet.Numerics.FSharp/lib/net40"
+#I "../MathNet.Numerics.FSharp.3.0.0/lib/net40"
+#I "../RProvider/lib/net40"
+#I "../RProvider.1.0.17/lib/net40"
+#I "../R.NET.Community/lib/net40"
+#I "../R.NET.Community.1.5.15/lib/net40"
+#I "../R.NET.Community.FSharp/lib/net40"
+#I "../R.NET.Community.FSharp.0.1.8/lib/net40"
 #r "Deedle.dll"
 #r "Deedle.RProvider.Plugin.dll"
 #r "System.Windows.Forms.DataVisualization.dll"
@@ -63,7 +44,7 @@ module FsiAutoShow =
   fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) -> 
     "\n" + (printer.Format()))
   fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) -> 
-    ch.ShowChart(); "(Chart)")
+    ch.ShowChart() |> ignore; "(Chart)")
   fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) -> 
     synexpr.Print())
 
@@ -84,7 +65,11 @@ module FsiAutoShow =
     | None -> server := Some (HttpServer.Start("http://localhost:8084/", tempDir))
     | _ -> ()
     let file = sprintf "chart_%d_%d.html" pid counter.Value
-    File.WriteAllText(Path.Combine(tempDir, file), Internal.chartHtml chart)  
+    let html = 
+      chart 
+      |> Foogle.Formatting.Google.CreateGoogleChart
+      |> Foogle.Formatting.Google.GoogleChartHtml
+    File.WriteAllText(Path.Combine(tempDir, file), html)  
     System.Diagnostics.Process.Start("http://localhost:8084/" + file) |> ignore
     incr counter
     "(Foogle Chart)" )
@@ -114,14 +99,14 @@ open Deedle
 module FoogleExtensions =
 
   type Foogle.Chart with
-    static member PieChart(frame:Frame<_, _>, column, ?label, ?title, ?pieHole) =
+    static member PieChart(frame:Frame<_, _>, column, ?Label, ?PieHole) =
       Foogle.Chart.PieChart
         ( frame.GetColumn<float>(column) |> Series.observations, 
-          ?label=label, ?title=title, ?pieHole=pieHole)
-    static member GeoChart(frame:Frame<_, _>, column, ?label, ?region, ?mode, ?colorAxis, ?sizeAxis) =
+          ?Label=Label, ?PieHole=PieHole)
+    static member GeoChart(frame:Frame<_, _>, column, ?Label, ?Region, ?DisplayMode) =
       Foogle.Chart.GeoChart
         ( frame.GetColumn<float>(column) |> Series.observations, 
-          ?label=label, ?region=region, ?mode=mode, ?colorAxis=colorAxis, ?sizeAxis=sizeAxis)
+          ?Label=Label, ?Region=Region, ?DisplayMode=DisplayMode)
   
 namespace MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.LinearAlgebra
