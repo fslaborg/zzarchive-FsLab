@@ -4,6 +4,8 @@
 
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
+#r "packages/Paket.Core/lib/Paket.Core.dll"
+#r "packages/DotNetZip/lib/net20/Ionic.Zip.dll"
 #r "System.Xml.Linq"
 open System
 open System.IO
@@ -38,22 +40,24 @@ let tags = "F# fsharp deedle series statistics data science r type provider math
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages = 
-  [ "Deedle", "1.0.1"
-    "Deedle.RPlugin", "1.0.1"
-    "FSharp.Charting", "0.90.6"
-    "FSharp.Data", "2.0.9"
-    "Foogle.Charts", "0.0.2"
-    "MathNet.Numerics", "3.0.0"
-    "MathNet.Numerics.FSharp", "3.0.0"
-    "RProvider", "1.0.13"
-    "R.NET.Community", "1.5.15" 
-    "R.NET.Community.FSharp", "0.1.8" ]
+  [ "Deedle"
+    "Deedle.RPlugin"
+    "FSharp.Charting"
+    "FSharp.Data"
+    "Foogle.Charts"
+    "MathNet.Numerics"
+    "MathNet.Numerics.FSharp"
+    "RProvider"
+    "R.NET.Community"
+    "R.NET.Community.FSharp" ]
+  |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 let journalPackages = 
-  [ "FSharp.Compiler.Service", "0.0.44"
-    "FSharp.Formatting", "2.4.10" 
-    "Microsoft.AspNet.Razor", "2.0.30506.0"
-    "RazorEngine", "3.3.0" ]
+  [ "FSharp.Compiler.Service"
+    "FSharp.Formatting"
+    "Microsoft.AspNet.Razor"
+    "RazorEngine"]
+ |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 /// Returns assemblies that should be referenced for each package
 let getAssemblies package = 
@@ -86,65 +90,6 @@ Target "Clean" (fun _ ->
 )
 
 Target "UpdateVersions" (fun _ ->
-  // Helpers for generating "packages.config" file
-  let (!) n = XName.Get(n)
-  let makePackage (name, ver) = 
-    XElement(!"package", XAttribute(!"id", name), XAttribute(!"version", ver))
-  let makePackages packages = 
-    XDocument(XElement(! "packages", packages |> Seq.map makePackage))
-
-  // "src/packages.config" is used just for development (so that we can
-  // edit the "FsLab.fsx" file and get decent autocomplete)
-  makePackages(packages).Save("src/packages.config")
-  
-  // "src/FsLab.Runner/packages.config" are packages used by the Journal runner
-  let allPackages = packages @ journalPackages
-  makePackages(allPackages).Save("src/FsLab.Runner/packages.config")
-
-  // "src/journal/packages.config" lists the packages that 
-  // are referenced in the FsLab Journal project
-  let allPackages = 
-    [ "FsLab", release.NugetVersion
-      "FsLab.Runner", release.NugetVersion] @ packages @ journalPackages
-  makePackages(allPackages).Save("src/journal/packages.config")
-
-  // "src/journal/Tutorial.fsx" needs to be updated to 
-  // reference correct version of FsLab in the #load command
-  let pattern = "packages/FsLab.(.*)/FsLab.fsx"
-  let replacement = sprintf "packages/FsLab.%s/FsLab.fsx" release.NugetVersion
-  let paths = Seq.append (!! "./src/experiments/**/*.fsx") ["./src/journal/Tutorial.fsx"]
-  for path in paths do 
-    let text = File.ReadAllText(path)
-    let text = Regex.Replace(text, pattern, replacement)
-    File.WriteAllText(path, text)
-
-  // "src\journal\FsLab.Journal.fsproj" and "src\FsLab.Runner\FsLab.Runner.fsproj"
-  // contain <HintPath> elements that points to the specific version in packages directory
-  // This bit goes over all the <HintPath> elements & updates them
-  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/msbuild/2003")
-  let paths = [ "src/journal/FsLab.Journal.fsproj"; "src/FsLab.Runner/FsLab.Runner.fsproj" ]
-  for path in paths do 
-    let fsproj = XDocument.Load(path)
-    // Update contents of <HintPath>..</HintPath> and of <Copy SourceFiles=".." />
-    let xvalues = 
-      [ for copy in fsproj.Descendants(!"Copy") do 
-          let sf = copy.Attribute(XName.Get "SourceFiles")
-          yield sf.Value, sf.SetValue
-        for hint in fsproj.Descendants(!"HintPath") do
-          yield hint.Value, hint.SetValue ]
-
-    let reg = Regex(@"\$\(SolutionDir\)\\packages\\([a-zA-Z\.]*)\.[^\\]*\\(.*)")
-    for value, setter in xvalues do
-      let res = reg.Match(value)
-      if res.Success then
-        let package = res.Groups.[1].Value
-        let rest = res.Groups.[2].Value
-        let version = packageVersions.[package]
-        setter(sprintf @"$(SolutionDir)\packages\%s.%s\%s" package version rest)
-    fsproj.Save(path + ".updated")  
-    DeleteFile path
-    Rename path (path + ".updated")
-
   // Specify <probing privatePath="..."> value in app.config of the journal
   // project, so that it automatically loads references from packages
   let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
@@ -154,7 +99,7 @@ Target "UpdateVersions" (fun _ ->
   let privatePath = probing.Attributes(XName.Get "privatePath").First()
   let value = 
     [ for p, v in packages @ journalPackages -> 
-        sprintf "%s.%s\\lib\\net40" p v ] |> String.concat ";"
+        sprintf "%s\\lib\\net40" p ] |> String.concat ";"
   privatePath.Value <- value
   appconfig.Save(path + ".updated")
   DeleteFile path
@@ -171,15 +116,9 @@ Target "UpdateVersions" (fun _ ->
   Rename path (path + ".updated")
 )
 
-Target "RestorePackages" (fun _ -> 
-  Seq.concat [!! "./src/packages.config"; !! "./src/FsLab.Runner/packages.config"] 
-  |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./.nuget/NuGet.exe" })) 
-)
-
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
-  let getLibDir package =
-    package + "." + packageVersions.[package] + "/lib/net40"
+  let getLibDir package = package + "/lib/net40"
 
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""]
@@ -202,6 +141,28 @@ Target "GenerateFsLab" (fun _ ->
   // Write everything to the 'temp/FsLab.fsx' file
   let lines = nowarn @ includes @ references @ extraInit
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
+
+  // Generate paket.dependencies file with pinned version
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      for package, pinnedVersion in packages do
+        yield sprintf "nuget %s %s" package pinnedVersion ]
+
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
+
+  // Calculate paket.lock filebased on pinned version
+  let paket = Paket.Dependencies.Locate(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies")
+  paket.Install(false,false)
+
+  // Remove pins from paket.dependencies file in order to make updates easy for clients
+  let dependencies =
+    [ yield "source http://nuget.org/api/v2"
+      yield ""
+      for package, _ in packages do
+        yield sprintf "nuget %s" package ]
+
+  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/paket.dependencies", dependencies)
 )
 
 Target "BuildRunner" (fun _ ->
@@ -211,8 +172,7 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    CopyFile "bin/NuGet.exe" ".nuget/NuGet.exe"
-    let nugetPath = ".nuget/nuget.exe"
+    CopyFile "bin/paket.bootstrapper.exe" ".paket/paket.bootstrapper.exe"
     let specificVersion (name, version) = name, sprintf "[%s]" version
     NuGet (fun p -> 
         { p with   
@@ -225,7 +185,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".nuspec")
@@ -240,7 +199,6 @@ Target "NuGet" (fun _ ->
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
             OutputPath = "bin"
-            ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         ("src/" + project + ".Runner.nuspec")
@@ -264,6 +222,10 @@ Target "GenerateTemplate" (fun _ ->
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
+  "temp/paket.dependencies" |> CopyFile "temp/journal/paket.dependencies"
+  "temp/paket.lock" |> CopyFile "temp/journal/paket.lock"
+  ensureDirectory "temp/journal/.paket"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/.paket/paket.bootstrapper.exe"  
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
@@ -281,6 +243,10 @@ Target "GenerateTemplate" (fun _ ->
   // Copy other files
   "misc/logo.png" |> CopyFile "temp/template/logo.png"
   "misc/preview.png" |> CopyFile "temp/template/preview.png"
+  "temp/paket.dependencies" |> CopyFile "temp/template/paket.dependencies"
+  "temp/paket.lock" |> CopyFile "temp/template/paket.lock"
+  ensureDirectory "temp/template/.paket"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/template/.paket/paket.bootstrapper.exe"
 )
 
 Target "BuildTemplate" (fun _ ->
@@ -294,7 +260,6 @@ Target "All" DoNothing
 
 "Clean" 
   ==> "UpdateVersions"
-  ==> "RestorePackages"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
   ==> "NuGet"

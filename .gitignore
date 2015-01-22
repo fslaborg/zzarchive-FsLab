@@ -4,3 +4,4 @@ temp
 packages
 *.suo
 *.bak
+.paket/paket.exe

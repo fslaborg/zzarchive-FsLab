@@ -1,0 +1,21 @@
+source https://nuget.org/api/v2
+
+nuget FAKE
+nuget Paket.Core
+nuget Nuget.CommandLine
+nuget Deedle
+nuget Deedle.RPlugin
+nuget Foogle.Charts
+nuget FSharp.Charting
+nuget FSharp.Compiler.Service
+nuget FSharp.Data
+nuget FSharp.Formatting
+nuget FsLab
+nuget FsLab.Runner
+nuget MathNet.Numerics
+nuget MathNet.Numerics.FSharp
+nuget Microsoft.AspNet.Razor
+nuget R.NET.Community
+nuget R.NET.Community.FSharp
+nuget RazorEngine
+nuget RProvider
