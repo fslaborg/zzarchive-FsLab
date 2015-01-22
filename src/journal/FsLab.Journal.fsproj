@@ -87,7 +87,7 @@
       <ItemGroup>
         <Reference Include="Deedle">
           <HintPath>$(MSBuildProjectDirectory)\packages\Deedle\lib\net40\Deedle.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -98,7 +98,7 @@
       <ItemGroup>
         <Reference Include="Deedle.RProvider.Plugin">
           <HintPath>$(MSBuildProjectDirectory)\packages\Deedle.RPlugin\lib\net40\Deedle.RProvider.Plugin.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -109,7 +109,7 @@
       <ItemGroup>
         <Reference Include="Foogle.Charts">
           <HintPath>$(MsbuildpRojectdirectory)\packages\Foogle.Charts\lib\net40\Foogle.Charts.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -120,7 +120,7 @@
       <ItemGroup>
         <Reference Include="FSharp.Charting">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Charting\lib\net40\FSharp.Charting.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -131,7 +131,7 @@
       <ItemGroup>
         <Reference Include="FSharp.Compiler.Service">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Compiler.Service\lib\net40\FSharp.Compiler.Service.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -140,7 +140,7 @@
       <ItemGroup>
         <Reference Include="FSharp.Compiler.Service">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Compiler.Service\lib\net45\FSharp.Compiler.Service.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -151,7 +151,7 @@
       <ItemGroup>
         <Reference Include="FSharp.Data">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -160,7 +160,7 @@
       <ItemGroup>
         <Reference Include="FSharp.Data">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Data\lib\net40\FSharp.Data.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -171,37 +171,37 @@
       <ItemGroup>
         <Reference Include="CSharpFormat">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\CSharpFormat.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="FSharp.CodeFormat">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\FSharp.CodeFormat.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="FSharp.Literate">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\FSharp.Literate.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="FSharp.Markdown">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\FSharp.Markdown.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="FSharp.MetadataFormat">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\FSharp.MetadataFormat.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="RazorEngine">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\RazorEngine.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="System.Web.Razor">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FSharp.Formatting\lib\net40\System.Web.Razor.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -212,7 +212,7 @@
       <ItemGroup>
         <Reference Include="FsLab.Runner">
           <HintPath>$(MsbuildpRojectdirectory)\packages\FsLab.Runner\lib\net40\FsLab.Runner.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -223,7 +223,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics\lib\net35\MathNet.Numerics.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -232,7 +232,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -241,7 +241,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics\lib\net40\MathNet.Numerics.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -250,7 +250,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics\lib\portable-net45+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -261,7 +261,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics.FSharp">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics.FSharp\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.FSharp.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -270,7 +270,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics.FSharp">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics.FSharp\lib\net40\MathNet.Numerics.FSharp.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -279,18 +279,7 @@
       <ItemGroup>
         <Reference Include="MathNet.Numerics.FSharp">
           <HintPath>$(MsbuildpRojectdirectory)\packages\MathNet.Numerics.FSharp\lib\portable-net45+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MathNet.Numerics.FSharp.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
-      <ItemGroup>
-        <Reference Include="System.Web.Razor">
-          <HintPath>$(MsbuildpRojectdirectory)\packages\Microsoft.AspNet.Razor\lib\net45\System.Web.Razor.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -301,12 +290,12 @@
       <ItemGroup>
         <Reference Include="RDotNet.NativeLibrary">
           <HintPath>$(MsbuildpRojectdirectory)\packages\R.NET.Community\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="RDotNet">
           <HintPath>$(MsbuildpRojectdirectory)\packages\R.NET.Community\lib\net40\RDotNet.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -317,18 +306,7 @@
       <ItemGroup>
         <Reference Include="RDotNet.FSharp">
           <HintPath>$(MsbuildpRojectdirectory)\packages\R.NET.Community.FSharp\lib\net40\RDotNet.FSharp.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
-      <ItemGroup>
-        <Reference Include="RazorEngine">
-          <HintPath>$(MsbuildpRojectdirectory)\packages\RazorEngine\lib\net40\RazorEngine.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -339,22 +317,22 @@
       <ItemGroup>
         <Reference Include="RProvider.DesignTime">
           <HintPath>$(MsbuildpRojectdirectory)\packages\RProvider\lib\net40\RProvider.DesignTime.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="RProvider.Runtime">
           <HintPath>$(MsbuildpRojectdirectory)\packages\RProvider\lib\net40\RProvider.Runtime.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="RProvider.Server">
           <HintPath>$(MsbuildpRojectdirectory)\packages\RProvider\lib\net40\RProvider.Server.exe</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
         <Reference Include="RProvider">
           <HintPath>$(MsbuildpRojectdirectory)\packages\RProvider\lib\net40\RProvider.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -365,7 +343,7 @@
       <ItemGroup>
         <Reference Include="Zlib.Portable">
           <HintPath>$(MsbuildpRojectdirectory)\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

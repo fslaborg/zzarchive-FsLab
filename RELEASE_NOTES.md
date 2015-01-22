@@ -10,3 +10,5 @@
 * 0.0.19 - Reference specific version of dependencies
 * 0.1.0 - Updating to Paket-based projects
 * 0.1.1 - Fix issues in the load script (Foogle Charts mostly)
+* 0.1.2 - Update dependencies (Deeple, RProvider, Math.NET and F# Formatting)
+* 0.1.3 - Recover Latex support in FsLab Journal

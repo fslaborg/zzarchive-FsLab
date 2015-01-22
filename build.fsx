@@ -94,7 +94,7 @@ Target "UpdateVersions" (fun _ ->
   let value = 
     [ for p, v in packages @ journalPackages -> 
         sprintf "%s\\lib\\net40" p ] |> String.concat ";"
-  privatePath.Value <- value
+  privatePath.Value <- value + ";FsLab.Runner\\lib\\net40"
   appconfig.Save(path + ".updated")
   DeleteFile path
   Rename path (path + ".updated")
@@ -227,6 +227,7 @@ Target "GenerateTemplate" (fun _ ->
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
+  "temp/journal/paket.references.template" |> Rename "temp/journal/paket.references"
   "temp/paket.dependencies" |> CopyFile "temp/journal/paket.dependencies"
   "temp/paket.lock" |> CopyFile "temp/journal/paket.lock"
   ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"  

@@ -9,7 +9,7 @@
 //
 // --------------------------------------------------------------------------------------
 
-#r "build/FAKE/tools/FakeLib.dll"
+#r "packages/FAKE/tools/FakeLib.dll"
 open System
 open System.IO
 open Fake
