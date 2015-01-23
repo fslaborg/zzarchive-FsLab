@@ -10,11 +10,13 @@ Developer notes
 ---------------
 
 If you want to be able to build FsLab Journal template, you'll need Visual Studio 2013 SDK.
+To update one or more dependencies, use the following steps:
 
- * Add new line with version information to `RELEASE_NOTES.md`
- * Update versions of referenced packages at the beginning of `build.fsx`
- * Run `build` from command line to update everything
- * Run `build NuGet` from command line to update just the NuGet package
+ * Run `build Clean` to make sure that there are only source files around
+ * Run `.paket/paket.exe update` to update the dependencies
+ * Run `build` to build everything or `build NuGet` to build everything except for
+   the FsLab Journal template (useful if you don't have the SDK installed)
+ * Add new line with version information to `RELEASE_NOTES.md`!
  * Run `publish` from command line to upload NuGet package (if you have the rights)
  
 After running `build NuGet` for the first time, you can also edit the
