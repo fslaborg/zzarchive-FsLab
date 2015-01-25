@@ -56,9 +56,7 @@ let packages =
 
 let journalPackages = 
   [ "FSharp.Compiler.Service"
-    "FSharp.Formatting"
-    "Microsoft.AspNet.Razor"
-    "RazorEngine"]
+    "FSharp.Formatting" ]
  |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 /// Returns assemblies that should be referenced for each package
