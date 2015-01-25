@@ -11,8 +11,7 @@ to document you research.
 
 Next steps
 ----------
- * Run  `.paket/paket.exe update`  to update the dependencies
- 
+
  * To learn more about FsLab Journal, go to "Solution Explorer", right click
    on your newly created project, select "Add", "New item.." and choose 
    "FsLab Walkthrough" (if you do not have R statistics environment installed) 
