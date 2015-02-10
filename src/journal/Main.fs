@@ -18,11 +18,6 @@ let main args =
     | None -> None
     | Some(i) -> Some args.[i+1]    // return next argument
 
-  match path with
-  | None -> 
-      if latex then Journal.Process(outputKind = OutputKind.Latex)
-      else Journal.Process(browse)
-  | Some(root) ->
-      if latex then Journal.Process(root = root, outputKind = OutputKind.Latex)
-      else Journal.Process(root = root, browse = browse)
+  if latex then Journal.Process(outputKind = OutputKind.Latex, ?root=path)
+  else Journal.Process(browse, ?root=path)
   0
