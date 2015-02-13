@@ -22,13 +22,14 @@ type Journal() =
     let probing = (appDir @@ "..")::(List.ofSeq (Directory.GetDirectories(appDir @@ "..")))
     probing |> Seq.find (fun dir -> File.Exists(dir @@ "Main.fs")) 
 
-  static member Process(?browse, ?root, ?outputKind, ?templateLocation, ?floatFormat) =
+  static member Process(?browse, ?root, ?outputKind, ?templateLocation, ?floatFormat, ?whiteList) =
     // Process all script files and get a list of produced files
     let ctx = 
       { Root = match root with Some r -> r | _ -> defaultRoot()
         OutputKind = defaultArg outputKind OutputKind.Html 
         FloatFormat = defaultArg floatFormat "G4"
-        TemplateLocation = templateLocation }
+        TemplateLocation = templateLocation
+        FileWhitelist = whiteList }
     let builtFiles = processScriptFiles ctx
     let file = getDefaultFile ctx builtFiles
     if browse = Some true && ctx.OutputKind = OutputKind.Html then
