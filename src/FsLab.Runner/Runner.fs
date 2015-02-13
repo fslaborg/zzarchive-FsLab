@@ -41,7 +41,8 @@ type ProcessingContext =
   { Root : string 
     OutputKind : OutputKind 
     FloatFormat : string
-    TemplateLocation : string option }
+    TemplateLocation : string option 
+    FileWhitelist : string list option}
 
 // Process scripts in the 'root' directory and put them into output
 let htmlTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.html")
@@ -159,12 +160,20 @@ let processScriptFiles ctx =
   let processDirectory indir outdir = 
     ensureDirectory outdir
     // Get all *.fsx and *.md files and yield functions to parse them
+    // If a whitelist exist, use only files in whitelist
+    let filterWhitelist (file:string) : bool =
+        match ctx.FileWhitelist with 
+         | Some(files) -> files |> List.exists(fun f -> file.EndsWith(f))
+         | None -> true
     let files = 
-      [ for f in Directory.GetFiles(indir, "*.fsx") do
+      [ for f in Directory.GetFiles(indir, "*.fsx") |> Array.filter filterWhitelist do
           if Path.GetFileNameWithoutExtension(f).ToLower() <> "build" then
             yield f, fun () -> Literate.ParseScriptFile(f, fsiEvaluator=fsi)
-        for f in Directory.GetFiles(indir, "*.md") do
+        for f in Directory.GetFiles(indir, "*.md") |> Array.filter filterWhitelist  do
           yield f, fun () -> Literate.ParseMarkdownFile(f, fsiEvaluator=fsi) ]
+          |> fun f -> match ctx.FileWhitelist with 
+                        | None -> f
+                        | Some(xs)-> f |> List.filter(fun x -> true )
     
     // Process all the files that have not changed since the last time
     [ for file, func in files do
