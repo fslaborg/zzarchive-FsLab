@@ -4,7 +4,7 @@
 
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
-#r "packages/Paket.Core/lib/Paket.Core.dll"
+#r "packages/Paket.Core/lib/net40/Paket.Core.dll"
 #r "packages/DotNetZip/lib/net20/Ionic.Zip.dll"
 #r "System.Xml.Linq"
 open System
@@ -56,8 +56,15 @@ let packages =
 
 let journalPackages = 
   [ "FSharp.Compiler.Service"
+    "FSharpVSPowerTools.Core"
     "FSharp.Formatting" ]
  |> List.map (fun p -> p,GetPackageVersion "packages" p)
+
+/// Returns the subfolder where the DLLs are located
+let getNetSubfolder package = 
+    match package with
+    | "FSharpVSPowerTools.Core" -> "lib/net45"
+    | _ -> "lib/net40"
 
 /// Returns assemblies that should be referenced for each package
 let getAssemblies package = 
@@ -91,7 +98,7 @@ Target "UpdateVersions" (fun _ ->
   let privatePath = probing.Attributes(XName.Get "privatePath").First()
   let value = 
     [ for p, v in packages @ journalPackages -> 
-        sprintf "%s\\lib\\net40" p ] |> String.concat ";"
+        sprintf "%s\\%s" p (getNetSubfolder p)] |> String.concat ";"
   privatePath.Value <- value + ";FsLab.Runner\\lib\\net40"
   appconfig.Save(path + ".updated")
   DeleteFile path
@@ -110,8 +117,8 @@ Target "UpdateVersions" (fun _ ->
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
-  let getLibDir package = package + "/lib/net40"
-  let getLibDirVer package = package + "." + packageVersions.[package] + "/lib/net40"
+  let getLibDir package = package + "/" + (getNetSubfolder package)
+  let getLibDirVer package = package + "." + packageVersions.[package] + "/" + (getNetSubfolder package)
 
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""; "#I \".\""]
