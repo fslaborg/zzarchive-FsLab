@@ -1,0 +1,7 @@
+source https://nuget.org/api/v2
+
+nuget FAKE
+nuget FsLab
+nuget FsLab.Runner
+nuget FSharp.Formatting
+nuget FSharp.Core

@@ -1,4 +1,4 @@
-﻿module internal FsLab.Runner
+﻿module FsLab.Runner
 
 open System.IO
 open FSharp.Literate
@@ -39,14 +39,15 @@ let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) =
 /// Represents state passed around during processing
 type ProcessingContext = 
   { Root : string 
+    Output : string
     OutputKind : OutputKind 
     FloatFormat : string
     TemplateLocation : string option 
     FileWhitelist : string list option}
 
 // Process scripts in the 'root' directory and put them into output
-let htmlTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.html")
-let texTemplate ctx = File.ReadAllText(ctx.Root @@ "output" @@ "styles" @@ "template.tex")
+let htmlTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
+let texTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
 
 // ----------------------------------------------------------------------------
 // Markdown document processing tools
@@ -109,11 +110,11 @@ let generateFile ctx path (doc:LiterateDocument) title =
         incr counter
         let ext = Path.GetExtension(url)
         let fn = sprintf "./savedimages/saved%d%s" counter.Value ext
-        wc.DownloadFile(url, ctx.Root @@ "output" @@ fn)
+        wc.DownloadFile(url, ctx.Output @@ fn)
         fn
       else url
 
-    ensureDirectory (ctx.Root @@ "output/savedimages" )
+    ensureDirectory (ctx.Output @@ "savedimages" )
     let pars = 
       doc.Paragraphs
       |> downloadImages (saver, doc.DefinedLinks) 
@@ -135,7 +136,7 @@ let generateFile ctx path (doc:LiterateDocument) title =
 let processScriptFiles ctx =
   // Ensure 'output' directory exists
   let root = ctx.Root
-  ensureDirectory (root @@ "output")
+  ensureDirectory ctx.Output
 
   // use the provided template location or use one in the NuGet package source
   let templateLocation = 
@@ -150,11 +151,11 @@ let processScriptFiles ctx =
           Path.GetFileName(p).StartsWith "FsLab.Runner")
   
   // Copy content of 'styles' to the output
-  copyFiles (templateLocation @@ "styles") (root @@ "output" @@ "styles")
+  copyFiles (templateLocation @@ "styles") (ctx.Output @@ "styles")
 
   // FSI evaluator will put images into 'output/images' and 
   // refernece them as './images/image1.png' in the HTML
-  let fsi = Formatters.createFsiEvaluator "." (root @@ "output") ctx.FloatFormat
+  let fsi = Formatters.createFsiEvaluator "." ctx.Output ctx.FloatFormat
 
   /// Recursively process all files in the directory tree
   let processDirectory indir outdir = 
@@ -193,7 +194,7 @@ let processScriptFiles ctx =
         generateFile ctx output doc title
         yield (name + ".html"), title ]
 
-  processDirectory root (root @@ "output")
+  processDirectory root ctx.Output
 
 
 // ----------------------------------------------------------------------------
@@ -221,6 +222,6 @@ let getDefaultFile ctx = function
             [ Heading(1, [Literal "FsLab Journals"])
               ListBlock(Unordered, items) ]
           let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)
-          generateFile ctx (ctx.Root @@ "output" @@ "index.html") doc "FsLab Journals"
+          generateFile ctx (ctx.Output @@ "index.html") doc "FsLab Journals"
           "index.html"
       | Some fn -> fn

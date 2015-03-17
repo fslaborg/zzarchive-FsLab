@@ -24,8 +24,10 @@ type Journal() =
 
   static member Process(?browse, ?root, ?outputKind, ?templateLocation, ?floatFormat, ?whiteList) =
     // Process all script files and get a list of produced files
+    let root = match root with Some r -> r | _ -> defaultRoot()
     let ctx = 
-      { Root = match root with Some r -> r | _ -> defaultRoot()
+      { Root = root
+        Output = Path.Combine(root, "output")
         OutputKind = defaultArg outputKind OutputKind.Html 
         FloatFormat = defaultArg floatFormat "G4"
         TemplateLocation = templateLocation

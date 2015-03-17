@@ -1,4 +1,4 @@
-﻿module internal FsLab.Formatters
+﻿module FsLab.Formatters
 
 open System.IO
 open Deedle
@@ -305,7 +305,7 @@ let createFsiEvaluator root output (floatFormat:string) =
     | _ -> None 
     
   // Create FSI evaluator, register transformations & return
-  let fsiEvaluator = FsiEvaluator() 
+  let fsiEvaluator = FsiEvaluator()
   fsiEvaluator.RegisterTransformation(transformation)
   let fsiEvaluator = fsiEvaluator :> IFsiEvaluator
   { new IFsiEvaluator with
