@@ -24,7 +24,8 @@ let rec copyFiles source target =
   for f in Directory.GetDirectories(source) do
     copyFiles f (target @@ Path.GetFileName(f))
   for f in Directory.GetFiles(source) do
-    File.Copy(f, (target @@ Path.GetFileName(f)), true)
+    let targetf = target @@ Path.GetFileName(f)
+    if not (File.Exists(targetf)) then File.Copy(f, targetf, true)
 
 /// Lookup a specified key in a dictionary, possibly
 /// ignoring newlines or spaces in the key.
@@ -43,7 +44,8 @@ type ProcessingContext =
     OutputKind : OutputKind 
     FloatFormat : string
     TemplateLocation : string option 
-    FileWhitelist : string list option}
+    FileWhitelist : string list option
+    FailedHandler : FsiEvaluationFailedInfo -> unit }
 
 // Process scripts in the 'root' directory and put them into output
 let htmlTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
@@ -155,7 +157,7 @@ let processScriptFiles ctx =
 
   // FSI evaluator will put images into 'output/images' and 
   // refernece them as './images/image1.png' in the HTML
-  let fsi = Formatters.createFsiEvaluator "." ctx.Output ctx.FloatFormat
+  let fsi = Formatters.createFsiEvaluator "." ctx.Output ctx.FloatFormat ctx.FailedHandler
 
   /// Recursively process all files in the directory tree
   let processDirectory indir outdir = 

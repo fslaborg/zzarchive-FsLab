@@ -31,6 +31,7 @@ type Journal() =
         OutputKind = defaultArg outputKind OutputKind.Html 
         FloatFormat = defaultArg floatFormat "G4"
         TemplateLocation = templateLocation
+        FailedHandler = ignore
         FileWhitelist = whiteList }
     let builtFiles = processScriptFiles ctx
     let file = getDefaultFile ctx builtFiles

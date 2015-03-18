@@ -7,3 +7,4 @@ packages
 .paket/paket.exe
 .DS_Store
 runner/.paket/paket.exe
+runner/output

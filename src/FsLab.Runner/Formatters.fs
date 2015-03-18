@@ -198,7 +198,7 @@ let InlineMultiformatBlock(html, latex) =
 let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
-let createFsiEvaluator root output (floatFormat:string) =
+let createFsiEvaluator root output (floatFormat:string) failedHandler =
 
   /// Counter for saving files
   let createCounter () = 
@@ -306,6 +306,7 @@ let createFsiEvaluator root output (floatFormat:string) =
     
   // Create FSI evaluator, register transformations & return
   let fsiEvaluator = FsiEvaluator()
+  fsiEvaluator.EvaluationFailed.Add(failedHandler)
   fsiEvaluator.RegisterTransformation(transformation)
   let fsiEvaluator = fsiEvaluator :> IFsiEvaluator
   { new IFsiEvaluator with

@@ -1,5 +1,5 @@
 (*** hide ***)
-#load "packages/FsLab/FsLab.fsx"
+#load "../packages/FsLab/FsLab.fsx"
 (**
 
 Welcome to FsLab journal
@@ -37,7 +37,7 @@ load the contents of *this* file:
 (*** define-output:loading ***)
 open Deedle
 open System.IO
-open FSharp.Charting
+open Foogle
 
 let file = __SOURCE_DIRECTORY__ + "\\Tutorial.fsx"
 let contents = File.ReadAllText(file)
@@ -63,7 +63,8 @@ words
 |> Series.sort
 |> Series.rev
 |> Series.take 6
-|> Chart.Column
+|> Series.observations
+|> Chart.PieChart
 (*** include-it:chart ***)
 
 (**
