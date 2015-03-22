@@ -39,7 +39,7 @@ open Deedle
 open System.IO
 open Foogle
 
-let file = __SOURCE_DIRECTORY__ + "\\Tutorial.fsx"
+let file = __SOURCE_DIRECTORY__ + "/Tutorial.fsx"
 let contents = File.ReadAllText(file)
 printfn "Loaded '%s' of length %d" file contents.Length
 (*** include-output:loading ***)
@@ -49,7 +49,7 @@ Now, we split the contents of the file into words, count the frequency of
 words longer than 3 letters and turn the result into a Deedle series:
 *)
 let words = 
-  contents.Split(' ', '"', '\n', '\r', '*')
+  contents.Split(' ', '"', '\n', '\r', '*') //"
   |> Array.filter (fun s -> s.Length > 3)
   |> Array.map (fun s -> s.ToLower())
   |> Seq.countBy id

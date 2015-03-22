@@ -51,14 +51,17 @@ let generateJournals() =
 
 let startWebServer fileName =
     let serverConfig = 
-        { defaultConfig with homeFolder = Some ctx.Output }
+        { defaultConfig with 
+           homeFolder = Some ctx.Output
+           bindings = [for b in defaultConfig.bindings -> 
+                         { b with socketBinding = {b.socketBinding with port=uint16 8084}} ] }
     let app =
         Writers.setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
         >>= Writers.setHeader "Pragma" "no-cache"
         >>= Writers.setHeader "Expires" "0"
         >>= browseHome
     startWebServerAsync serverConfig app |> snd |> Async.Start
-    Process.Start ("http://localhost:8083/" + fileName) |> ignore
+    Process.Start ("http://localhost:8084/" + fileName) |> ignore
 
 let handleWatcherEvents (e:FileSystemEventArgs) =
     let fi = fileInfo e.FullPath 
