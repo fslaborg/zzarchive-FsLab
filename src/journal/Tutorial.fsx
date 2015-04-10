@@ -55,7 +55,7 @@ let words =
   |> Seq.countBy id
   |> series
 (**
-Finally, let's build a chart showing the top 6 words occuring in this tutorial:
+Finally, let's build a chart showing the top 6 words occurring in this tutorial:
 *)
 
 (*** define-output:chart ***)
