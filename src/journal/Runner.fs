@@ -15,7 +15,11 @@ let main argv =
     for f in Directory.GetFiles(currentDir @@ "packages/FsLab.Runner/tools") do
       File.Copy(f, currentDir @@ Path.GetFileName(f), true)
 
-  let info = new ProcessStartInfo("cmd", "/c build.cmd run", UseShellExecute = false, WorkingDirectory = currentDir)
+  let info = 
+    if System.Type.GetType("Mono.Runtime") <> null then
+      new ProcessStartInfo("bash", "build.sh quickrun", UseShellExecute = false, WorkingDirectory = currentDir)
+    else
+      new ProcessStartInfo("cmd", "/c build.cmd quickrun", UseShellExecute = false, WorkingDirectory = currentDir)
 
   let proc = Process.Start(info)
   proc.WaitForExit()
