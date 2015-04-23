@@ -3,14 +3,17 @@
 // FAKE build script 
 // --------------------------------------------------------------------------------------
 #I "packages/FAKE/tools"
-#r "packages/FAKE/tools/FakeLib.dll"
 #I "packages/Suave/lib/net40"
+#I "packages/FsLab.Runner/lib/net40"
+
+#r "FsLab.Runner.dll"
+#r "FakeLib.dll"
 #r "Suave.dll"
-#load "packages/FsLab/FsLab.fsx"
+//#load "packages/FsLab/FsLab.fsx"
 #load "packages/FSharp.Formatting/FSharp.Formatting.fsx"
-#load "../src/FsLab.Runner/Formatters.fs"
+
+FsLab.Journal.
 open FsLab
-#load "../src/FsLab.Runner/Runner.fs"
 open System
 open System.IO
 open Fake 

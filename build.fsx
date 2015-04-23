@@ -81,33 +81,6 @@ Target "Clean" (fun _ ->
     CleanDirs ["temp"; "nuget"; "bin"]
 )
 
-Target "UpdateVersions" (fun _ ->
-  // Specify <probing privatePath="..."> value in app.config of the journal
-  // project, so that it automatically loads references from packages
-  let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
-  let path = "src/journal/app.config"
-  let appconfig = XDocument.Load(path)
-  let probing = appconfig.Descendants(!"probing").First()
-  let privatePath = probing.Attributes(XName.Get "privatePath").First()
-  let value = 
-    [ for p, v in packages @ journalPackages -> 
-        sprintf "%s\\lib\\net40" p ] |> String.concat ";"
-  privatePath.Value <- value + ";FsLab.Runner\\lib\\net40"
-  appconfig.Save(path + ".updated")
-  DeleteFile path
-  Rename path (path + ".updated")
-
-  /// Update version number in the VSIX manifest file of the template
-  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
-  let path = "src/template/source.extension.vsixmanifest"
-  let vsix = XDocument.Load(path)
-  let ident = vsix.Descendants(!"Identity").First()
-  ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
-  vsix.Save(path + ".updated")
-  DeleteFile path
-  Rename path (path + ".updated")
-)
-
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
   let getLibDir package = package + "/lib/net40"
@@ -143,7 +116,7 @@ Target "BuildRunner" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    CopyFile "bin/paket.bootstrapper.exe" ".paket/paket.bootstrapper.exe"
+    //CopyFile "bin/paket.bootstrapper.exe" ".paket/paket.bootstrapper.exe"
     let specificVersion (name, version) = name, sprintf "[%s]" version
     NuGet (fun p -> 
         { p with   
@@ -178,6 +151,34 @@ Target "NuGet" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Build the FsLab template project
 // --------------------------------------------------------------------------------------
+
+Target "UpdateVersions" (fun _ ->
+(*
+  // Specify <probing privatePath="..."> value in app.config of the journal
+  // project, so that it automatically loads references from packages
+  let (!) n = XName.Get(n, "urn:schemas-microsoft-com:asm.v1")
+  let path = "src/journal/app.config"
+  let appconfig = XDocument.Load(path)
+  let probing = appconfig.Descendants(!"probing").First()
+  let privatePath = probing.Attributes(XName.Get "privatePath").First()
+  let value = 
+    [ for p, v in packages @ journalPackages -> 
+        sprintf "%s\\lib\\net40" p ] |> String.concat ";"
+  privatePath.Value <- value + ";FsLab.Runner\\lib\\net40"
+  appconfig.Save(path + ".updated")
+  DeleteFile path
+  Rename path (path + ".updated")
+*)
+  /// Update version number in the VSIX manifest file of the template
+  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
+  let path = "src/template/source.extension.vsixmanifest"
+  let vsix = XDocument.Load(path)
+  let ident = vsix.Descendants(!"Identity").First()
+  ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
+  vsix.Save(path + ".updated")
+  DeleteFile path
+  Rename path (path + ".updated")
+)
 
 Target "GenerateFsLabJournal" (fun _ ->
   // Generate paket.dependencies file for FsLab journal with pinned version
@@ -225,7 +226,7 @@ Target "GenerateTemplate" (fun _ ->
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
-  "temp/journal/paket.references.template" |> Rename "temp/journal/paket.references"
+//  "temp/journal/paket.references.template" |> Rename "temp/journal/paket.references"
   "temp/paket.dependencies" |> CopyFile "temp/journal/paket.dependencies"
   "temp/paket.lock" |> CopyFile "temp/journal/paket.lock"
   ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"  
@@ -259,11 +260,13 @@ Target "BuildTemplate" (fun _ ->
 Target "All" DoNothing
 
 "Clean" 
-  ==> "UpdateVersions"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
-  ==> "GenerateFsLabJournal"
   ==> "NuGet"
+
+"NuGet"
+  ==> "GenerateFsLabJournal"
+  ==> "UpdateVersions"
   ==> "GenerateTemplate"
   ==> "BuildTemplate"
   ==> "All"
