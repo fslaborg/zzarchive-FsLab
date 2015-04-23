@@ -37,7 +37,7 @@ load the contents of *this* file:
 (*** define-output:loading ***)
 open Deedle
 open System.IO
-open FSharp.Charting
+open Foogle
 
 let file = __SOURCE_DIRECTORY__ + "\\Tutorial.fsx"
 let contents = File.ReadAllText(file)
@@ -62,8 +62,9 @@ Finally, let's build a chart showing the top 6 words occuring in this tutorial:
 words 
 |> Series.sort
 |> Series.rev
-|> Series.take 6
-|> Chart.Column
+|> Series.take 3
+|> Series.observations
+|> Chart.PieChart
 (*** include-it:chart ***)
 
 (**

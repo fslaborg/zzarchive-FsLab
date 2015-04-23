@@ -78,17 +78,28 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
 
 let indexJournal = ref None
 
-Target "GenerateHtml" (fun _ ->
+Target "help" (fun _ ->
+  printfn "Use 'build run' to produce HTML journals in the background "
+  printfn "and host them locally using a simple web server."
+  printfn ""
+  printfn "Other usage options:"
+  printfn "  build html   - Generate HTML output for all scripts"
+  printfn "  build run    - Generate HTML, host it and keep it up-to-date"
+  printfn "  build latex  - Generate LaTeX output for all scripts"
+  printfn "  build pdf    - Generate LaTeX output & compile using 'pdflatex'"
+)
+
+Target "html" (fun _ ->
     indexJournal.Value <- Some(generateJournals ctx)
 )
 
-Target "GenerateLatex" (fun _ ->
+Target "latex" (fun _ ->
     { ctx with OutputKind = OutputKind.Latex }
     |> generateJournals 
     |> ignore
 )
 
-Target "KeepRunning" (fun _ ->
+Target "run" (fun _ ->
     use watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
     watcher.EnableRaisingEvents <- true
     watcher.IncludeSubdirectories <- true
@@ -102,11 +113,15 @@ Target "KeepRunning" (fun _ ->
     watcher.EnableRaisingEvents <- false
 )
 
+Target "pdf" (fun _ ->
+  for tex in !! (ctx.Output @@ "*.tex" ) do
+    ExecProcess (fun info ->
+      info.Arguments <- "-interaction=nonstopmode \"" + (IO.Path.GetFileName(tex)) + "\""
+      info.WorkingDirectory <- ctx.Output
+      info.FileName <- "pdflatex" ) TimeSpan.MaxValue |> ignore
+)
 
-// By default, we run `KeepRunning` which produces HTML output and
-// keeps updating it every time the source FSX files change
+"html" ==> "run"
+"latex" ==> "pdf"
 
-"GenerateHtml" 
-==> "KeepRunning"
-
-RunTargetOrDefault "KeepRunning"
+RunTargetOrDefault "help"

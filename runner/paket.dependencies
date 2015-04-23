@@ -1,8 +1,0 @@
-source https://nuget.org/api/v2
-
-nuget Suave
-nuget FAKE
-nuget FsLab
-nuget FsLab.Runner
-nuget FSharp.Formatting
-nuget FSharp.Core
