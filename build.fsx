@@ -56,8 +56,15 @@ let packages =
 
 let journalPackages =
   [ "FSharp.Compiler.Service"
+    "FSharpVSPowerTools.Core"
     "FSharp.Formatting" ]
  |> List.map (fun p -> p,GetPackageVersion "packages" p)
+
+/// Returns the subfolder where the DLLs are located
+let getNetSubfolder package =
+    match package with
+    | "FSharpVSPowerTools.Core" -> "lib/net45"
+    | _ -> "lib/net40"
 
 /// Returns assemblies that should be referenced for each package
 let getAssemblies package =
@@ -83,8 +90,8 @@ Target "Clean" (fun _ ->
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
-  let getLibDir package = package + "/lib/net40"
-  let getLibDirVer package = package + "." + packageVersions.[package] + "/lib/net40"
+  let getLibDir package = package + "/" + (getNetSubfolder package)
+  let getLibDirVer package = package + "." + packageVersions.[package] + "/" + (getNetSubfolder package)
 
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""; "#I \".\""]

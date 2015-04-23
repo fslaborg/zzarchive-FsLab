@@ -12,4 +12,5 @@
 * 0.1.1 - Fix issues in the load script (Foogle Charts mostly)
 * 0.1.2 - Update dependencies (Deeple, RProvider, Math.NET and F# Formatting)
 * 0.1.3 - Recover Latex support in FsLab Journal
+* 0.1.4 - Update dependencies (Foogle.Charts)
 * 0.2.0 - Update dependencies, rework runner for FsLab Journal
