@@ -11,9 +11,9 @@
     <copyright>Copyright 2014</copyright>
     <tags>@tags@</tags>
     <language>en-US</language>
-    <licenseUrl>http://github.com/tpetricek/FsLab/blob/master/LICENSE.md</licenseUrl>
+    <licenseUrl>http://github.com/fslaborg/FsLab/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>http://www.fslab.org</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/tpetricek/FsLab/master/misc/logo.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/fslaborg/FsLab/master/misc/logo.png</iconUrl>
     @dependencies@
   </metadata>
   <files>
@@ -25,9 +25,7 @@
     <file src="..\src\misc\styles\template.tex" target="styles" />
     <file src="..\src\misc\styles\tips.js" target="styles" />
     <file src="..\src\misc\tools\build.fsx" target="tools" />
+    <file src="..\src\misc\tools\build.sh" target="tools" />
     <file src="..\src\misc\tools\build.cmd" target="tools" />
-    <file src="..\bin\paket.bootstrapper.exe" target="tools" />
-    <file src="..\temp\paket.dependencies" target="." />
-    <file src="..\temp\paket.lock" target="." />
   </files>
 </package>

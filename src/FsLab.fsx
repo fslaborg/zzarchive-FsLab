@@ -37,15 +37,17 @@
 // ***FsLab.fsx*** (DO NOT REMOVE THIS COMMENT, everything below is copied to the output)
 namespace FsLab
 
-module FsiAutoShow = 
+#if NO_FSI_ADDPRINTER
+#else
+module FsiAutoShow =
   open FSharp.Charting
   open RProvider
 
-  fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) -> 
+  fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) ->
     "\n" + (printer.Format()))
-  fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) -> 
+  fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) ->
     ch.ShowChart() |> ignore; "(Chart)")
-  fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) -> 
+  fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) ->
     synexpr.Print())
 
   open System.IO
@@ -61,18 +63,19 @@ module FsiAutoShow =
   do Directory.CreateDirectory(tempDir) |> ignore
 
   fsi.AddPrinter(fun (chart:FoogleChart) ->
-    match !server with 
+    match server.Value with
     | None -> server := Some (HttpServer.Start("http://localhost:8084/", tempDir))
     | _ -> ()
     let file = sprintf "chart_%d_%d.html" pid counter.Value
-    let html = 
-      chart 
+    let html =
+      chart
       |> Foogle.Formatting.Google.CreateGoogleChart
       |> Foogle.Formatting.Google.GoogleChartHtml
-    File.WriteAllText(Path.Combine(tempDir, file), html)  
+    File.WriteAllText(Path.Combine(tempDir, file), html)
     System.Diagnostics.Process.Start("http://localhost:8084/" + file) |> ignore
     incr counter
     "(Foogle Chart)" )
+#endif
 
 namespace FSharp.Charting
 open FSharp.Charting
@@ -101,13 +104,13 @@ module FoogleExtensions =
   type Foogle.Chart with
     static member PieChart(frame:Frame<_, _>, column, ?Label, ?PieHole) =
       Foogle.Chart.PieChart
-        ( frame.GetColumn<float>(column) |> Series.observations, 
+        ( frame.GetColumn<float>(column) |> Series.observations,
           ?Label=Label, ?PieHole=PieHole)
     static member GeoChart(frame:Frame<_, _>, column, ?Label, ?Region, ?DisplayMode) =
       Foogle.Chart.GeoChart
-        ( frame.GetColumn<float>(column) |> Series.observations, 
+        ( frame.GetColumn<float>(column) |> Series.observations,
           ?Label=Label, ?Region=Region, ?DisplayMode=DisplayMode)
-  
+
 namespace MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.LinearAlgebra
 open Deedle
@@ -135,7 +138,7 @@ module Frame =
   let inline toMatrix frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
 
   let ofCsvRows (data:FSharp.Data.Runtime.CsvFile<'T>) =
-    match data.Headers with 
+    match data.Headers with
     | None -> Frame.ofRecords data.Rows
     | Some names -> Frame.ofRecords data.Rows |> Frame.indexColsWith names
 
