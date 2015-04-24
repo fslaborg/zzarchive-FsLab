@@ -62,7 +62,7 @@ Finally, let's build a chart showing the top 6 words occurring in this tutorial:
 words
 |> Series.sort
 |> Series.rev
-|> Series.take 3
+|> Series.take 6
 |> Series.observations
 |> Chart.PieChart
 (*** include-it:chart ***)
