@@ -4,7 +4,7 @@ temp
 packages
 *.suo
 *.bak
+*.userprefs
 .paket/paket.exe
 .DS_Store
-runner/.paket/paket.exe
-runner/output
+nuget
