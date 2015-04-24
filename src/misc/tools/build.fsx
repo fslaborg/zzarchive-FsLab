@@ -85,7 +85,7 @@ Target "copybinaries" (fun _ ->
     |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
     relative "packages/FSharp.Compiler.Service/lib/net45/FSharp.Compiler.Service.dll"
     |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
-  with _ -> () (* ignore errors when files already exist *)  
+  with _ -> () (* ignore errors when files already exist *)
 )
 
 Target "help" (fun _ ->
