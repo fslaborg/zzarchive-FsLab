@@ -21,6 +21,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsLab.Runner", "src\FsLab.Runner\FsLab.Runner.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "journal", "journal", "{FF1AFB62-AC1A-4B2A-96BC-DC7F01CD10CF}"
+	ProjectSection(SolutionItems) = preProject
+		src\journal\Runner.fs = src\journal\Runner.fs
+		src\journal\Tutorial.fsx = src\journal\Tutorial.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{1C1EFF4D-C6E1-4DEC-B3D6-60E50C103534}"
+	ProjectSection(SolutionItems) = preProject
+		src\misc\tools\build.cmd = src\misc\tools\build.cmd
+		src\misc\tools\build.fsx = src\misc\tools\build.fsx
+		src\misc\tools\build.sh = src\misc\tools\build.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
