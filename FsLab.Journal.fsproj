@@ -50,11 +50,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="build.fsx" />
+    <None Include=".paket\paket.bootstrapper.exe" />
     <None Include="paket.dependencies" />
+    <None Include="build.fsx" />
     <Compile Include="Runner.fs" />
     <None Include="Tutorial.fsx" />
-    <None Include=".paket\paket.bootstrapper.exe" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
