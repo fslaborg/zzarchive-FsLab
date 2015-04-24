@@ -7,6 +7,7 @@ NUGET
       R.NET.Community (>= 1.5.16)
       R.NET.Community.FSharp (>= 0.1.9)
       RProvider (>= 1.1.8)
+    DotNetZip (1.9.3)
     FAKE (3.28.7)
     Foogle.Charts (0.0.5)
     FSharp.Charting (0.90.10)

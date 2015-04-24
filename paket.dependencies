@@ -7,7 +7,6 @@ nuget Deedle
 nuget Deedle.RPlugin
 nuget Foogle.Charts
 nuget FSharp.Charting
-nuget FSharp.Compiler.Service
 nuget FSharp.Data
 nuget FSharp.Formatting
 nuget MathNet.Numerics
@@ -15,3 +14,4 @@ nuget MathNet.Numerics.FSharp
 nuget R.NET.Community
 nuget R.NET.Community.FSharp
 nuget RProvider
+nuget DotNetZip
