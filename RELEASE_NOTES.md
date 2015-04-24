@@ -15,3 +15,4 @@
 * 0.1.4 - Update dependencies (Foogle.Charts)
 * 0.2.0 - Update dependencies, rework runner for FsLab Journal
 * 0.2.1 - Update F# Formatting, more cross-platform journals
+* 0.2.2 - Minor fixes in new FsLab.Runner (for journals)

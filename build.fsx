@@ -126,7 +126,7 @@ Target "NormalizeLineEndings" (fun _ ->
   let buildSh = __SOURCE_DIRECTORY__ @@ "src/misc/tools/build.sh"
   let unixLines = File.ReadAllLines(buildSh) |> String.concat "\n"
   File.Delete(buildSh)
-  File.WriteAllText(buildSh, unixLines)
+  File.WriteAllText(buildSh, unixLines, Text.Encoding.ASCII)
 )
 
 Target "NuGet" (fun _ ->
