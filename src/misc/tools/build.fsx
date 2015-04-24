@@ -14,7 +14,7 @@
 #r "FakeLib.dll"
 #r "Suave.dll"
 
-open Fake 
+open Fake
 open FsLab
 open System
 open FSharp.Literate
@@ -23,14 +23,14 @@ open FSharp.Literate
 // Runner configuration - You can change some basic settings of ProcessingContext here
 // --------------------------------------------------------------------------------------
 
-let localPort = 8089
+let localPort = 8088
 
 let handleError(err:FsiEvaluationFailedInfo) =
     sprintf "Evaluating F# snippet failed:\n%s\nThe snippet evaluated:\n%s" err.StdErr err.Text
-    |> traceImportant 
+    |> traceImportant
 
 let ctx = ProcessingContext.Create(__SOURCE_DIRECTORY__).With(fun p ->
-  { p with  
+  { p with
       OutputKind = OutputKind.Html
       Output = __SOURCE_DIRECTORY__ @@ "output";
       TemplateLocation = Some(__SOURCE_DIRECTORY__ @@ "packages/FsLab.Runner")
@@ -52,9 +52,9 @@ let generateJournals ctx =
 
 let startWebServer fileName =
     let defaultBinding = defaultConfig.bindings.[0]
-    let withPort = { defaultBinding.socketBinding with port = 1us }
-    let serverConfig = 
-        { defaultConfig with 
+    let withPort = { defaultBinding.socketBinding with port = uint16 localPort }
+    let serverConfig =
+        { defaultConfig with
             bindings = [ { defaultBinding with socketBinding = withPort } ]
             homeFolder = Some ctx.Output }
     let app =
@@ -66,9 +66,9 @@ let startWebServer fileName =
     Diagnostics.Process.Start(sprintf "http://localhost:%d/%s" localPort fileName) |> ignore
 
 let handleWatcherEvents (e:IO.FileSystemEventArgs) =
-    let fi = fileInfo e.FullPath 
+    let fi = fileInfo e.FullPath
     traceImportant <| sprintf "%s was changed." fi.Name
-    if fi.Attributes.HasFlag IO.FileAttributes.Hidden || 
+    if fi.Attributes.HasFlag IO.FileAttributes.Hidden ||
        fi.Attributes.HasFlag IO.FileAttributes.Directory then ()
     else Journal.updateJournals ctx |> ignore
 
@@ -77,6 +77,14 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
 // --------------------------------------------------------------------------------------
 
 let indexJournal = ref None
+
+Target "copybinaries" (fun _ ->
+  let relative f = __SOURCE_DIRECTORY__ @@ f
+  relative "packages/FSharpVSPowerTools.Core/lib/net45/FSharpVSPowerTools.Core.dll"
+  |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
+  relative "packages/FSharp.Compiler.Service/lib/net45/FSharp.Compiler.Service.dll"
+  |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
+)
 
 Target "help" (fun _ ->
   printfn "Use 'build run' to produce HTML journals in the background "
@@ -95,7 +103,7 @@ Target "html" (fun _ ->
 
 Target "latex" (fun _ ->
     { ctx with OutputKind = OutputKind.Latex }
-    |> generateJournals 
+    |> generateJournals
     |> ignore
 )
 
@@ -110,7 +118,6 @@ Target "run" (fun _ ->
 
     traceImportant "Waiting for journal edits. Press any key to stop."
     System.Console.ReadKey() |> ignore
-    watcher.EnableRaisingEvents <- false
 )
 
 Target "pdf" (fun _ ->
@@ -121,7 +128,7 @@ Target "pdf" (fun _ ->
       info.FileName <- "pdflatex" ) TimeSpan.MaxValue |> ignore
 )
 
-"html" ==> "run"
-"latex" ==> "pdf"
+"copybinaries" ==> "html" ==> "run"
+"copybinaries" ==> "latex" ==> "pdf"
 
 RunTargetOrDefault "help"
