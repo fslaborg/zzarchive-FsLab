@@ -78,16 +78,6 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
 
 let indexJournal = ref None
 
-Target "copybinaries" (fun _ ->
-  let relative f = __SOURCE_DIRECTORY__ @@ f
-  try
-    relative "packages/FSharpVSPowerTools.Core/lib/net45/FSharpVSPowerTools.Core.dll"
-    |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
-    relative "packages/FSharp.Compiler.Service/lib/net45/FSharp.Compiler.Service.dll"
-    |> CopyFile (relative "packages/FSharp.Formatting/lib/net40")
-  with _ -> () (* ignore errors when files already exist *)  
-)
-
 Target "help" (fun _ ->
   printfn "Use 'build run' to produce HTML journals in the background "
   printfn "and host them locally using a simple web server."
@@ -130,7 +120,7 @@ Target "pdf" (fun _ ->
       info.FileName <- "pdflatex" ) TimeSpan.MaxValue |> ignore
 )
 
-"copybinaries" ==> "html" ==> "run"
-"copybinaries" ==> "latex" ==> "pdf"
+"html" ==> "run"
+"latex" ==> "pdf"
 
 RunTargetOrDefault "help"
