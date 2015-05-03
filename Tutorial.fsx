@@ -9,9 +9,10 @@
 // (running it doesn't do anything, it just contains this script)
 #load "packages/FsLab/FsLab.fsx"
 
-open Foogle
 open Deedle
 open FSharp.Data
+open XPlot.GoogleCharts
+open XPlot.GoogleCharts.Deedle
 
 // Connect to the WorldBank and access indicators EU and CZ
 // Try changing the code to look at stats for your country!
@@ -31,9 +32,7 @@ abs (czschool - euschool)
 
 // Plot a line chart comparing the two data sets 
 // (Opens a web browser window with the chart)
-Chart.LineChart
- ([ for y in 1971 .. 2012 ->
-     string y, 
-       [ cz.``School enrollment, tertiary (% gross)``.[y] 
-         eu.``School enrollment, tertiary (% gross)``.[y] ] ],
-  Labels = ["CZ"; "EU"])
+[ czschool.[1975 .. 2010]; euschool.[1975 .. 2010] ]
+|> Chart.Line
+|> Chart.WithOptions (Options(legend=Legend(position="bottom")))
+|> Chart.WithLabels ["CZ"; "EU"]
