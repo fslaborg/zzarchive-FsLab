@@ -37,7 +37,8 @@ load the contents of *this* file:
 (*** define-output:loading ***)
 open Deedle
 open System.IO
-open Foogle
+open XPlot.GoogleCharts
+open XPlot.GoogleCharts.Deedle
 
 let file = __SOURCE_DIRECTORY__ + "/Tutorial.fsx"
 let contents = File.ReadAllText(file)
@@ -64,7 +65,7 @@ words
 |> Series.rev
 |> Series.take 6
 |> Series.observations
-|> Chart.PieChart
+|> Chart.Column
 (*** include-it:chart ***)
 
 (**
