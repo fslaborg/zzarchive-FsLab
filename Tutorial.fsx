@@ -64,7 +64,6 @@ words
 |> Series.sort
 |> Series.rev
 |> Series.take 6
-|> Series.observations
 |> Chart.Column
 (*** include-it:chart ***)
 
