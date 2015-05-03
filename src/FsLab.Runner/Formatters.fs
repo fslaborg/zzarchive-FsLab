@@ -7,6 +7,7 @@ open FSharp.Literate
 open FSharp.Markdown
 open FSharp.Charting
 open Foogle
+open XPlot
 
 // --------------------------------------------------------------------------------------
 // Implements Markdown formatters for common FsLab things - including Deedle series
@@ -217,6 +218,21 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
         ensureDirectory (output @@ "images")
         img.Save(output @@ "images" @@ file, System.Drawing.Imaging.ImageFormat.Png) 
         Some [ Paragraph [DirectImage ("", (root + "/images/" + file, None))]  ]
+
+    | :? GoogleCharts.GoogleChart as ch ->
+        // Just return the inline HTML of a Google chart
+        let ch = ch |> XPlot.GoogleCharts.Chart.WithSize(600, 300)
+        Some [  InlineBlock ch.InlineHtml ]
+
+    | :? Plotly.Figure as fig ->
+        // Just return the inline HTML for a Plotly chart
+        let name = 
+          match fig.Layout with
+          | Some ly -> ly.title
+          | None -> sprintf "XPlot Generated Chart %d" (imageCounter())
+        fig.Width <- 600
+        fig.Height <- 300
+        Some [ InlineBlock (fig.GetInlineHtml(name)) ]
 
     | :? ChartTypes.GenericChart as ch ->
         // Pretty print F# Chart - save the chart to the "images" directory 

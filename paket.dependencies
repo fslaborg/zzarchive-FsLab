@@ -15,3 +15,6 @@ nuget R.NET.Community
 nuget R.NET.Community.FSharp
 nuget RProvider
 nuget DotNetZip
+nuget XPlot.Plotly
+nuget XPlot.GoogleCharts
+nuget XPlot.GoogleCharts.Deedle

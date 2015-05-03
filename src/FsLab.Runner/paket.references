@@ -10,3 +10,6 @@ R.NET.Community
 R.NET.Community.FSharp
 FSharp.Compiler.Service
 FSharp.Formatting
+XPlot.Plotly
+XPlot.GoogleCharts
+XPlot.GoogleCharts.Deedle

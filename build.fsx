@@ -48,10 +48,16 @@ let packages =
     "FSharp.Data"
     "Foogle.Charts"
     "MathNet.Numerics"
-    "MathNet.Numerics.FSharp"
+    "MathNet.Numerics.FSharp"    
     "RProvider"
     "R.NET.Community"
-    "R.NET.Community.FSharp" ]
+    "R.NET.Community.FSharp"
+    // XPlot + dependencies
+    "XPlot.Plotly"
+    "XPlot.GoogleCharts"
+    "XPlot.GoogleCharts.Deedle"
+    "Google.DataTable.Net.Wrapper"
+    "Newtonsoft.Json" ]
   |> List.map (fun p -> p,GetPackageVersion "packages" p)
 
 let journalPackages =
@@ -63,7 +69,9 @@ let journalPackages =
 /// Returns the subfolder where the DLLs are located
 let getNetSubfolder package =
     match package with
+    | "Google.DataTable.Net.Wrapper" -> "lib"
     | "FSharpVSPowerTools.Core" -> "lib/net45"
+    | _ when package.StartsWith("XPlot") -> "lib/net45"
     | _ -> "lib/net40"
 
 /// Returns assemblies that should be referenced for each package

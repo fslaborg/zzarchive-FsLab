@@ -16,3 +16,8 @@
 * 0.2.0 - Update dependencies, rework runner for FsLab Journal
 * 0.2.1 - Update F# Formatting, more cross-platform journals
 * 0.2.2 - Minor fixes in new FsLab.Runner (for journals)
+* 0.2.3 - Update F# Formatting
+* 0.2.4 - Initial integration with XPlot
+* 0.2.5 - Include Google DataTable wrapper and JSON.NET references
+* 0.2.6 - Autoload Google Charts in the Journal template
+* 0.2.7 - Add fsi printer for XPlot charts

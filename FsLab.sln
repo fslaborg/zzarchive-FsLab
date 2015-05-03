@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{790C05AB-929
 		src\FsLab.fsx = src\FsLab.fsx
 		src\FsLab.nuspec = src\FsLab.nuspec
 		src\FsLab.Runner.nuspec = src\FsLab.Runner.nuspec
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6-92F9-4326-AD2A-AD451873DA46}"

@@ -1,25 +1,35 @@
 #nowarn "211"
 #I "."
-#I "../Deedle/lib/net40"
-#I "../Deedle.1.0.6/lib/net40"
-#I "../Deedle.RPlugin/lib/net40"
-#I "../Deedle.RPlugin.1.0.6/lib/net40"
-#I "../FSharp.Charting/lib/net40"
-#I "../FSharp.Charting.0.90.9/lib/net40"
-#I "../FSharp.Data/lib/net40"
-#I "../FSharp.Data.2.0.14/lib/net40"
-#I "../Foogle.Charts/lib/net40"
-#I "../Foogle.Charts.0.0.4/lib/net40"
-#I "../MathNet.Numerics/lib/net40"
-#I "../MathNet.Numerics.3.0.0/lib/net40"
-#I "../MathNet.Numerics.FSharp/lib/net40"
-#I "../MathNet.Numerics.FSharp.3.0.0/lib/net40"
-#I "../RProvider/lib/net40"
-#I "../RProvider.1.0.17/lib/net40"
-#I "../R.NET.Community/lib/net40"
-#I "../R.NET.Community.1.5.15/lib/net40"
-#I "../R.NET.Community.FSharp/lib/net40"
-#I "../R.NET.Community.FSharp.0.1.8/lib/net40"
+#I "../packages/Deedle/lib/net40"
+#I "../packages/Deedle.1.0.7/lib/net40"
+#I "../packages/Deedle.RPlugin/lib/net40"
+#I "../packages/Deedle.RPlugin.1.0.7/lib/net40"
+#I "../packages/FSharp.Charting/lib/net40"
+#I "../packages/FSharp.Charting.0.90.10/lib/net40"
+#I "../packages/FSharp.Data/lib/net40"
+#I "../packages/FSharp.Data.2.2.0/lib/net40"
+#I "../packages/Foogle.Charts/lib/net40"
+#I "../packages/Foogle.Charts.0.0.5/lib/net40"
+#I "../packages/MathNet.Numerics/lib/net40"
+#I "../packages/MathNet.Numerics.3.6.0/lib/net40"
+#I "../packages/MathNet.Numerics.FSharp/lib/net40"
+#I "../packages/MathNet.Numerics.FSharp.3.6.0/lib/net40"
+#I "../packages/RProvider/lib/net40"
+#I "../packages/RProvider.1.1.8/lib/net40"
+#I "../packages/R.NET.Community/lib/net40"
+#I "../packages/R.NET.Community.1.5.16/lib/net40"
+#I "../packages/R.NET.Community.FSharp/lib/net40"
+#I "../packages/R.NET.Community.FSharp.0.1.9/lib/net40"
+#I "../packages/XPlot.Plotly/lib/net45"
+#I "../packages/XPlot.Plotly.1.0.1/lib/net45"
+#I "../packages/XPlot.GoogleCharts/lib/net45"
+#I "../packages/XPlot.GoogleCharts.1.1.7/lib/net45"
+#I "../packages/XPlot.GoogleCharts.Deedle/lib/net45"
+#I "../packages/XPlot.GoogleCharts.Deedle.0.6.2/lib/net45"
+#I "../packages/Google.DataTable.Net.Wrapper/lib"
+#I "../packages/Google.DataTable.Net.Wrapper.3.1.2/lib"
+#I "../packages/Newtonsoft.Json/lib/net40"
+#I "../packages/Newtonsoft.Json.6.0.8/lib/net40"
 #r "Deedle.dll"
 #r "Deedle.RProvider.Plugin.dll"
 #r "System.Windows.Forms.DataVisualization.dll"
@@ -33,7 +43,11 @@
 #r "RDotNet.dll"
 #r "RDotNet.NativeLibrary.dll"
 #r "RDotNet.FSharp.dll"
-
+#r "XPlot.Plotly.dll"
+#r "XPlot.GoogleCharts.dll"
+#r "XPlot.GoogleCharts.Deedle.dll"
+#r "Google.DataTable.Net.Wrapper.dll"
+#r "Newtonsoft.Json.dll"
 // ***FsLab.fsx*** (DO NOT REMOVE THIS COMMENT, everything below is copied to the output)
 namespace FsLab
 
@@ -62,19 +76,39 @@ module FsiAutoShow =
   do File.Delete(tempDir)
   do Directory.CreateDirectory(tempDir) |> ignore
 
-  fsi.AddPrinter(fun (chart:FoogleChart) ->
+  let displayHtml html = 
     match server.Value with
     | None -> server := Some (HttpServer.Start("http://localhost:8084/", tempDir))
     | _ -> ()
-    let file = sprintf "chart_%d_%d.html" pid counter.Value
-    let html =
-      chart
-      |> Foogle.Formatting.Google.CreateGoogleChart
-      |> Foogle.Formatting.Google.GoogleChartHtml
+    let file = sprintf "show_%d_%d.html" pid counter.Value
     File.WriteAllText(Path.Combine(tempDir, file), html)
     System.Diagnostics.Process.Start("http://localhost:8084/" + file) |> ignore
     incr counter
+      
+  fsi.AddPrinter(fun (chart:FoogleChart) ->
+    chart
+    |> Foogle.Formatting.Google.CreateGoogleChart
+    |> Foogle.Formatting.Google.GoogleChartHtml
+    |> displayHtml 
     "(Foogle Chart)" )
+
+  fsi.AddPrinter(fun (chart:XPlot.GoogleCharts.GoogleChart) ->
+    let ch = chart |> XPlot.GoogleCharts.Chart.WithSize (800, 600)
+    ch.Html |> displayHtml
+    "(Google Chart)")
+
+  fsi.AddPrinter(fun (chart:XPlot.Plotly.Figure) ->
+    let name = 
+      match chart.Layout with
+      | Some ly -> ly.title
+      | None -> sprintf "XPlot Generated Chart %d" counter.Value
+    chart.Width <- 800
+    chart.Height <- 600
+    """<!DOCTYPE html>
+    <html>
+    <head><title>Plotly Chart</title></head>
+    <body>""" + chart.GetInlineHtml(name) + "</body></html>" |> displayHtml
+    "(Plotly Chart)" )
 #endif
 
 namespace FSharp.Charting
