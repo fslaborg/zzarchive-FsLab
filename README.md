@@ -2,8 +2,8 @@ FsLab
 =====
 
 FsLab is a single package that gives you all you need for doing data science with
-F#. FsLab includes explorative data manipulation library, type providers for easy
-data access, simple charting library, support for integration with R and numerical
+F#. FsLab includes an explorative data manipulation library, type providers for easy
+data access, a simple charting library and support for integration with R and numerical
 computing libraries. All available in a single package and ready to use!
 
 Developer notes
@@ -14,7 +14,7 @@ Developer notes
 The project produces three things:
 
  1. **FsLab** NuGet package with references to all FsLab libraries and `FsLab.fsx` load script
- 2. **FsLab.Runner** NuGet package that is used by Journal template and contains formatters
+ 2. **FsLab.Runner** NuGet package that is used by the Journal template and contains formatters
    (for embedding output into HTML), Journal generation code & styles and build scripts for Journals
  3. **FsLab Journal** Template for Visual Studio (which is a simple wrapper for the above)
 
