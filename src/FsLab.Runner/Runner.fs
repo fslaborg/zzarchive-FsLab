@@ -20,6 +20,8 @@ type ProcessingContext =
     OutputKind : OutputKind 
     /// Format for floating poin numbers. The default is `G4`.
     FloatFormat : string
+    /// Format information for Frames, matrices.
+    FormatConfig : FormatConfig
     /// Template location (see comment on `ProcessingContext.Create`)
     TemplateLocation : string option 
 
@@ -45,10 +47,16 @@ type ProcessingContext =
   ///    default is `"packages/FsLab.Runner"`.
   /// 
   static member Create(root) = 
-    { Root = root; Output = Path.Combine(root, "output")
-      OutputKind = OutputKind.Html; FloatFormat = "G4"
-      TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"))
-      FileWhitelist = None; FailedHandler = ignore; FsiEvaluator = None }
+    { 
+        Root = root; 
+        Output = Path.Combine(root, "output");
+        OutputKind = OutputKind.Html; 
+        FloatFormat = "G4";
+        FormatConfig = FormatConfig.Create();
+        TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"));
+        FileWhitelist = None; 
+        FailedHandler = ignore; 
+        FsiEvaluator = None }
   
   /// Transform the context using the specified function
   member x.With(f:ProcessingContext -> ProcessingContext) = f x
@@ -177,6 +185,7 @@ module internal Runner =
   /// Creates the 'output' directory and puts all formatted script files there
   let processScriptFiles overwrite ctx =
     // Ensure 'output' directory exists
+    Formatters.config <- ctx.FormatConfig
     let root = ctx.Root
     ensureDirectory ctx.Output
 
