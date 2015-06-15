@@ -39,6 +39,13 @@ let tags = "F# fsharp deedle series statistics data science r type provider math
 
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
+/// FAKE's GetPackageVersion does not work for Google.DataTable.Net.Wrapper because
+/// it contains additional zero. Looking at the nuspec file works though...
+let getPackageVersion packages name =
+  let nuspec = Directory.GetFiles(packages @@ name, "*.nuspec") |> Seq.head
+  let doc = System.Xml.Linq.XDocument.Load(nuspec)
+  doc.Descendants(XName.Get("version", doc.Root.Name.NamespaceName)).First().Value
+
 /// List of packages included in FsLab
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages =
@@ -48,7 +55,7 @@ let packages =
     "FSharp.Data"
     "Foogle.Charts"
     "MathNet.Numerics"
-    "MathNet.Numerics.FSharp"    
+    "MathNet.Numerics.FSharp"
     "RProvider"
     "R.NET.Community"
     "R.NET.Community.FSharp"
@@ -58,13 +65,13 @@ let packages =
     "XPlot.GoogleCharts.Deedle"
     "Google.DataTable.Net.Wrapper"
     "Newtonsoft.Json" ]
-  |> List.map (fun p -> p,GetPackageVersion "packages" p)
+  |> List.map (fun p -> p, getPackageVersion "packages" p)
 
 let journalPackages =
   [ "FSharp.Compiler.Service"
     "FSharpVSPowerTools.Core"
     "FSharp.Formatting" ]
- |> List.map (fun p -> p,GetPackageVersion "packages" p)
+ |> List.map (fun p -> p, getPackageVersion "packages" p)
 
 /// Returns the subfolder where the DLLs are located
 let getNetSubfolder package =

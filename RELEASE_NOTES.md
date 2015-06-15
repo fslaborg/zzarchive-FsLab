@@ -21,3 +21,4 @@
 * 0.2.5 - Include Google DataTable wrapper and JSON.NET references
 * 0.2.6 - Autoload Google Charts in the Journal template
 * 0.2.7 - Add fsi printer for XPlot charts
+* 0.3.0 - Use no-op 'fsi' in journal, update dependencies
