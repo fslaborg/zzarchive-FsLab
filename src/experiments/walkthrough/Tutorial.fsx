@@ -93,8 +93,8 @@ countries with the greatest average debt and round the debts.
 Calculating with Math.NET
 -------------------------
 
-If you want to implement a more complex calculation, you can turn Deedle frame
-or series to Math.NET matrix or vector, respectively, and use the linear algebra
+If you want to implement a more complex calculation, you can turn a Deedle frame
+or series to a Math.NET matrix or vector, respectively, and use the linear algebra
 features of Math.NET. For example:
 *)
 open MathNet.Numerics.LinearAlgebra
@@ -116,7 +116,7 @@ Math.NET.
 Embedding sample F# Charting charts
 -----------------------------------
 
-The generated report chan also automatically embed charts created using the 
+The generated report can also automatically embed charts created using the 
 F# Charting library. Here, we plot the debts of the 3 countries with the largest
 debt based on the previous table:
 
@@ -142,14 +142,14 @@ are placed in the `output` folder (together with all the styles and JavaScript f
 that it requires). Then, the runner opens your default web browser with the generated
 file.
 
-If you have multiple files, the runner automatically generates index file with
-links to all your notebooks and opens this instead. You can also create your 
+If you have multiple files, the runner automatically generates an index file with
+links to all your notebooks and opens that instead. You can also create your 
 own index file by adding a file named `Index.fsx` or `Index.md` (if you only 
 want to write Markdown text in your index).
 
 ### Command line
 
-The runner can be also invoked from command line - the template includes a simple
+The runner can be also invoked from the command line - the template includes a simple
 [FAKE][fake] build script that is copied to the root directory of your project
 (if you modify this, it will be overwritten). The build script supports the following
 commands:
@@ -161,7 +161,7 @@ commands:
    and store the results in `output` folder
 
  - `build pdf` Generate LaTeX output as when using `build latex` and then run `pdflatex` 
-   on the files (this only works when you have `pdflatex` accessible in `PATH`
+   on the files (this only works when you have `pdflatex` accessible via the `PATH`
 
  [fslab]: http://www.nuget.org/packages/FsLab
  [fsfmt]: http://tpetricek.github.io/FSharp.Formatting/
