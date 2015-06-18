@@ -23,3 +23,4 @@
 * 0.2.7 - Add fsi printer for XPlot charts
 * 0.3.0 - Use no-op 'fsi' in journal, update dependencies
 * 0.3.1 - Include new F# Formatting styles in FsLab.Runner
+* 0.3.2 - Update Deedle and remove FAKE workaround (now fixed)

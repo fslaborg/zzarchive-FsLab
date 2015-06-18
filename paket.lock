@@ -1,15 +1,15 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
-    Deedle (1.2.0)
-    Deedle.RPlugin (1.2.0)
-      Deedle (>= 1.2.0)
+    Deedle (1.2.1)
+    Deedle.RPlugin (1.2.1)
+      Deedle (>= 1.2.1)
       R.NET.Community (>= 1.6.4)
       R.NET.Community.FSharp (>= 1.6.4)
       RProvider (>= 1.1.12)
     DotNetZip (1.9.3)
     DynamicInterop (0.7.4)
-    FAKE (3.35.1)
+    FAKE (3.35.2)
     Foogle.Charts (0.0.5)
     FSharp.Charting (0.90.10)
     FSharp.Compiler.Service (0.0.90)
@@ -30,7 +30,7 @@ NUGET
       MathNet.Numerics (3.7.0)
     Newtonsoft.Json (6.0.8)
     NuGet.CommandLine (2.8.5)
-    Paket.Core (1.14.0)
+    Paket.Core (1.15.0)
       FSharp.Core
       Newtonsoft.Json
     R.NET.Community (1.6.4)
