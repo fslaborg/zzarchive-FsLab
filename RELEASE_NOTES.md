@@ -24,3 +24,4 @@
 * 0.3.0 - Use no-op 'fsi' in journal, update dependencies
 * 0.3.1 - Include new F# Formatting styles in FsLab.Runner
 * 0.3.2 - Update Deedle and remove FAKE workaround (now fixed)
+* 0.3.3 - Update JSON.NET and other references (to avoid NuGet resolve issues)
