@@ -102,8 +102,6 @@ module FsiAutoShow =
       match chart.Layout with
       | Some ly -> ly.title
       | None -> sprintf "XPlot Generated Chart %d" counter.Value
-    chart.Width <- 800
-    chart.Height <- 600
     """<!DOCTYPE html>
     <html>
     <head><title>Plotly Chart</title></head>
