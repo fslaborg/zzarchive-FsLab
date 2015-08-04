@@ -7,61 +7,6 @@ open System.Reflection
 open System.Collections.Generic
 
 // ----------------------------------------------------------------------------
-// Processing context
-// ----------------------------------------------------------------------------
-
-/// Represents state passed around during processing
-type ProcessingContext = 
-  { /// Root path with journals (see comment on `ProcessingContext.Create`)
-    Root : string 
-    /// Output folder (see comment on `ProcessingContext.Create`)
-    Output : string
-    /// What kind of output should be produced
-    OutputKind : OutputKind 
-    /// Format for floating poin numbers. The default is `G4`.
-    FloatFormat : string
-    /// Format information for Frames, matrices.
-    FormatConfig : FormatConfig
-    /// Template location (see comment on `ProcessingContext.Create`)
-    TemplateLocation : string option 
-
-    /// Set this if you only want to process files in this list.
-    /// (For example, use `["MyJournal.fsx"]` to only generate this one jounral)
-    FileWhitelist : string list option
-    
-    /// Specify an error handler when evaluation fails
-    FailedHandler : FsiEvaluationFailedInfo -> unit
-
-    /// Custom FSI evaluator - you can use this to override the default one
-    /// (but you should call `Journal.wrapFsiEvaluator` on it to register FsLab
-    /// transformations, otherwise it will not do anything useful)
-    FsiEvaluator : IFsiEvaluator option }
-
-  /// Creates a default processing context with all the 
-  /// basic things needed to produce journals. 
-  ///
-  /// ## Parameters
-  ///  - `root` is the root folder where you have your `*.fsx` journals
-  ///  - `output` is an output folder where HTML files are placed
-  ///  - `templateLocation` is the place with `styles` folder. A reasonable
-  ///    default is `"packages/FsLab.Runner"`.
-  /// 
-  static member Create(root) = 
-    { 
-        Root = root; 
-        Output = Path.Combine(root, "output");
-        OutputKind = OutputKind.Html; 
-        FloatFormat = "G4";
-        FormatConfig = FormatConfig.Create();
-        TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"));
-        FileWhitelist = None; 
-        FailedHandler = ignore; 
-        FsiEvaluator = None }
-  
-  /// Transform the context using the specified function
-  member x.With(f:ProcessingContext -> ProcessingContext) = f x
-
-// ----------------------------------------------------------------------------
 // Directory and location helpers
 // ----------------------------------------------------------------------------
 module internal Helpers =
