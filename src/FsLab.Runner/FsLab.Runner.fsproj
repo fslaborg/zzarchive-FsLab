@@ -462,6 +462,7 @@
     </When>
   </Choose>
   <ItemGroup>
+    <Compile Include="Config.fs" />
     <Compile Include="Formatters.fs" />
     <Compile Include="Runner.fs" />
     <Compile Include="Main.fs" />

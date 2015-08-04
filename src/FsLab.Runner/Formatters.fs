@@ -21,8 +21,6 @@ open XPlot
 open System.Windows.Forms
 open FSharp.Charting.ChartTypes
 
-let mutable config = FormatConfig.Create()
-
 /// Extract values from any series using reflection
 let (|SeriesValues|_|) (value:obj) = 
   let iser = value.GetType().GetInterface("ISeries`1")
@@ -138,7 +136,7 @@ let inline formatMathValue (floatFormat:string) = function
   | Float32 v -> v.ToString(floatFormat)
   | v -> v.ToString()
 
-let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
+let formatMatrix config (formatValue: 'T -> string) (matrix: Matrix<'T>) =
   let mappedColumnCount = min (config.MatrixStartColumnCount + config.MatrixEndColumnCount + 1) matrix.ColumnCount
   String.concat Environment.NewLine
     [ "\\begin{bmatrix}"
@@ -149,7 +147,7 @@ let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
         |> String.concat ("\\\\ " + Environment.NewLine)
       "\\end{bmatrix}" ]
 
-let formatVector (formatValue: 'T -> string) (vector: Vector<'T>) =
+let formatVector (config:FormatConfig) (formatValue: 'T -> string) (vector: Vector<'T>) =
   String.concat Environment.NewLine
     [ "\\begin{bmatrix}"
       vector.Enumerate()
@@ -172,7 +170,7 @@ let InlineMultiformatBlock(html, latex) =
 let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
-let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator) =
+let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator) (config:FormatConfig) =
 
   /// Counter for saving files
   let createCounter () = 
@@ -286,10 +284,10 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
           ] }
       |> f.Apply
 
-    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
-    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
-    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
-    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix config (formatMathValue floatFormat)) ]
+    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix config (formatMathValue floatFormat)) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector config (formatMathValue floatFormat)) ]
+    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector config (formatMathValue floatFormat)) ]
 
     | _ -> None 
     

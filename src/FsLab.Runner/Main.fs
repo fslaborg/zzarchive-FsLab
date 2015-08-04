@@ -9,7 +9,7 @@ open FSharp.Literate
 module Journal =
   /// Install formatting functions on the specified `fsiEvaluator`
   let wrapFsiEvaluator homeUrl homeDir floatFormat fsiEvaluator = 
-    Formatters.wrapFsiEvaluator homeUrl homeDir floatFormat fsiEvaluator
+    Formatters.wrapFsiEvaluator homeUrl homeDir floatFormat fsiEvaluator (FormatConfig.Create())
   
   /// Process journals as specified by the provided `ProcessingContext`
   /// and return a list of names and headings of the journals

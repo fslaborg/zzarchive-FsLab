@@ -39,8 +39,10 @@ module internal Helpers =
       | _ -> None)
 
   // Process scripts in the 'root' directory and put them into output
-  let htmlTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
-  let texTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
+  let htmlTemplate (ctx:FsLab.ProcessingContext) = 
+    File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
+  let texTemplate (ctx:FsLab.ProcessingContext) =  
+    File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
 
 // ----------------------------------------------------------------------------
 // Markdown document processing tools
@@ -87,7 +89,7 @@ module internal Runner =
       | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
   /// Generate file for the specified document, using a given template and title
-  let generateFile ctx path (doc:LiterateDocument) title = 
+  let generateFile (ctx:FsLab.ProcessingContext) path (doc:LiterateDocument) title = 
     Formatters.currentOutputKind <- ctx.OutputKind
     if ctx.OutputKind = OutputKind.Html then
       let template = htmlTemplate ctx
@@ -130,7 +132,6 @@ module internal Runner =
   /// Creates the 'output' directory and puts all formatted script files there
   let processScriptFiles overwrite ctx =
     // Ensure 'output' directory exists
-    Formatters.config <- ctx.FormatConfig
     let root = ctx.Root
     ensureDirectory ctx.Output
 
@@ -156,7 +157,7 @@ module internal Runner =
       | None ->
           let fsi = new FsiEvaluator()
           fsi.EvaluationFailed.Add(ctx.FailedHandler)
-          Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi
+          Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi ctx.FormatConfig
       | Some fsi -> fsi
 
     /// Recursively process all files in the directory tree
