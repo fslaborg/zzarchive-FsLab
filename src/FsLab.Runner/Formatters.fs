@@ -201,8 +201,6 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
           match fig.Layout with
           | Some ly -> ly.title
           | None -> sprintf "XPlot Generated Chart %d" (imageCounter())
-        fig.Width <- 600
-        fig.Height <- 300
         Some [ InlineBlock (fig.GetInlineHtml(name)) ]
 
     | :? ChartTypes.GenericChart as ch ->

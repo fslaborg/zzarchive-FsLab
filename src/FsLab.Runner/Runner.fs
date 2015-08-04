@@ -30,12 +30,12 @@ module internal Helpers =
 
   /// Lookup a specified key in a dictionary, possibly
   /// ignoring newlines or spaces in the key.
-  let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) = 
-    [ key; key.Replace("\r\n", ""); key.Replace("\r\n", " "); 
+  let (|LookupKey|_|) (dict:IDictionary<_, _>) (key:string) =
+    [ key; key.Replace("\r\n", ""); key.Replace("\r\n", " ");
       key.Replace("\n", ""); key.Replace("\n", " ") ]
     |> Seq.tryPick (fun key ->
       match dict.TryGetValue(key) with
-      | true, v -> Some v 
+      | true, v -> Some v
       | _ -> None)
 
   // Process scripts in the 'root' directory and put them into output
@@ -57,7 +57,7 @@ module internal Runner =
       | Literal text | InlineCode text -> [text]
       | _ -> [])
 
-  /// Extract the text of the <h1> element 
+  /// Extract the text of the <h1> element
   let rec extractTitle (pars:MarkdownParagraphs) =
     pars |> List.tryPick (function
       | Heading(1, text) -> Some(String.concat " " (extractText text))
@@ -66,25 +66,25 @@ module internal Runner =
 
   /// In LaTeX documents, we use the first heading as document name
   /// so we can remove it from the rest of the document
-  let rec dropTitle (pars:MarkdownParagraphs) : MarkdownParagraphs = 
+  let rec dropTitle (pars:MarkdownParagraphs) : MarkdownParagraphs =
     pars |> List.collect (function
       | Heading(1, text) -> []
-      | Matching.ParagraphNested(o, pars) -> 
+      | Matching.ParagraphNested(o, pars) ->
           [ Matching.ParagraphNested(o, pars |> List.map dropTitle) ]
       | other -> [other] )
 
   /// When generating LaTeX, we need to save all files locally
-  let rec downloadSpanImages (saver, links) = function 
-    | IndirectImage(body, _, LookupKey links (link, title)) 
+  let rec downloadSpanImages (saver, links) = function
+    | IndirectImage(body, _, LookupKey links (link, title))
     | DirectImage(body, (link, title)) -> DirectImage(body, (saver link, title))
     | Matching.SpanNode(s, spans) -> Matching.SpanNode(s, List.map (downloadSpanImages (saver, links)) spans)
-    | Matching.SpanLeaf(l) -> Matching.SpanLeaf(l) 
+    | Matching.SpanLeaf(l) -> Matching.SpanLeaf(l)
 
-  let rec downloadImages ctx (pars:MarkdownParagraphs) : MarkdownParagraphs = 
+  let rec downloadImages ctx (pars:MarkdownParagraphs) : MarkdownParagraphs =
     pars |> List.map (function
       | Matching.ParagraphSpans(s, spans) ->
           Matching.ParagraphSpans(s, List.map (downloadSpanImages ctx) spans)
-      | Matching.ParagraphNested(o, pars) -> 
+      | Matching.ParagraphNested(o, pars) ->
           Matching.ParagraphNested(o, List.map (downloadImages ctx) pars)
       | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
@@ -93,7 +93,7 @@ module internal Runner =
     Formatters.currentOutputKind <- ctx.OutputKind
     if ctx.OutputKind = OutputKind.Html then
       let template = htmlTemplate ctx
-      let html = 
+      let html =
         template.Replace("{tooltips}", doc.FormattedTips)
                 .Replace("{document}", Literate.WriteHtml(doc))
                 .Replace("{page-title}", title)
@@ -101,8 +101,8 @@ module internal Runner =
     else
       // Download images so that they can be embedded
       use wc = new System.Net.WebClient()
-      let counter = ref 0 
-      let saver (url:string) = 
+      let counter = ref 0
+      let saver (url:string) =
         if url.StartsWith("http") || url.StartsWith("https") then
           incr counter
           let ext = Path.GetExtension(url)
@@ -112,14 +112,14 @@ module internal Runner =
         else url
 
       ensureDirectory (ctx.Output @@ "savedimages" )
-      let pars = 
+      let pars =
         doc.Paragraphs
-        |> downloadImages (saver, doc.DefinedLinks) 
+        |> downloadImages (saver, doc.DefinedLinks)
         |> dropTitle
 
       let doc = doc.With(paragraphs = pars)
       let template = texTemplate ctx
-      let tex = 
+      let tex =
         template.Replace("{tooltips}", doc.FormattedTips)
                 .Replace("{contents}", Literate.WriteLatex(doc))
                 .Replace("{page-title}", title)
@@ -136,59 +136,59 @@ module internal Runner =
     ensureDirectory ctx.Output
 
     // use the provided template location or use one in the NuGet package source
-    let templateLocation = 
+    let templateLocation =
       match ctx.TemplateLocation with
       | Some loc -> loc
-      | _ ->      
-        let rootPackages = 
+      | _ ->
+        let rootPackages =
           if Directory.Exists(root @@ "packages") then root @@ "packages"
           else root @@ "../packages"
-      
-        Directory.GetDirectories(rootPackages) |> Seq.find (fun p -> 
+
+        Directory.GetDirectories(rootPackages) |> Seq.find (fun p ->
             Path.GetFileName(p).StartsWith "FsLab.Runner")
-  
+
     // Copy content of 'styles' to the output
     copyFiles (templateLocation @@ "styles") (ctx.Output @@ "styles")
 
-    // FSI evaluator will put images into 'output/images' and 
+    // FSI evaluator will put images into 'output/images' and
     // refernece them as './images/image1.png' in the HTML
-    let fsi = 
+    let fsi =
       match ctx.FsiEvaluator with
       | None ->
-          let fsi = new FsiEvaluator()
+          let fsi = new FsiEvaluator(fsiObj = FsiEvaluatorConfig.CreateNoOpFsiObject())
           fsi.EvaluationFailed.Add(ctx.FailedHandler)
           Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi ctx.FormatConfig
       | Some fsi -> fsi
 
     /// Recursively process all files in the directory tree
-    let processDirectory indir outdir = 
+    let processDirectory indir outdir =
       ensureDirectory outdir
       // Get all *.fsx and *.md files and yield functions to parse them
       // If a whitelist exist, use only files in whitelist
       let filterWhitelist (file:string) : bool =
-          match ctx.FileWhitelist with 
+          match ctx.FileWhitelist with
            | Some(files) -> files |> List.exists(fun f -> file.EndsWith(f))
            | None -> true
-      let files = 
+      let files =
         [ for f in Directory.GetFiles(indir, "*.fsx") |> Array.filter filterWhitelist do
             if Path.GetFileNameWithoutExtension(f).ToLower() <> "build" then
               yield f, fun () -> Literate.ParseScriptFile(f, fsiEvaluator=fsi)
           for f in Directory.GetFiles(indir, "*.md") |> Array.filter filterWhitelist  do
-            yield f, fun () -> Literate.ParseMarkdownFile(f, fsiEvaluator=fsi) ]    
-    
+            yield f, fun () -> Literate.ParseMarkdownFile(f, fsiEvaluator=fsi) ]
+
       // If whitelist is specified, skip all files not in the white list
-      let files = 
-        match ctx.FileWhitelist with 
+      let files =
+        match ctx.FileWhitelist with
         | None -> files
-        | Some(xs)-> 
+        | Some(xs)->
             let wfs = set xs
             files |> List.filter (fun (f, _) -> wfs.Contains(Path.GetFileName(f)))
-    
+
       // Process all the files that have not changed since the last time
       [ for file, func in files do
           let name = Path.GetFileNameWithoutExtension(file)
           let output = outdir @@ (name + ".html")
-        
+
           // When overwrite is specified, we always regenerate (useful on first run
           // because then the function returns all files with their titles too!)
           let changeTime = File.GetLastWriteTime(file)
@@ -216,16 +216,16 @@ module internal Runner =
         // If there is custom default or index file, use it
         let existingDefault =
           Directory.GetFiles(ctx.Root) |> Seq.tryPick (fun f ->
-            match Path.GetFileNameWithoutExtension(f).ToLower() with 
+            match Path.GetFileNameWithoutExtension(f).ToLower() with
             | "default" | "index" -> Some(Path.GetFileNameWithoutExtension(f) + ".html")
             | _ -> None)
         match existingDefault with
         | None ->
             // Otherwise, generate simple page with list of all files
-            let items = 
+            let items =
               [ for file, title in generated ->
                   [Paragraph [ DirectLink([Literal title], (file,None)) ]] ]
-            let pars = 
+            let pars =
               [ Heading(1, [Literal "FsLab Journals"])
                 ListBlock(Unordered, items) ]
             let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)

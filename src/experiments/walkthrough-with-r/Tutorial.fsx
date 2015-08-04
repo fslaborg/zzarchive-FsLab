@@ -94,8 +94,8 @@ countries with the greatest average debt and round the debts.
 Calculating with Math.NET
 -------------------------
 
-If you want to implement a more complex calculation, you can turn Deedle frame
-or series to Math.NET matrix or vector, respectively, and use the linear algebra
+If you want to implement a more complex calculation, you can turn a Deedle frame
+or series to a Math.NET matrix or vector, respectively, and use the linear algebra
 features of Math.NET. For example:
 *)
 open MathNet.Numerics.LinearAlgebra
@@ -117,7 +117,7 @@ Math.NET.
 Embedding sample F# Charting charts
 -----------------------------------
 
-The generated report chan also automatically embed charts created using the 
+The generated report can also automatically embed charts created using the 
 F# Charting library. Here, we plot the debts of the 3 countries with the largest
 debt based on the previous table:
 
@@ -172,7 +172,7 @@ F# side.
 Now, we can use `stack` function to get a frame containing row keys, column keys and 
 values. This gives us a list of pairs of countries and their correlation. We get only
 pairs where the first country is before the second (alphabetically) to remove self-correlations
-and dupliactes. Then we sort the countries and take the 5 most correlated:
+and duplicates. Then we sort the countries and take the 5 most correlated:
 *)
 
 (*** define-output:cor ***)
@@ -194,7 +194,7 @@ are placed in the `output` folder (together with all the styles and JavaScript f
 that it requires). Then, the runner opens your default web browser with the generated
 file.
 
-If you have multiple files, the runner automatically generates index file with
+If you have multiple files, the runner automatically generates an index file with
 links to all your notebooks and opens this instead. You can also create your 
 own index file by adding a file named `Index.fsx` or `Index.md` (if you only 
 want to write Markdown text in your index).

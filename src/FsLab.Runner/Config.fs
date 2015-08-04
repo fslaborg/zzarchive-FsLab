@@ -108,16 +108,15 @@ type ProcessingContext =
   ///    default is `"packages/FsLab.Runner"`.
   /// 
   static member Create(root) = 
-    { 
-        Root = root; 
-        Output = Path.Combine(root, "output");
-        OutputKind = OutputKind.Html; 
-        FloatFormat = "G4";
-        FormatConfig = FormatConfig.Create();
-        TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"));
-        FileWhitelist = None; 
-        FailedHandler = ignore; 
-        FsiEvaluator = None }
+    { Root = root; 
+      Output = Path.Combine(root, "output");
+      OutputKind = OutputKind.Html; 
+      FloatFormat = "G4";
+      FormatConfig = FormatConfig.Create();
+      TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"));
+      FileWhitelist = None; 
+      FailedHandler = ignore; 
+      FsiEvaluator = None }
   
   /// Transform the context using the specified function
   member x.With(f:ProcessingContext -> ProcessingContext) = f x

@@ -48,7 +48,7 @@ let packages =
     "FSharp.Data"
     "Foogle.Charts"
     "MathNet.Numerics"
-    "MathNet.Numerics.FSharp"    
+    "MathNet.Numerics.FSharp"
     "RProvider"
     "R.NET.Community"
     "R.NET.Community.FSharp"
@@ -58,13 +58,13 @@ let packages =
     "XPlot.GoogleCharts.Deedle"
     "Google.DataTable.Net.Wrapper"
     "Newtonsoft.Json" ]
-  |> List.map (fun p -> p,GetPackageVersion "packages" p)
+  |> List.map (fun p -> p, GetPackageVersion "packages" p)
 
 let journalPackages =
   [ "FSharp.Compiler.Service"
     "FSharpVSPowerTools.Core"
     "FSharp.Formatting" ]
- |> List.map (fun p -> p,GetPackageVersion "packages" p)
+ |> List.map (fun p -> p, GetPackageVersion "packages" p)
 
 /// Returns the subfolder where the DLLs are located
 let getNetSubfolder package =

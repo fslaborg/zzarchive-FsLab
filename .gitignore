@@ -7,4 +7,5 @@ packages
 *.userprefs
 .paket/paket.exe
 .DS_Store
+Google.DataTable.Net.Wrapper.XML
 nuget

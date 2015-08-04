@@ -21,3 +21,9 @@
 * 0.2.5 - Include Google DataTable wrapper and JSON.NET references
 * 0.2.6 - Autoload Google Charts in the Journal template
 * 0.2.7 - Add fsi printer for XPlot charts
+* 0.3.0 - Use no-op 'fsi' in journal, update dependencies
+* 0.3.1 - Include new F# Formatting styles in FsLab.Runner
+* 0.3.2 - Update Deedle and remove FAKE workaround (now fixed)
+* 0.3.3 - Update JSON.NET and other references (to avoid NuGet resolve issues)
+* 0.3.4 - Fixed Plotly chart size issue. Removed default (#91, #93)
+* 0.3.5 - Update Deedle (including BigDeedle release)
