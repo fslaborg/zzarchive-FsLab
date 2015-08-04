@@ -14,27 +14,6 @@ open XPlot
 // and frames, F# Charting charts, System.Image values and Math.NET matrices & vectors
 // --------------------------------------------------------------------------------------
 
-// How many columns and rows from frame should be rendered
-let startColumnCount = 3
-let endColumnCount = 3
-
-let startRowCount = 8
-let endRowCount = 4
-
-// How many items from a series should be rendered
-let startItemCount = 5
-let endItemCount = 3
-
-// How many columns and rows from a matrix should be rendered
-let matrixStartColumnCount = 7
-let matrixEndColumnCount = 2
-let matrixStartRowCount = 10
-let matrixEndRowCount = 4
-
-// How many items from a vector should be rendered
-let vectorStartItemCount = 7
-let vectorEndItemCount = 2
-
 // --------------------------------------------------------------------------------------
 // Helper functions etc.
 // --------------------------------------------------------------------------------------
@@ -78,14 +57,6 @@ let mapSteps (startCount, endCount) f g input =
   |> Seq.map f |> Seq.startAndEnd startCount endCount
   |> Seq.map (function Choice1Of3 v | Choice3Of3 v -> g (Some v) | _ -> g None)
   |> List.ofSeq
-
-// Tuples with the counts, for easy use later on
-let fcols = startColumnCount, endColumnCount
-let frows = startRowCount, endRowCount
-let sitms = startItemCount, endItemCount
-let mcols = matrixStartColumnCount, matrixEndColumnCount
-let mrows = matrixStartRowCount, matrixEndRowCount
-let vitms = vectorStartItemCount, vectorEndItemCount
 
 /// Reasonably nice default style for charts
 let chartStyle ch =
@@ -165,22 +136,22 @@ let inline formatMathValue (floatFormat:string) = function
   | Float32 v -> v.ToString(floatFormat)
   | v -> v.ToString()
 
-let formatMatrix (formatValue: 'T -> string) (matrix: Matrix<'T>) =
-  let mappedColumnCount = min (matrixStartColumnCount + matrixEndColumnCount + 1) matrix.ColumnCount
+let formatMatrix config (formatValue: 'T -> string) (matrix: Matrix<'T>) =
+  let mappedColumnCount = min (config.MatrixStartColumnCount + config.MatrixEndColumnCount + 1) matrix.ColumnCount
   String.concat Environment.NewLine
     [ "\\begin{bmatrix}"
       matrix.EnumerateRows()
-        |> mapSteps mrows id (function
-          | Some row -> row |> mapSteps mcols id (function Some v -> formatValue v | _ -> "\\cdots") |> String.concat " & "
-          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> String.concat " & ")
+        |> mapSteps config.mrows id (function
+          | Some row -> row |> mapSteps config.mcols id (function Some v -> formatValue v | _ -> "\\cdots") |> String.concat " & "
+          | None -> Array.zeroCreate matrix.ColumnCount |> mapSteps config.mcols id (function Some v -> "\\vdots" | _ -> "\\ddots") |> String.concat " & ")
         |> String.concat ("\\\\ " + Environment.NewLine)
       "\\end{bmatrix}" ]
 
-let formatVector (formatValue: 'T -> string) (vector: Vector<'T>) =
+let formatVector (config:FormatConfig) (formatValue: 'T -> string) (vector: Vector<'T>) =
   String.concat Environment.NewLine
     [ "\\begin{bmatrix}"
       vector.Enumerate()
-        |> mapSteps vitms id (function | Some v -> formatValue v | _ -> "\\cdots")
+        |> mapSteps config.vitms id (function | Some v -> formatValue v | _ -> "\\cdots")
         |> String.concat " & "
       "\\end{bmatrix}" ]
 
@@ -199,7 +170,7 @@ let InlineMultiformatBlock(html, latex) =
 let MathDisplay(latex) = Span [ LatexDisplayMath latex ]
 
 /// Builds FSI evaluator that can render System.Image, F# Charts, series & frames
-let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator) =
+let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator) (config:FormatConfig) =
 
   /// Counter for saving files
   let createCounter () = 
@@ -282,9 +253,9 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
 
     | SeriesValues s ->
         // Pretty print series!
-        let heads  = s |> mapSteps sitms fst (function Some k -> td (k.ToString()) | _ -> td " ... ")
-        let row    = s |> mapSteps sitms snd (function Some v -> formatValue floatFormat "N/A" (OptionalValue.asOption v) | _ -> td " ... ")
-        let aligns = s |> mapSteps sitms id (fun _ -> AlignDefault)
+        let heads  = s |> mapSteps config.sitms fst (function Some k -> td (k.ToString()) | _ -> td " ... ")
+        let row    = s |> mapSteps config.sitms snd (function Some v -> formatValue floatFormat "N/A" (OptionalValue.asOption v) | _ -> td " ... ")
+        let aligns = s |> mapSteps config.sitms id (fun _ -> AlignDefault)
         [ InlineMultiformatBlock("<div class=\"deedleseries\">", "\\vspace{1em}")
           TableBlock(Some ((td "Keys")::heads), AlignDefault::aligns, [ (td "Values")::row ]) 
           InlineMultiformatBlock("</div>","\\vspace{1em}") ] |> Some
@@ -293,16 +264,16 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
       // Pretty print frame!
       {new IFrameOperation<_> with
         member x.Invoke(f) = 
-          let heads  = f.ColumnKeys |> mapSteps fcols id (function Some k -> td (k.ToString()) | _ -> td " ... ")
-          let aligns = f.ColumnKeys |> mapSteps fcols id (fun _ -> AlignDefault)
+          let heads  = f.ColumnKeys |> mapSteps config.fcols id (function Some k -> td (k.ToString()) | _ -> td " ... ")
+          let aligns = f.ColumnKeys |> mapSteps config.fcols id (fun _ -> AlignDefault)
           let rows = 
-            f.Rows |> Series.observationsAll |> mapSteps frows id (fun item ->
+            f.Rows |> Series.observationsAll |> mapSteps config.frows id (fun item ->
               let def, k, data = 
                 match item with 
                 | Some(k, Some d) -> "N/A", k.ToString(), Series.observationsAll d |> Seq.map snd 
                 | Some(k, _) -> "N/A", k.ToString(), f.ColumnKeys |> Seq.map (fun _ -> None)
                 | None -> " ... ", " ... ", f.ColumnKeys |> Seq.map (fun _ -> None)
-              let row = data |> mapSteps fcols id (function Some v -> formatValue floatFormat def v | _ -> td " ... ")
+              let row = data |> mapSteps config.fcols id (function Some v -> formatValue floatFormat def v | _ -> td " ... ")
               (td k)::row )
           Some [ 
             InlineMultiformatBlock("<div class=\"deedleframe\">","\\vspace{1em}")
@@ -311,10 +282,10 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
           ] }
       |> f.Apply
 
-    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
-    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix (formatMathValue floatFormat)) ]
-    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
-    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector (formatMathValue floatFormat)) ]
+    | :? Matrix<float> as m -> Some [ MathDisplay (m |> formatMatrix config (formatMathValue floatFormat)) ]
+    | :? Matrix<float32> as m -> Some [ MathDisplay (m |> formatMatrix config (formatMathValue floatFormat)) ]
+    | :? Vector<float> as v -> Some [ MathDisplay (v |> formatVector config (formatMathValue floatFormat)) ]
+    | :? Vector<float32> as v -> Some [ MathDisplay (v |> formatVector config (formatMathValue floatFormat)) ]
 
     | _ -> None 
     

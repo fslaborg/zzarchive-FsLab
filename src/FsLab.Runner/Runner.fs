@@ -7,53 +7,6 @@ open System.Reflection
 open System.Collections.Generic
 
 // ----------------------------------------------------------------------------
-// Processing context
-// ----------------------------------------------------------------------------
-
-/// Represents state passed around during processing
-type ProcessingContext =
-  { /// Root path with journals (see comment on `ProcessingContext.Create`)
-    Root : string
-    /// Output folder (see comment on `ProcessingContext.Create`)
-    Output : string
-    /// What kind of output should be produced
-    OutputKind : OutputKind
-    /// Format for floating poin numbers. The default is `G4`.
-    FloatFormat : string
-    /// Template location (see comment on `ProcessingContext.Create`)
-    TemplateLocation : string option
-
-    /// Set this if you only want to process files in this list.
-    /// (For example, use `["MyJournal.fsx"]` to only generate this one jounral)
-    FileWhitelist : string list option
-
-    /// Specify an error handler when evaluation fails
-    FailedHandler : FsiEvaluationFailedInfo -> unit
-
-    /// Custom FSI evaluator - you can use this to override the default one
-    /// (but you should call `Journal.wrapFsiEvaluator` on it to register FsLab
-    /// transformations, otherwise it will not do anything useful)
-    FsiEvaluator : IFsiEvaluator option }
-
-  /// Creates a default processing context with all the
-  /// basic things needed to produce journals.
-  ///
-  /// ## Parameters
-  ///  - `root` is the root folder where you have your `*.fsx` journals
-  ///  - `output` is an output folder where HTML files are placed
-  ///  - `templateLocation` is the place with `styles` folder. A reasonable
-  ///    default is `"packages/FsLab.Runner"`.
-  ///
-  static member Create(root) =
-    { Root = root; Output = Path.Combine(root, "output")
-      OutputKind = OutputKind.Html; FloatFormat = "G4"
-      TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"))
-      FileWhitelist = None; FailedHandler = ignore; FsiEvaluator = None }
-
-  /// Transform the context using the specified function
-  member x.With(f:ProcessingContext -> ProcessingContext) = f x
-
-// ----------------------------------------------------------------------------
 // Directory and location helpers
 // ----------------------------------------------------------------------------
 module internal Helpers =
@@ -86,8 +39,10 @@ module internal Helpers =
       | _ -> None)
 
   // Process scripts in the 'root' directory and put them into output
-  let htmlTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
-  let texTemplate ctx = File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
+  let htmlTemplate (ctx:FsLab.ProcessingContext) = 
+    File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
+  let texTemplate (ctx:FsLab.ProcessingContext) =  
+    File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
 
 // ----------------------------------------------------------------------------
 // Markdown document processing tools
@@ -134,7 +89,7 @@ module internal Runner =
       | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
   /// Generate file for the specified document, using a given template and title
-  let generateFile ctx path (doc:LiterateDocument) title =
+  let generateFile (ctx:FsLab.ProcessingContext) path (doc:LiterateDocument) title = 
     Formatters.currentOutputKind <- ctx.OutputKind
     if ctx.OutputKind = OutputKind.Html then
       let template = htmlTemplate ctx
@@ -202,7 +157,7 @@ module internal Runner =
       | None ->
           let fsi = new FsiEvaluator(fsiObj = FsiEvaluatorConfig.CreateNoOpFsiObject())
           fsi.EvaluationFailed.Add(ctx.FailedHandler)
-          Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi
+          Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi ctx.FormatConfig
       | Some fsi -> fsi
 
     /// Recursively process all files in the directory tree
