@@ -27,4 +27,4 @@
 * 0.3.3 - Update JSON.NET and other references (to avoid NuGet resolve issues)
 * 0.3.4 - Fixed Plotly chart size issue. Removed default (#91, #93)
 * 0.3.5 - Update Deedle (including BigDeedle release)
-* 0.3.6 - Add journal extension support for Visual Studio 2015 (#82)
+* 0.3.6 - Add journal extension support for Visual Studio 2012 and 2015 (#23, #82)
