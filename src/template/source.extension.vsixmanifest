@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="FsLab.Journal-1" Version="0.3.5" Language="en-US" Publisher="F# Data Science working group" />
+    <Identity Id="FsLab.Journal-1" Version="0.3.6" Language="en-US" Publisher="F# Data Science working group" />
     <DisplayName>FsLab Journal</DisplayName>
     <Description xml:space="preserve">Template that makes it easy to do interactive data analysis using F# Interactive and produce nice HTML reports of your work.</Description>
     <MoreInfo>http://www.fslab.org</MoreInfo>
@@ -10,7 +10,7 @@
     <Tags>f# data science fslab</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,12.0,15.0]" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,15.0]" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
