@@ -23,8 +23,6 @@ open FSharp.Literate
 // Runner configuration - You can change some basic settings of ProcessingContext here
 // --------------------------------------------------------------------------------------
 
-let localPort = 8088
-
 let handleError(err:FsiEvaluationFailedInfo) =
     sprintf "Evaluating F# snippet failed:\n%s\nThe snippet evaluated:\n%s" err.StdErr err.Text
     |> traceImportant
@@ -44,13 +42,29 @@ open Suave
 open Suave.Web
 open Suave.Http
 open Suave.Http.Files
+open Suave.Sockets
+open Suave.Sockets.Control
+open Suave.Sockets.AsyncSocket
+open Suave.WebSocket
+open Suave.Utils
 
 let generateJournals ctx =
     let builtFiles = Journal.processJournals ctx
     traceImportant "All journals updated."
     Journal.getIndexJournal ctx builtFiles
 
-let startWebServer fileName =
+let refreshEvent = new Event<_>()
+
+let socketHandler (webSocket : WebSocket) =
+  fun cx -> socket {
+    while true do
+      let! refreshed =
+        Control.Async.AwaitEvent(refreshEvent.Publish)
+        |> Suave.Sockets.SocketOp.ofAsync
+      do! webSocket.send Text (UTF8.bytes "refreshed") true
+  }
+
+let startWebServer fileName localPort =
     let defaultBinding = defaultConfig.bindings.[0]
     let withPort = { defaultBinding.socketBinding with port = uint16 localPort }
     let serverConfig =
@@ -58,12 +72,14 @@ let startWebServer fileName =
             bindings = [ { defaultBinding with socketBinding = withPort } ]
             homeFolder = Some ctx.Output }
     let app =
+      choose [
+        Applicatives.path "/websocket" >>= handShake socketHandler
         Writers.setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
         >>= Writers.setHeader "Pragma" "no-cache"
         >>= Writers.setHeader "Expires" "0"
-        >>= browseHome
+        >>= browseHome ]
     startWebServerAsync serverConfig app |> snd |> Async.Start
-    Diagnostics.Process.Start(sprintf "http://localhost:%d/%s" localPort fileName) |> ignore
+
 
 let handleWatcherEvents (e:IO.FileSystemEventArgs) =
     let fi = fileInfo e.FullPath
@@ -71,6 +87,8 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
     if fi.Attributes.HasFlag IO.FileAttributes.Hidden ||
        fi.Attributes.HasFlag IO.FileAttributes.Directory then ()
     else Journal.updateJournals ctx |> ignore
+
+    refreshEvent.Trigger()
 
 // --------------------------------------------------------------------------------------
 // Build targets - for example, run `build GenerateLatex` to produce latex output
@@ -100,16 +118,17 @@ Target "latex" (fun _ ->
 )
 
 Target "run" (fun _ ->
+    let port = int (getBuildParamOrDefault "port" "8083")
     use watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
     watcher.EnableRaisingEvents <- true
     watcher.IncludeSubdirectories <- true
     watcher.Changed.Add(handleWatcherEvents)
     watcher.Created.Add(handleWatcherEvents)
     watcher.Renamed.Add(handleWatcherEvents)
-    startWebServer(defaultArg indexJournal.Value "")
+    startWebServer (defaultArg indexJournal.Value "") port
 
     traceImportant "Waiting for journal edits. Press any key to stop."
-    System.Console.ReadKey() |> ignore
+    System.Threading.Thread.Sleep -1
 )
 
 Target "pdf" (fun _ ->
