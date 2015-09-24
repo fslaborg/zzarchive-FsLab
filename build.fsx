@@ -48,6 +48,8 @@ open Suave.Sockets.AsyncSocket
 open Suave.WebSocket
 open Suave.Utils
 
+let localPort = 8088
+
 let generateJournals ctx =
     let builtFiles = Journal.processJournals ctx
     traceImportant "All journals updated."
@@ -64,7 +66,7 @@ let socketHandler (webSocket : WebSocket) =
       do! webSocket.send Text (UTF8.bytes "refreshed") true
   }
 
-let startWebServer fileName localPort =
+let startWebServer fileName =
     let defaultBinding = defaultConfig.bindings.[0]
     let withPort = { defaultBinding.socketBinding with port = uint16 localPort }
     let serverConfig =
@@ -118,14 +120,13 @@ Target "latex" (fun _ ->
 )
 
 Target "run" (fun _ ->
-    let port = int (getBuildParamOrDefault "port" "8088")
     use watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
     watcher.EnableRaisingEvents <- true
     watcher.IncludeSubdirectories <- true
     watcher.Changed.Add(handleWatcherEvents)
     watcher.Created.Add(handleWatcherEvents)
     watcher.Renamed.Add(handleWatcherEvents)
-    startWebServer (defaultArg indexJournal.Value "") port
+    startWebServer (defaultArg indexJournal.Value "")
 
     traceImportant "Waiting for journal edits. Press any key to stop."
     System.Threading.Thread.Sleep -1
