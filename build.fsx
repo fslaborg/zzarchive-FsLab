@@ -118,7 +118,7 @@ Target "latex" (fun _ ->
 )
 
 Target "run" (fun _ ->
-    let port = int (getBuildParamOrDefault "port" "8083")
+    let port = int (getBuildParamOrDefault "port" "8088")
     use watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
     watcher.EnableRaisingEvents <- true
     watcher.IncludeSubdirectories <- true
