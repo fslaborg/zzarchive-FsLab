@@ -24,12 +24,16 @@
       google.load("visualization", "1.1", { packages: ["corechart", "annotationchart", "calendar", "gauge", "geochart", "map", "sankey", "table", "timeline", "treemap"] })
     </script>
     <script language="javascript" type="text/javascript">
-        function init()
-        {
-            websocket = new WebSocket("ws://localhost:8088/websocket");
-            websocket.onmessage = function(evt) { location.reload(); };
-        }
-        window.addEventListener("load", init, false);
+        try {
+          function init()
+          {
+              websocket = new WebSocket("ws://localhost:8088/websocket");
+              websocket.onmessage = function(evt) { location.reload(); };
+          }
+          window.addEventListener("load", init, false);
+        } catch (e) {
+          //silently ignore lack of websockets
+        }   
     </script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
