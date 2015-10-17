@@ -3,13 +3,11 @@
 // Reference FsLab together with FAKE for building & Suave for hosting Journals
 // --------------------------------------------------------------------------------------
 
+#load "packages/FSharp.Formatting/FSharp.Formatting.fsx"
+#load "packages/FsLab/FsLab.fsx"
 #I "packages/FAKE/tools"
 #I "packages/Suave/lib/net40"
 #I "packages/FsLab.Runner/lib/net40"
-
-#load "packages/FsLab/FsLab.fsx"
-#load "packages/FSharp.Formatting/FSharp.Formatting.fsx"
-#r "FSharp.Literate.dll"
 #r "FsLab.Runner.dll"
 #r "FakeLib.dll"
 #r "Suave.dll"
