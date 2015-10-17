@@ -1,0 +1,10 @@
+[WebPreview]
+linuxPrefix = "mono"
+command = "packages/FAKE/tools/FAKE.exe"
+host = "localhost"
+port = 8088
+script = "build.fsx"
+build = "run"
+startString = "listener started"
+parameters = ["--fsiargs", "-d:NO_FSI_ADDPRINTER"]
+startingPage = "Tutorial.html"
