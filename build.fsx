@@ -124,6 +124,20 @@ Target "run" (fun _ ->
     watcher.Changed.Add(handleWatcherEvents)
     watcher.Created.Add(handleWatcherEvents)
     watcher.Renamed.Add(handleWatcherEvents)
+    let fileName = (defaultArg indexJournal.Value "")
+    startWebServer fileName
+
+    Diagnostics.Process.Start(sprintf "http://localhost:%d/%s" localPort fileName) |> ignore
+    System.Console.ReadKey() |> ignore
+)
+
+Target "webpreview" (fun _ ->
+    use watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
+    watcher.EnableRaisingEvents <- true
+    watcher.IncludeSubdirectories <- true
+    watcher.Changed.Add(handleWatcherEvents)
+    watcher.Created.Add(handleWatcherEvents)
+    watcher.Renamed.Add(handleWatcherEvents)
     startWebServer (defaultArg indexJournal.Value "")
 
     traceImportant "Waiting for journal edits. Press any key to stop."
