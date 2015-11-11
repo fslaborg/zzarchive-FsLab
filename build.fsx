@@ -46,7 +46,7 @@ open Suave.Sockets.AsyncSocket
 open Suave.WebSocket
 open Suave.Utils
 
-let localPort = 8088
+let localPort = 8901
 
 let generateJournals ctx =
     let builtFiles = Journal.processJournals ctx
