@@ -55,6 +55,9 @@ NUGET
 HTTP
   remote: http://raw.githubusercontent.com
   specs:
+    build.cmd (/fslaborg/FsLab.Templates/journal/build.cmd)
+    build.fsx (/fslaborg/FsLab.Templates/journal/build.fsx)
+    build.sh (/fslaborg/FsLab.Templates/journal/build.sh)
     FsLab.Journal.fsproj (/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj)
     Runner.fs (/fslaborg/FsLab.Templates/journal/Runner.fs)
     Tutorial.fsx (/fslaborg/FsLab.Templates/journal/Tutorial.fsx)

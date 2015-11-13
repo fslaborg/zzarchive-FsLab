@@ -24,3 +24,7 @@ nuget XPlot.GoogleCharts.Deedle
 http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Runner.fs
 http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Tutorial.fsx
 http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj 
+
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.fsx
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.sh
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.cmd

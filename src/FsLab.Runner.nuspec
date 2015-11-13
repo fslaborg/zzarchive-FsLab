@@ -24,8 +24,8 @@
     <file src="..\src\misc\styles\template.html" target="styles" />
     <file src="..\src\misc\styles\template.tex" target="styles" />
     <file src="..\src\misc\styles\tips.js" target="styles" />
-    <file src="..\src\misc\tools\build.fsx" target="tools" />
-    <file src="..\src\misc\tools\build.sh" target="tools" />
-    <file src="..\src\misc\tools\build.cmd" target="tools" />
+    <file src="..\paket-files\raw.githubusercontent.com\build.fsx" target="tools" />
+    <file src="..\paket-files\raw.githubusercontent.com\build.sh" target="tools" />
+    <file src="..\paket-files\raw.githubusercontent.com\build.cmd" target="tools" />
   </files>
 </package>
