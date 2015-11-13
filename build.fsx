@@ -199,6 +199,8 @@ Target "GenerateTemplate" (fun _ ->
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
+  CopyRecursive "paket-files/raw.githubusercontent.com" "temp/journal/" true |> ignore
+  DeleteFile "temp/journal/paket.version"
   ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"

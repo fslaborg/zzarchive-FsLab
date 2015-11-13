@@ -52,3 +52,9 @@ NUGET
       Http.fs
       Newtonsoft.Json
     Zlib.Portable (1.11.0) - framework: portable-net40+sl50+wp80+win80
+HTTP
+  remote: http://raw.githubusercontent.com
+  specs:
+    FsLab.Journal.fsproj (/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj)
+    Runner.fs (/fslaborg/FsLab.Templates/journal/Runner.fs)
+    Tutorial.fsx (/fslaborg/FsLab.Templates/journal/Tutorial.fsx)

@@ -10,3 +10,4 @@ packages
 .DS_Store
 Google.DataTable.Net.Wrapper.XML
 nuget
+paket-files

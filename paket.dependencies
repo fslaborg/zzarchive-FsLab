@@ -18,3 +18,9 @@ nuget DotNetZip
 nuget XPlot.Plotly
 nuget XPlot.GoogleCharts
 nuget XPlot.GoogleCharts.Deedle
+
+// Cannot do the following, because that copies all template dependencies
+//   github fslaborg/FsLab.Templates:journal Tutorial.fsx
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Runner.fs
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Tutorial.fsx
+http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj 
