@@ -7,6 +7,7 @@
 #load "packages/FsLab/FsLab.fsx"
 #I "packages/FAKE/tools"
 #I "packages/Suave/lib/net40"
+#I "packages/FSharp.Formatting/lib/net40"
 #I "packages/FsLab.Runner/lib/net40"
 #r "FsLab.Runner.dll"
 #r "FakeLib.dll"
