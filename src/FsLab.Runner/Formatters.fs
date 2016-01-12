@@ -193,15 +193,11 @@ let wrapFsiEvaluator root output (floatFormat:string) (fsiEvaluator:FsiEvaluator
     | :? GoogleCharts.GoogleChart as ch ->
         // Just return the inline HTML of a Google chart
         let ch = ch |> XPlot.GoogleCharts.Chart.WithSize(600, 300)
-        Some [  InlineBlock ch.InlineHtml ]
+        Some [ InlineBlock ch.InlineHtml ]
 
-    | :? Plotly.Figure as fig ->
+    | :? Plotly.PlotlyChart as ch ->
         // Just return the inline HTML for a Plotly chart
-        let name = 
-          match fig.Layout with
-          | Some ly -> ly.title
-          | None -> sprintf "XPlot Generated Chart %d" (imageCounter())
-        Some [ InlineBlock (fig.GetInlineHtml(name)) ]
+        Some [ InlineBlock (ch.GetInlineHtml()) ]
 
     | :? ChartTypes.GenericChart as ch ->
         // Pretty print F# Chart - save the chart to the "images" directory 
