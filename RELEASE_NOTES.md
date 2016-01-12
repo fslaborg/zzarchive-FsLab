@@ -33,3 +33,4 @@
 * 0.3.9 - Update to the latest version (with F# Formatting based on FCS 1.4)
 * 0.3.10 - Update to the new version of R provider
 * 0.3.11 - Update Math.NET Numerics and fix journal template
+* 0.3.12 - Update Math.NET, JSON and XPplot
