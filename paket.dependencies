@@ -8,7 +8,7 @@ nuget Deedle.RPlugin
 nuget Foogle.Charts
 nuget FSharp.Charting
 nuget FSharp.Data
-nuget FSharp.Formatting 2.12.0
+nuget FSharp.Formatting
 nuget MathNet.Numerics
 nuget MathNet.Numerics.FSharp
 nuget R.NET.Community
