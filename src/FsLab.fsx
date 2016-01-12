@@ -97,15 +97,11 @@ module FsiAutoShow =
     ch.Html |> displayHtml
     "(Google Chart)")
 
-  fsi.AddPrinter(fun (chart:XPlot.Plotly.Figure) ->
-    let name = 
-      match chart.Layout with
-      | Some ly -> ly.title
-      | None -> sprintf "XPlot Generated Chart %d" counter.Value
+  fsi.AddPrinter(fun (chart:XPlot.Plotly.PlotlyChart) ->
     """<!DOCTYPE html>
     <html>
     <head><title>Plotly Chart</title></head>
-    <body>""" + chart.GetInlineHtml(name) + "</body></html>" |> displayHtml
+    <body>""" + chart.GetInlineHtml() + "</body></html>" |> displayHtml
     "(Plotly Chart)" )
 #endif
 

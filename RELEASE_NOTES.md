@@ -34,3 +34,4 @@
 * 0.3.10 - Update to the new version of R provider
 * 0.3.11 - Update Math.NET Numerics and fix journal template
 * 0.3.12 - Update Math.NET, JSON and XPplot
+* 0.3.13 - Fix the load script for new XPlot.Plotly
