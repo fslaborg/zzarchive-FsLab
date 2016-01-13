@@ -45,13 +45,13 @@ NUGET
       R.NET.Community (1.6.4)
       R.NET.Community.FSharp (1.6.4)
     TaskParallelLibrary (1.0.2856) - framework: net35
-    XPlot.GoogleCharts (1.3.0)
+    XPlot.GoogleCharts (1.3.1)
       Google.DataTable.Net.Wrapper
       Newtonsoft.Json
-    XPlot.GoogleCharts.Deedle (1.3.0)
+    XPlot.GoogleCharts.Deedle (1.3.1)
       Deedle
-      XPlot.GoogleCharts (>= 1.3.0)
-    XPlot.Plotly (1.3.0)
+      XPlot.GoogleCharts (>= 1.3.1)
+    XPlot.Plotly (1.3.1)
       Http.fs
       Newtonsoft.Json
     Zlib.Portable (1.11.0) - framework: portable-net40+sl50+wp80+win80
