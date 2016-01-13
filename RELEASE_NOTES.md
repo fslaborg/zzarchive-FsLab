@@ -37,3 +37,4 @@
 * 0.3.13 - Fix the load script for new XPlot.Plotly
 * 0.3.14 - Update F# Formatting dependency
 * 0.3.15 - Add DynamicInterop to the load script
+* 0.3.16 - Fix the load script (XPlot.Plotly)
