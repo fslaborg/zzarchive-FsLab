@@ -100,7 +100,10 @@ module FsiAutoShow =
   fsi.AddPrinter(fun (chart:XPlot.Plotly.PlotlyChart) ->
     """<!DOCTYPE html>
     <html>
-    <head><title>Plotly Chart</title></head>
+    <head>
+        <title>Plotly Chart</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    </head>
     <body>""" + chart.GetInlineHtml() + "</body></html>" |> displayHtml
     "(Plotly Chart)" )
 #endif
