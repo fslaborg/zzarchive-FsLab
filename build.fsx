@@ -49,9 +49,10 @@ let packages =
     "Foogle.Charts"
     "MathNet.Numerics"
     "MathNet.Numerics.FSharp"
-    "RProvider"
+    "DynamicInterop"
     "R.NET.Community"
     "R.NET.Community.FSharp"
+    "RProvider"
     // XPlot + dependencies
     "XPlot.Plotly"
     "XPlot.GoogleCharts"
