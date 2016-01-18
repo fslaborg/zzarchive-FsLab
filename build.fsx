@@ -16,6 +16,7 @@
 open Fake
 open FsLab
 open System
+open System.Text
 open FSharp.Literate
 
 // --------------------------------------------------------------------------------------
@@ -29,8 +30,8 @@ let handleError(err:FsiEvaluationFailedInfo) =
 let ctx = ProcessingContext.Create(__SOURCE_DIRECTORY__).With(fun p ->
   { p with
       OutputKind = OutputKind.Html
-      Output = __SOURCE_DIRECTORY__ @@ "output";
-      TemplateLocation = Some(__SOURCE_DIRECTORY__ @@ "packages/FsLab.Runner")
+      Output = __SOURCE_DIRECTORY__ </> "output";
+      TemplateLocation = Some(__SOURCE_DIRECTORY__ </> "packages/FsLab.Runner")
       FailedHandler = handleError })
 
 // --------------------------------------------------------------------------------------
@@ -38,32 +39,28 @@ let ctx = ProcessingContext.Create(__SOURCE_DIRECTORY__).With(fun p ->
 // --------------------------------------------------------------------------------------
 
 open Suave
-open Suave.Web
-open Suave.Http
-open Suave.Http.Files
 open Suave.Sockets
 open Suave.Sockets.Control
-open Suave.Sockets.AsyncSocket
 open Suave.WebSocket
-open Suave.Utils
+open Suave.Operators
+open Suave.Filters
 
 let localPort = 8901
 
 let generateJournals ctx =
-    let builtFiles = Journal.processJournals ctx
-    traceImportant "All journals updated."
-    Journal.getIndexJournal ctx builtFiles
+  let builtFiles = Journal.processJournals ctx
+  traceImportant "All journals updated."
+  Journal.getIndexJournal ctx builtFiles
 
 let refreshEvent = new Event<_>()
 
-let socketHandler (webSocket : WebSocket) =
-  fun cx -> socket {
-    while true do
-      let! refreshed =
-        Control.Async.AwaitEvent(refreshEvent.Publish)
-        |> Suave.Sockets.SocketOp.ofAsync
-      do! webSocket.send Text (UTF8.bytes "refreshed") true
-  }
+let socketHandler (webSocket : WebSocket) ctx = socket {
+  while true do
+    let! refreshed =
+      refreshEvent.Publish
+      |> Control.Async.AwaitEvent
+      |> Suave.Sockets.SocketOp.ofAsync
+    do! webSocket.send Text (Encoding.UTF8.GetBytes "refreshed") true }
 
 let startWebServer fileName =
     let defaultBinding = defaultConfig.bindings.[0]
@@ -74,13 +71,12 @@ let startWebServer fileName =
             homeFolder = Some ctx.Output }
     let app =
       choose [
-        Applicatives.path "/websocket" >>= handShake socketHandler
+        path "/websocket" >=> handShake socketHandler
         Writers.setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
-        >>= Writers.setHeader "Pragma" "no-cache"
-        >>= Writers.setHeader "Expires" "0"
-        >>= browseHome ]
+        >=> Writers.setHeader "Pragma" "no-cache"
+        >=> Writers.setHeader "Expires" "0"
+        >=> Files.browseHome ]
     startWebServerAsync serverConfig app |> snd |> Async.Start
-
 
 let handleWatcherEvents (e:IO.FileSystemEventArgs) =
     let fi = fileInfo e.FullPath
@@ -88,7 +84,6 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
     if fi.Attributes.HasFlag IO.FileAttributes.Hidden ||
        fi.Attributes.HasFlag IO.FileAttributes.Directory then ()
     else Journal.updateJournals ctx |> ignore
-
     refreshEvent.Trigger()
 
 // --------------------------------------------------------------------------------------
@@ -146,7 +141,7 @@ Target "webpreview" (fun _ ->
 )
 
 Target "pdf" (fun _ ->
-  for tex in !! (ctx.Output @@ "*.tex" ) do
+  for tex in !! (ctx.Output </> "*.tex" ) do
     ExecProcess (fun info ->
       info.Arguments <- "-interaction=nonstopmode \"" + (IO.Path.GetFileName(tex)) + "\""
       info.WorkingDirectory <- ctx.Output
