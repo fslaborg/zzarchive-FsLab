@@ -38,3 +38,4 @@
 * 0.3.14 - Update F# Formatting dependency
 * 0.3.15 - Add DynamicInterop to the load script
 * 0.3.16 - Fix the load script (XPlot.Plotly)
+* 0.3.17 - Update the FsLab VS template (Suave 1.0 support), infrastructure

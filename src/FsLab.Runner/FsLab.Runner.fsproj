@@ -58,6 +58,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Content Include="Google.DataTable.Net.Wrapper.XML">
+      <Paket>True</Paket>
+    </Content>
     <Compile Include="Config.fs" />
     <Compile Include="Formatters.fs" />
     <Compile Include="Runner.fs" />
