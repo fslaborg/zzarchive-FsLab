@@ -21,8 +21,8 @@ let cz = wb.Countries.``Czech Republic``.Indicators
 let eu = wb.Countries.``European Union``.Indicators
 
 // Use Deedle to get time-series with school enrollment data
-let czschool = series cz.``School enrollment, tertiary (% gross)``
-let euschool = series eu.``School enrollment, tertiary (% gross)``
+let czschool = series cz.``Gross enrolment ratio, tertiary, both sexes (%)``
+let euschool = series eu.``Gross enrolment ratio, tertiary, both sexes (%)``
 
 // Get 5 years with the largest difference between EU and CZ
 abs (czschool - euschool)
