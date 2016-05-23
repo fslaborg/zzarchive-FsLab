@@ -2,7 +2,7 @@ source https://nuget.org/api/v2
 
 nuget FAKE
 nuget Paket.Core
-nuget Nuget.CommandLine
+nuget Nuget.CommandLine 3.3
 nuget Deedle
 nuget Deedle.RPlugin
 nuget Foogle.Charts

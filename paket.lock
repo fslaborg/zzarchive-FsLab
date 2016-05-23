@@ -11,28 +11,28 @@ NUGET
       RProvider (>= 1.1.13)
     DotNetZip (1.9.8)
     DynamicInterop (0.7.4)
-    FAKE (4.25.4)
+    FAKE (4.27.0)
     Foogle.Charts (0.0.5)
-    FSharp.Charting (0.90.13)
+    FSharp.Charting (0.90.14)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
-    FSharp.Data (2.2.5)
-      Zlib.Portable (>= 1.10) - framework: portable-net40+sl50+wp80+win80
+    FSharp.Data (2.3.0)
+      Zlib.Portable (>= 1.11.0) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
     FSharp.Formatting (2.14.2)
       FSharp.Compiler.Service (2.0.0.6)
-      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
-    FSharpVSPowerTools.Core (2.3)
+      FSharpVSPowerTools.Core (>= 2.3.0 < 2.4.0)
+    FSharpVSPowerTools.Core (2.3.0)
       FSharp.Compiler.Service (>= 2.0.0.3)
     Google.DataTable.Net.Wrapper (3.1.2)
     Http.fs (1.5.1)
-    MathNet.Numerics (3.11)
+    MathNet.Numerics (3.11.1)
       TaskParallelLibrary (>= 1.0.2856) - framework: net35
-    MathNet.Numerics.FSharp (3.11)
+    MathNet.Numerics.FSharp (3.11.1)
       FSharp.Core (>= 3.1.2.5)
-      MathNet.Numerics (3.11)
+      MathNet.Numerics (3.11.1)
     Newtonsoft.Json (8.0.3)
     NuGet.CommandLine (3.3)
-    Paket.Core (2.62.1)
+    Paket.Core (2.65.2)
       Chessie
       FSharp.Core
       Newtonsoft.Json
@@ -54,7 +54,7 @@ NUGET
     XPlot.Plotly (1.3.1)
       Http.fs
       Newtonsoft.Json
-    Zlib.Portable (1.11) - framework: portable-net40+sl50+wp80+win80
+    Zlib.Portable (1.11.0) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
 HTTP
   remote: http://raw.githubusercontent.com
   specs:

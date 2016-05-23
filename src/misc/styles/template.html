@@ -27,7 +27,7 @@
           function init()
           {
             try {
-              websocket = new WebSocket("ws://localhost:8088/websocket");
+              websocket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/websocket");
               websocket.onmessage = function(evt) { location.reload(); };
             } catch (e) {
               //silently ignore lack of websockets
