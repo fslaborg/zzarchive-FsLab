@@ -150,5 +150,6 @@ Target "pdf" (fun _ ->
 
 "html" ==> "run"
 "latex" ==> "pdf"
+"html" ==> "webpreview"
 
 RunTargetOrDefault "help"
