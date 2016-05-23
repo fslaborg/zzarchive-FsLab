@@ -39,3 +39,5 @@
 * 0.3.15 - Add DynamicInterop to the load script
 * 0.3.16 - Fix the load script (XPlot.Plotly)
 * 0.3.17 - Update the FsLab VS template (Suave 1.0 support), infrastructure
+* 0.3.18 - RProvider and R.NET update
+* 0.3.19 - Update RProvider (cross-plat support)

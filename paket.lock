@@ -1,7 +1,7 @@
 NUGET
   remote: https://www.nuget.org/api/v2
   specs:
-    Chessie (0.4.0)
+    Chessie (0.5.1)
       FSharp.Core
     Deedle (1.2.4)
     Deedle.RPlugin (1.2.4)
@@ -9,41 +9,41 @@ NUGET
       R.NET.Community (>= 1.6.4)
       R.NET.Community.FSharp (>= 1.6.4)
       RProvider (>= 1.1.13)
-    DotNetZip (1.9.7)
+    DotNetZip (1.9.8)
     DynamicInterop (0.7.4)
-    FAKE (4.14.9)
+    FAKE (4.25.4)
     Foogle.Charts (0.0.5)
     FSharp.Charting (0.90.13)
-    FSharp.Compiler.Service (1.4.2.3)
+    FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
     FSharp.Data (2.2.5)
-      Zlib.Portable (>= 1.10.0) - framework: portable-net40+sl50+wp80+win80
-    FSharp.Formatting (2.13.2)
-      FSharp.Compiler.Service (>= 1.4.2 < 1.5.0)
-      FSharpVSPowerTools.Core (>= 2.2.0 < 2.3.0)
-    FSharpVSPowerTools.Core (2.2.0)
-      FSharp.Compiler.Service (>= 1.4.2.0)
+      Zlib.Portable (>= 1.10) - framework: portable-net40+sl50+wp80+win80
+    FSharp.Formatting (2.14.2)
+      FSharp.Compiler.Service (2.0.0.6)
+      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
+    FSharpVSPowerTools.Core (2.3)
+      FSharp.Compiler.Service (>= 2.0.0.3)
     Google.DataTable.Net.Wrapper (3.1.2)
     Http.fs (1.5.1)
-    MathNet.Numerics (3.10.0)
+    MathNet.Numerics (3.11)
       TaskParallelLibrary (>= 1.0.2856) - framework: net35
-    MathNet.Numerics.FSharp (3.10.0)
+    MathNet.Numerics.FSharp (3.11)
       FSharp.Core (>= 3.1.2.5)
-      MathNet.Numerics (3.10.0)
-    Newtonsoft.Json (8.0.2)
-    NuGet.CommandLine (3.3.0)
-    Paket.Core (2.45.0)
+      MathNet.Numerics (3.11)
+    Newtonsoft.Json (8.0.3)
+    NuGet.CommandLine (3.3)
+    Paket.Core (2.62.1)
       Chessie
       FSharp.Core
       Newtonsoft.Json
-    R.NET.Community (1.6.4)
+    R.NET.Community (1.6.5)
       DynamicInterop (0.7.4)
-    R.NET.Community.FSharp (1.6.4)
-      R.NET.Community (>= 1.6.4)
-    RProvider (1.1.15)
+    R.NET.Community.FSharp (1.6.5)
+      R.NET.Community (>= 1.6.5)
+    RProvider (1.1.20)
       DynamicInterop (0.7.4)
-      R.NET.Community (1.6.4)
-      R.NET.Community.FSharp (1.6.4)
+      R.NET.Community (1.6.5)
+      R.NET.Community.FSharp (1.6.5)
     TaskParallelLibrary (1.0.2856) - framework: net35
     XPlot.GoogleCharts (1.3.1)
       Google.DataTable.Net.Wrapper
@@ -54,7 +54,7 @@ NUGET
     XPlot.Plotly (1.3.1)
       Http.fs
       Newtonsoft.Json
-    Zlib.Portable (1.11.0) - framework: portable-net40+sl50+wp80+win80
+    Zlib.Portable (1.11) - framework: portable-net40+sl50+wp80+win80
 HTTP
   remote: http://raw.githubusercontent.com
   specs:
