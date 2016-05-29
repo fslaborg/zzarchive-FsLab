@@ -1,15 +1,1 @@
-Deedle
-Deedle.RPlugin
-FSharp.Charting
-FSharp.Data
-Foogle.Charts
-MathNet.Numerics
-MathNet.Numerics.FSharp
-RProvider
-R.NET.Community
-R.NET.Community.FSharp
-FSharp.Compiler.Service
 FSharp.Formatting
-XPlot.Plotly
-XPlot.GoogleCharts
-XPlot.GoogleCharts.Deedle

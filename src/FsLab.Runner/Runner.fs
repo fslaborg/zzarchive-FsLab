@@ -89,12 +89,12 @@ module internal Runner =
       | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
   /// Generate file for the specified document, using a given template and title
-  let generateFile (ctx:FsLab.ProcessingContext) path (doc:LiterateDocument) title = 
-    Formatters.currentOutputKind <- ctx.OutputKind
+  let generateFile (ctx:FsLab.ProcessingContext) path (doc:LiterateDocument) title head = 
     if ctx.OutputKind = OutputKind.Html then
       let template = htmlTemplate ctx
       let html =
-        template.Replace("{tooltips}", doc.FormattedTips)
+        template.Replace("{head}", head)
+                .Replace("{tooltips}", doc.FormattedTips)
                 .Replace("{document}", Literate.WriteHtml(doc))
                 .Replace("{page-title}", title)
       File.WriteAllText(path, html)
@@ -129,6 +129,22 @@ module internal Runner =
   // Process script files in the root folder & generate HTML files
   // ----------------------------------------------------------------------------
 
+  /// Extend the `fsi` object with `fsi.AddHtmlPrinter` 
+  let addHtmlPrinter = """
+    module FsInteractiveService = 
+      let mutable htmlPrinters = []
+      let tryFormatHtml o = htmlPrinters |> Seq.tryPick (fun f -> f o)
+      let htmlPrinterParams = System.Collections.Generic.Dictionary<string, obj>()
+      do htmlPrinterParams.["html-standalone-output"] <- true
+
+    type __ReflectHelper.ForwardingInteractiveSettings with
+      member x.HtmlPrinterParameters = FsInteractiveService.htmlPrinterParams
+      member x.AddHtmlPrinter<'T>(f:'T -> seq<string * string> * string) = 
+        FsInteractiveService.htmlPrinters <- (fun (value:obj) ->
+          match value with
+          | :? 'T as value -> Some(f value)
+          | _ -> None) :: FsInteractiveService.htmlPrinters"""
+
   /// Creates the 'output' directory and puts all formatted script files there
   let processScriptFiles overwrite ctx =
     // Ensure 'output' directory exists
@@ -152,13 +168,38 @@ module internal Runner =
 
     // FSI evaluator will put images into 'output/images' and
     // refernece them as './images/image1.png' in the HTML
-    let fsi =
+    let fsi, headElements =
       match ctx.FsiEvaluator with
       | None ->
-          let fsi = new FsiEvaluator(fsiObj = FsiEvaluatorConfig.CreateNoOpFsiObject())
+          let fsi = new FsiEvaluator([| "--define:HAS_FSI_ADDHTMLPRINTER" |], FsiEvaluatorConfig.CreateNoOpFsiObject())
+          fsi.EvaluationFailed.Add(printfn "%A")
           fsi.EvaluationFailed.Add(ctx.FailedHandler)
-          Formatters.wrapFsiEvaluator "." ctx.Output ctx.FloatFormat fsi ctx.FormatConfig
-      | Some fsi -> fsi
+          try
+            match (fsi :> IFsiEvaluator).Evaluate(addHtmlPrinter, false, None) with
+            | :? FsiEvaluationResult as res when res.ItValue.IsSome -> ()
+            | _ -> failwith "Evaluating addHtmlPrinter code failed"
+          with e ->
+            printfn "%A" e
+            reraise ()
+
+          let tryFormatHtml =
+            match (fsi :> IFsiEvaluator).Evaluate("(FsInteractiveService.tryFormatHtml : obj -> option<seq<string*string>*string>)", true, None) with
+            | :? FsiEvaluationResult as res -> 
+                let func = unbox<obj -> option<seq<string*string>*string>> (fst res.Result.Value)
+                fun (o:obj) -> func o
+            | _ -> failwith "Failed to get tryFormatHtml function"
+
+          let head = new ResizeArray<_>()
+          fsi.RegisterTransformation(fun (o, t) ->
+            match tryFormatHtml o with
+            | Some (args, html) -> 
+                for k, v in args do if not (head.Contains(v)) then head.Add(v)
+                Some [InlineBlock html]
+            | None -> None )
+
+          fsi :> IFsiEvaluator, head
+
+      | Some fsi -> fsi, (new ResizeArray<_>())
 
     /// Recursively process all files in the directory tree
     let processDirectory indir outdir =
@@ -186,6 +227,7 @@ module internal Runner =
 
       // Process all the files that have not changed since the last time
       [ for file, func in files do
+          headElements.Clear()
           let name = Path.GetFileNameWithoutExtension(file)
           let output = outdir @@ (name + ".html")
 
@@ -198,7 +240,7 @@ module internal Runner =
             printfn "Generating '%s.html'" name
             let doc = func ()
             let title = defaultArg (extractTitle doc.Paragraphs) "Untitled"
-            generateFile ctx output doc title
+            generateFile ctx output doc title (String.concat "\n" headElements)
             yield (name + ".html"), title ]
 
     processDirectory root ctx.Output
@@ -229,6 +271,6 @@ module internal Runner =
               [ Heading(1, [Literal "FsLab Journals"])
                 ListBlock(Unordered, items) ]
             let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)
-            generateFile ctx (ctx.Output @@ "index.html") doc "FsLab Journals"
+            generateFile ctx (ctx.Output @@ "index.html") doc "FsLab Journals" ""
             "index.html"
         | Some fn -> fn
