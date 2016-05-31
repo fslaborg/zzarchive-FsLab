@@ -135,7 +135,7 @@ module internal Runner =
       let mutable htmlPrinters = []
       let tryFormatHtml o = htmlPrinters |> Seq.tryPick (fun f -> f o)
       let htmlPrinterParams = System.Collections.Generic.Dictionary<string, obj>()
-      do htmlPrinterParams.["html-standalone-output"] <- true
+      do htmlPrinterParams.["html-standalone-output"] <- @html-standalone-output
 
     type __ReflectHelper.ForwardingInteractiveSettings with
       member x.HtmlPrinterParameters = FsInteractiveService.htmlPrinterParams
@@ -175,6 +175,7 @@ module internal Runner =
           fsi.EvaluationFailed.Add(printfn "%A")
           fsi.EvaluationFailed.Add(ctx.FailedHandler)
           try
+            let addHtmlPrinter = addHtmlPrinter.Replace("@html-standalone-output", if ctx.Standalone then "true" else "false")
             match (fsi :> IFsiEvaluator).Evaluate(addHtmlPrinter, false, None) with
             | :? FsiEvaluationResult as res when res.ItValue.IsSome -> ()
             | _ -> failwith "Evaluating addHtmlPrinter code failed"
