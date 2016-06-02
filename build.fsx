@@ -123,10 +123,13 @@ Target "GenerateFsLab" (fun _ ->
 
   // Copy formatter source files to the temp directory
   let formattersDir = "paket-files/fslaborg/FsLab.Formatters/src"
-  !! (formattersDir + "/Shared/*.*") -- "**/Mock.fs" |> CopyFiles "temp/Shared"
-  !! (formattersDir + "/Text/*.*") |> CopyFiles "temp/Text"
-  !! (formattersDir + "/Html/*.*") |> CopyFiles "temp/Html"
-  !! (formattersDir + "/Themes/*.*") |> CopyFiles "temp/Themes"
+  let copyAsFsx target fn = 
+    ensureDirectory target
+    CopyFile (target </> (Path.GetFileNameWithoutExtension(fn) + ".fsx")) fn
+  !! (formattersDir + "/Shared/*.*") -- "**/Mock.fs" |> Seq.iter (copyAsFsx "temp/Shared")
+  !! (formattersDir + "/Text/*.*") |> Seq.iter (copyAsFsx "temp/Text")
+  !! (formattersDir + "/Html/*.*") |> Seq.iter (copyAsFsx "temp/Html")
+  !! (formattersDir + "/Themes/*.*") |> Seq.iter (copyAsFsx "temp/Themes")
 
   // Generate #load commands to load AddHtmlPrinter and AddPrinter calls
   let loads =

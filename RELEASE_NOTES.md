@@ -43,3 +43,4 @@
 * 0.3.19 - Update RProvider (cross-plat support)
 * 0.3.20 - Paket update, fix websocket location in HTML template
 * 0.4.0-beta - Support AddHtmlPrinter, deprecate Foogle
+* 0.4.1-beta - Attach files as fsx for auto-loading

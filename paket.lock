@@ -95,7 +95,7 @@ NUGET
     Zlib.Portable (1.11) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
 GITHUB
   remote: fslaborg/FsLab.Formatters
-    FULLPROJECT (cb67c8317b33204762964742828f3efc2cc4a2a5)
+    FULLPROJECT (3d337ad2909d067c37d9fd6c1e314c9ddb508179)
       FsLab
       Suave
   remote: fslaborg/FsLab.Templates
