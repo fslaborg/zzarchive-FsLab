@@ -145,6 +145,41 @@ module internal Runner =
           | :? 'T as value -> Some(f value)
           | _ -> None) :: FsInteractiveService.htmlPrinters"""
 
+
+  /// Create FSI evaluator - this loads `addHtmlPrinter` and calls the registered
+  /// printers when processing outputs. Printed <head> elements are added to the
+  /// returned ResizeArray
+  let createFsiEvaluator ctx = 
+    let fsi = new FsiEvaluator([| "--define:HAS_FSI_ADDHTMLPRINTER" |], FsiEvaluatorConfig.CreateNoOpFsiObject())
+    fsi.EvaluationFailed.Add(printfn "%A")
+    fsi.EvaluationFailed.Add(ctx.FailedHandler)
+    try
+      let addHtmlPrinter = addHtmlPrinter.Replace("@html-standalone-output", if ctx.Standalone then "true" else "false")
+      match (fsi :> IFsiEvaluator).Evaluate(addHtmlPrinter, false, None) with
+      | :? FsiEvaluationResult as res when res.ItValue.IsSome -> ()
+      | _ -> failwith "Evaluating addHtmlPrinter code failed"
+    with e ->
+      printfn "%A" e
+      reraise ()
+
+    let tryFormatHtml =
+      match (fsi :> IFsiEvaluator).Evaluate("(FsInteractiveService.tryFormatHtml : obj -> option<seq<string*string>*string>)", true, None) with
+      | :? FsiEvaluationResult as res -> 
+          let func = unbox<obj -> option<seq<string*string>*string>> (fst res.Result.Value)
+          fun (o:obj) -> func o
+      | _ -> failwith "Failed to get tryFormatHtml function"
+
+    let head = new ResizeArray<_>()
+    fsi.RegisterTransformation(fun (o, t) ->
+      match tryFormatHtml o with
+      | Some (args, html) -> 
+          for k, v in args do if not (head.Contains(v)) then head.Add(v)
+          Some [InlineBlock("<div class=\"fslab-html-output\">" + html + "</div>")]
+      | None -> None )
+
+    fsi :> IFsiEvaluator, head
+
+
   /// Creates the 'output' directory and puts all formatted script files there
   let processScriptFiles overwrite ctx =
     // Ensure 'output' directory exists
@@ -159,48 +194,13 @@ module internal Runner =
         let rootPackages =
           if Directory.Exists(root @@ "packages") then root @@ "packages"
           else root @@ "../packages"
-
         Directory.GetDirectories(rootPackages) |> Seq.find (fun p ->
-            Path.GetFileName(p).StartsWith "FsLab.Runner")
+          Path.GetFileName(p).StartsWith "FsLab.Runner")
 
     // Copy content of 'styles' to the output
     copyFiles (templateLocation @@ "styles") (ctx.Output @@ "styles")
-
-    // FSI evaluator will put images into 'output/images' and
-    // refernece them as './images/image1.png' in the HTML
-    let fsi, headElements =
-      match ctx.FsiEvaluator with
-      | None ->
-          let fsi = new FsiEvaluator([| "--define:HAS_FSI_ADDHTMLPRINTER" |], FsiEvaluatorConfig.CreateNoOpFsiObject())
-          fsi.EvaluationFailed.Add(printfn "%A")
-          fsi.EvaluationFailed.Add(ctx.FailedHandler)
-          try
-            let addHtmlPrinter = addHtmlPrinter.Replace("@html-standalone-output", if ctx.Standalone then "true" else "false")
-            match (fsi :> IFsiEvaluator).Evaluate(addHtmlPrinter, false, None) with
-            | :? FsiEvaluationResult as res when res.ItValue.IsSome -> ()
-            | _ -> failwith "Evaluating addHtmlPrinter code failed"
-          with e ->
-            printfn "%A" e
-            reraise ()
-
-          let tryFormatHtml =
-            match (fsi :> IFsiEvaluator).Evaluate("(FsInteractiveService.tryFormatHtml : obj -> option<seq<string*string>*string>)", true, None) with
-            | :? FsiEvaluationResult as res -> 
-                let func = unbox<obj -> option<seq<string*string>*string>> (fst res.Result.Value)
-                fun (o:obj) -> func o
-            | _ -> failwith "Failed to get tryFormatHtml function"
-
-          let head = new ResizeArray<_>()
-          fsi.RegisterTransformation(fun (o, t) ->
-            match tryFormatHtml o with
-            | Some (args, html) -> 
-                for k, v in args do if not (head.Contains(v)) then head.Add(v)
-                Some [InlineBlock("<div class=\"fslab-html-output\">" + html + "</div>")]
-            | None -> None )
-
-          fsi :> IFsiEvaluator, head
-
-      | Some fsi -> fsi, (new ResizeArray<_>())
+    // Create fsi evaluator & resize array collecting <head> elements
+    let fsi, headElements = createFsiEvaluator ctx
 
     /// Recursively process all files in the directory tree
     let processDirectory indir outdir =

@@ -5,7 +5,6 @@ nuget Paket.Core
 nuget Nuget.CommandLine 3.3
 nuget Deedle
 nuget Deedle.RPlugin
-nuget Foogle.Charts
 nuget FSharp.Charting
 nuget FSharp.Data
 nuget FSharp.Formatting
@@ -18,13 +17,7 @@ nuget DotNetZip
 nuget XPlot.Plotly
 nuget XPlot.GoogleCharts
 nuget XPlot.GoogleCharts.Deedle
+nuget Suave
 
-// Cannot do the following, because that copies all template dependencies
-//   github fslaborg/FsLab.Templates:journal Tutorial.fsx
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Runner.fs
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/Tutorial.fsx
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj 
-
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.fsx
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.sh
-http http://raw.githubusercontent.com/fslaborg/FsLab.Templates/journal/build.cmd
+github fslaborg/FsLab.Formatters
+github fslaborg/FsLab.Templates:journal

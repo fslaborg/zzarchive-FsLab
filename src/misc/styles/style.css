@@ -101,8 +101,13 @@ body {
   padding-bottom: 40px;
 }
 
+.fslab-html-output {
+  margin:0px 20px 0px 20px;
+  width:90%;
+}
+
 pre {
-    word-wrap: inherit;
+  word-wrap: inherit;
 }
 
 /* Format the heading - nicer spacing etc. */
@@ -133,23 +138,6 @@ td.title, thead {
   font-weight:bold;
 }
 
-/* Format the right-side menu */
-#menu {
-  margin-top:50px;
-  font-size:11pt;
-  padding-left:20px;
-}
-
-#menu .nav-header {
-  font-size:12pt;
-  color:#606060;
-  margin-top:20px;
-}
-
-#menu li {
-  line-height:25px;
-}
-
 /* Change font sizes for headings etc. */
 #main h1 { font-size: 26pt; margin:10px 0px 15px 0px; font-weight:400; }
 #main h2 { font-size: 20pt; margin:20px 0px 0px 0px; font-weight:400; }
@@ -158,38 +146,6 @@ td.title, thead {
 #main ul { font-size: 11pt; margin-top:10px; }
 #main li { font-size: 11pt; margin: 5px 0px 5px 0px; }
 #main strong { font-weight:700; }
-
-/*-------------------------------------------------------------------------- 
-  Formatting for API reference
-/*--------------------------------------------------------------------------*/
-
-.type-list .type-name, .module-list .module-name {
-  width:25%;
-  font-weight:bold;
-}
-.member-list .member-name {
-  width:35%;
-}
-#main .xmldoc h2 {
-  font-size:14pt;
-  margin:10px 0px 0px 0px;
-}
-#main .xmldoc h3 {
-  font-size:12pt;
-  margin:10px 0px 0px 0px;
-}
-.github-link {
-  float:right;
-  text-decoration:none;
-}
-.github-link img {
-  border-style:none;
-  margin-left:10px;
-}
-.github-link .hover { display:none; }
-.github-link:hover .hover { display:block; }
-.github-link .normal { display: block; }
-.github-link:hover .normal { display: none; }
 
 /*-------------------------------------------------------------------------- 
   Links 
@@ -201,24 +157,3 @@ h3 a, h3 a:hover, h3 a:focus,
 h4 a, h4 a:hover, h4 a:focus,
 h5 a, h5 a:hover, h5 a:focus,
 h6 a, h6 a:hover, h6 a:focus { color : inherit; text-decoration : inherit; outline:none }
-
-/*-------------------------------------------------------------------------- 
-  Additional formatting for the homepage 
-/*--------------------------------------------------------------------------*/
-
-#nuget { 
-  margin-top:20px;
-  font-size: 11pt; 
-  padding:20px; 
-}
-
-#nuget pre {
-  font-size:11pt;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-  background: #404040;
-  border-style:none;
-  color: #e0e0e0;
-  margin-top:15px;
-}

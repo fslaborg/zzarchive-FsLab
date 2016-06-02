@@ -42,3 +42,4 @@
 * 0.3.18 - RProvider and R.NET update
 * 0.3.19 - Update RProvider (cross-plat support)
 * 0.3.20 - Paket update, fix websocket location in HTML template
+* 0.4.0-beta - Support AddHtmlPrinter, deprecate Foogle

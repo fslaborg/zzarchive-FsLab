@@ -22,13 +22,9 @@ type ProcessingContext =
 
     /// Set this if you only want to process files in this list.
     /// (For example, use `["MyJournal.fsx"]` to only generate this one jounral)
-    FileWhitelist : string list option    
+    FileWhitelist : string list option
     /// Specify an error handler when evaluation fails
-    FailedHandler : FsiEvaluationFailedInfo -> unit
-    /// Custom FSI evaluator - you can use this to override the default one
-    /// (but you should call `Journal.wrapFsiEvaluator` on it to register FsLab
-    /// transformations, otherwise it will not do anything useful)
-    FsiEvaluator : IFsiEvaluator option }
+    FailedHandler : FsiEvaluationFailedInfo -> unit }
 
   /// Creates a default processing context with all the 
   /// basic things needed to produce journals. 
@@ -40,11 +36,10 @@ type ProcessingContext =
   ///    default is `"packages/FsLab.Runner"`.
   /// 
   static member Create(root) = 
-    { Root = root; 
-      Output = Path.Combine(root, "output");
-      OutputKind = OutputKind.Html; 
-      TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"));
-      FileWhitelist = None; 
-      Standalone = false;
-      FailedHandler = ignore; 
-      FsiEvaluator = None }
+    { Root = root 
+      Output = Path.Combine(root, "output")
+      OutputKind = OutputKind.Html 
+      TemplateLocation = Some(Path.Combine(root, "packages/FsLab.Runner"))
+      FileWhitelist = None 
+      Standalone = false
+      FailedHandler = ignore }

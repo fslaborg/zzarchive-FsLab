@@ -53,6 +53,7 @@ let packages =
     "R.NET.Community"
     "R.NET.Community.FSharp"
     "RProvider"
+    "Suave"
     // XPlot + dependencies
     "XPlot.Plotly"
     "XPlot.GoogleCharts"
@@ -94,7 +95,7 @@ let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
 Target "Clean" (fun _ ->
-    CleanDirs ["temp"; "nuget"; "bin"]
+  CleanDirs ["temp"; "nuget"; "bin"]
 )
 
 Target "GenerateFsLab" (fun _ ->
@@ -103,10 +104,10 @@ Target "GenerateFsLab" (fun _ ->
   let getLibDirVer package = package + "." + packageVersions.[package] + "/" + (getNetSubfolder package)
 
   // Additional lines to be included in FsLab.fsx
-  let nowarn = ["#nowarn \"211\""; "#I \".\""]
+  let nowarn = ["#nowarn \"211\""; "#I __SOURCE_DIRECTORY__"]
   let extraInitAll  = File.ReadLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx")  |> Array.ofSeq
   let startIndex = extraInitAll |> Seq.findIndex (fun s -> s.Contains "***FsLab.fsx***")
-  let extraInit = extraInitAll .[startIndex + 1 ..] |> List.ofSeq
+  let extraInit = extraInitAll.[startIndex + 1 ..] |> List.ofSeq
 
   // Generate #I for all library, for all possible folder
   let includes =
@@ -120,8 +121,31 @@ Target "GenerateFsLab" (fun _ ->
     |> List.collect (fst >> getAssemblies)
     |> List.map (sprintf "#r \"%s\"")
 
+  // Copy formatter source files to the temp directory
+  let formattersDir = "paket-files/fslaborg/FsLab.Formatters/src"
+  !! (formattersDir + "/Shared/*.*") -- "**/Mock.fs" |> CopyFiles "temp/Shared"
+  !! (formattersDir + "/Text/*.*") |> CopyFiles "temp/Text"
+  !! (formattersDir + "/Html/*.*") |> CopyFiles "temp/Html"
+  !! (formattersDir + "/Themes/*.*") |> CopyFiles "temp/Themes"
+
+  // Generate #load commands to load AddHtmlPrinter and AddPrinter calls
+  let loads =
+    [ yield ""
+      for f in Directory.GetFiles("temp/Shared") do 
+        yield sprintf "#load \"Shared/%s\"" (Path.GetFileName f)
+      yield "#if NO_FSI_ADDPRINTER"
+      yield "#else"
+      yield "#if HAS_FSI_ADDHTMLPRINTER"
+      for f in Directory.GetFiles("temp/Html") do 
+        yield sprintf "#load \"Html/%s\"" (Path.GetFileName f)
+      yield "#else"
+      for f in Directory.GetFiles("temp/Text") do 
+        yield sprintf "#load \"Text/%s\"" (Path.GetFileName f)
+      yield "#endif"
+      yield "#endif\n" ]
+
   // Write everything to the 'temp/FsLab.fsx' file
-  let lines = nowarn @ includes @ references @ extraInit
+  let lines = nowarn @ includes @ references @ loads @ extraInit
   File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
 )
 
@@ -129,6 +153,25 @@ Target "BuildRunner" (fun _ ->
     !! (project + ".sln")
     |> MSBuildRelease "" "Rebuild"
     |> ignore
+)
+
+Target "UpdateNuSpec" (fun _ ->
+    // Update included files in FsLab.nuspec to include formatting scripts
+    let (!) n = XName.Get(n)
+    let path = "src/FsLab.nuspec"
+    let doc = XDocument.Load(path)
+    let files = doc.Descendants(XName.Get "files").First()
+    files.RemoveAll()
+    files.Add(XElement(!"file", XAttribute(!"src", "..\\temp\\FsLab.fsx"), XAttribute(!"target", ".")))
+    let includes =
+      [ "temp\\Shared"; "temp\\Text"; "temp\\Html"; "temp\\Themes" ]
+      |> Seq.map Directory.GetFiles |> Seq.concat
+    for f in includes do
+      let subdir = Path.GetDirectoryName(f).Substring(5)
+      files.Add(XElement(!"file", XAttribute(!"src", "..\\" + f), XAttribute(!"target", subdir)))        
+    doc.Save(path + ".updated")
+    DeleteFile path
+    Rename path (path + ".updated")  
 )
 
 Target "NuGet" (fun _ ->
@@ -182,7 +225,7 @@ Target "UpdateVSIXManifest" (fun _ ->
 Target "GenerateTemplate" (fun _ ->
   // Generate ZIPs with item templates
   ensureDirectory "temp/experiments"
-  for experiment in ["walkthrough-with-r"; "walkthrough"; "experiment"] do
+  for experiment in [(*"walkthrough-with-r";*) "walkthrough"; "experiment"] do
     ensureDirectory ("temp/experiments/" + experiment)
     CopyRecursive ("src/experiments/" + experiment) ("temp/experiments/" + experiment)  true |> ignore
     "misc/item.png" |> CopyFile ("temp/experiments/" + experiment + "/__TemplateIcon.png")
@@ -192,9 +235,11 @@ Target "GenerateTemplate" (fun _ ->
 
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
-  CopyRecursive "paket-files/raw.githubusercontent.com" "temp/journal/" true |> ignore
+  !! "paket-files/fslaborg/FsLab.Templates/build.*" 
+  ++ "paket-files/fslaborg/FsLab.Templates/*.dependencies" 
+  ++ "paket-files/fslaborg/FsLab.Templates/*.fs*" 
+  |> CopyFiles "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
-  DeleteFile "temp/journal/paket.version"
   ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
@@ -227,6 +272,7 @@ Target "All" DoNothing
 "Clean"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
+  ==> "UpdateNuSpec"
   ==> "NuGet"
 
 "NuGet"
