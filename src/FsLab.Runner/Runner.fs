@@ -195,7 +195,7 @@ module internal Runner =
             match tryFormatHtml o with
             | Some (args, html) -> 
                 for k, v in args do if not (head.Contains(v)) then head.Add(v)
-                Some [InlineBlock html]
+                Some [InlineBlock("<div class=\"fslab-html-output\">" + html + "</div>")]
             | None -> None )
 
           fsi :> IFsiEvaluator, head
