@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>@project@</id>
@@ -18,5 +18,12 @@
   </metadata>
   <files>
     <file src="..\temp\FsLab.fsx" target="." />
+    <file src="..\temp\Shared\Server.fs" target="Shared" />
+    <file src="..\temp\Shared\Styles.fs" target="Shared" />
+    <file src="..\temp\Text\FsLab.fs" target="Text" />
+    <file src="..\temp\Html\Deedle.fs" target="Html" />
+    <file src="..\temp\Html\XPlot.fs" target="Html" />
+    <file src="..\temp\Themes\AtomChester.fs" target="Themes" />
+    <file src="..\temp\Themes\DefaultWhite.fs" target="Themes" />
   </files>
 </package>

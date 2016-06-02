@@ -1,6 +1,5 @@
 NUGET
   remote: https://www.nuget.org/api/v2
-  specs:
     Chessie (0.5.1)
       FSharp.Core
     Deedle (1.2.4)
@@ -11,18 +10,55 @@ NUGET
       RProvider (>= 1.1.13)
     DotNetZip (1.9.8)
     DynamicInterop (0.7.4)
-    FAKE (4.27.0)
+    FAKE (4.27)
     Foogle.Charts (0.0.5)
     FSharp.Charting (0.90.14)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
-    FSharp.Data (2.3.0)
-      Zlib.Portable (>= 1.11.0) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
+    FSharp.Data (2.3)
+      Zlib.Portable (>= 1.11) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
     FSharp.Formatting (2.14.2)
       FSharp.Compiler.Service (2.0.0.6)
-      FSharpVSPowerTools.Core (>= 2.3.0 < 2.4.0)
-    FSharpVSPowerTools.Core (2.3.0)
+      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
+    FSharpVSPowerTools.Core (2.3)
       FSharp.Compiler.Service (>= 2.0.0.3)
+    FsLab (0.3.20)
+      Deedle (1.2.4)
+      Deedle.RPlugin (1.2.4)
+      DynamicInterop (0.7.4)
+      Foogle.Charts (0.0.5)
+      FSharp.Charting (0.90.14)
+      FSharp.Data (2.3)
+      Google.DataTable.Net.Wrapper (3.1.2)
+      MathNet.Numerics (3.11.1)
+      MathNet.Numerics.FSharp (3.11.1)
+      Newtonsoft.Json (8.0.3)
+      R.NET.Community (1.6.5)
+      R.NET.Community.FSharp (1.6.5)
+      RProvider (1.1.20)
+      XPlot.GoogleCharts (1.3.1)
+      XPlot.GoogleCharts.Deedle (1.3.1)
+      XPlot.Plotly (1.3.1)
+    FsLab.Runner (0.3.20)
+      Deedle (1.2.4)
+      Deedle.RPlugin (1.2.4)
+      DynamicInterop (0.7.4)
+      Foogle.Charts (0.0.5)
+      FSharp.Charting (0.90.14)
+      FSharp.Compiler.Service (2.0.0.6)
+      FSharp.Data (2.3)
+      FSharp.Formatting (2.14.2)
+      FSharpVSPowerTools.Core (2.3)
+      Google.DataTable.Net.Wrapper (3.1.2)
+      MathNet.Numerics (3.11.1)
+      MathNet.Numerics.FSharp (3.11.1)
+      Newtonsoft.Json (8.0.3)
+      R.NET.Community (1.6.5)
+      R.NET.Community.FSharp (1.6.5)
+      RProvider (1.1.20)
+      XPlot.GoogleCharts (1.3.1)
+      XPlot.GoogleCharts.Deedle (1.3.1)
+      XPlot.Plotly (1.3.1)
     Google.DataTable.Net.Wrapper (3.1.2)
     Http.fs (1.5.1)
     MathNet.Numerics (3.11.1)
@@ -44,6 +80,8 @@ NUGET
       DynamicInterop (0.7.4)
       R.NET.Community (1.6.5)
       R.NET.Community.FSharp (1.6.5)
+    Suave (1.1.2)
+      FSharp.Core (>= 3.1.2.5)
     TaskParallelLibrary (1.0.2856) - framework: net35
     XPlot.GoogleCharts (1.3.1)
       Google.DataTable.Net.Wrapper
@@ -54,13 +92,15 @@ NUGET
     XPlot.Plotly (1.3.1)
       Http.fs
       Newtonsoft.Json
-    Zlib.Portable (1.11.0) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
-HTTP
-  remote: http://raw.githubusercontent.com
-  specs:
-    build.cmd (/fslaborg/FsLab.Templates/journal/build.cmd)
-    build.fsx (/fslaborg/FsLab.Templates/journal/build.fsx)
-    build.sh (/fslaborg/FsLab.Templates/journal/build.sh)
-    FsLab.Journal.fsproj (/fslaborg/FsLab.Templates/journal/FsLab.Journal.fsproj)
-    Runner.fs (/fslaborg/FsLab.Templates/journal/Runner.fs)
-    Tutorial.fsx (/fslaborg/FsLab.Templates/journal/Tutorial.fsx)
+    Zlib.Portable (1.11) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
+GITHUB
+  remote: fslaborg/FsLab.Formatters
+    FULLPROJECT (cb67c8317b33204762964742828f3efc2cc4a2a5)
+      FsLab
+      Suave
+  remote: fslaborg/FsLab.Templates
+    FULLPROJECT (89baa54333be0b66164ffe72b7fa1b2d13ced9b1)
+      FAKE
+      FsLab
+      FsLab.Runner
+      Suave
