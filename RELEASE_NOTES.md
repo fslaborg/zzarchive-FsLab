@@ -45,3 +45,5 @@
 * 0.4.0-beta - Support AddHtmlPrinter, deprecate Foogle
 * 0.4.1-beta - Attach files as fsx for auto-loading
 * 0.4.2-beta - Fix dependencies and load scripts
+* 0.4.3-beta - Fix scripts and styles in formatters
+* 0.4.4-beta - Fix grid server and template margins

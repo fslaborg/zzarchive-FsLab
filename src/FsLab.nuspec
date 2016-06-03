@@ -22,6 +22,7 @@
     <file src="..\temp\Shared\Styles.fsx" target="Shared" />
     <file src="..\temp\Text\FsLab.fsx" target="Text" />
     <file src="..\temp\Html\Deedle.fsx" target="Html" />
+    <file src="..\temp\Html\Text.fsx" target="Html" />
     <file src="..\temp\Html\XPlot.fsx" target="Html" />
     <file src="..\temp\Themes\AtomChester.fsx" target="Themes" />
     <file src="..\temp\Themes\DefaultWhite.fsx" target="Themes" />
