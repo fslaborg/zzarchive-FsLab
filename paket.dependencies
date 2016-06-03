@@ -19,5 +19,9 @@ nuget XPlot.GoogleCharts
 nuget XPlot.GoogleCharts.Deedle
 nuget Suave
 
-github fslaborg/FsLab.Formatters
-github fslaborg/FsLab.Templates:journal
+// Cannot do the following, because that copies all template dependencies
+//
+//   github fslaborg/FsLab.Formatters
+//   github fslaborg/FsLab.Templates:journal
+//
+// Instead, we do this in the `DownloadDependencies` FAKE target

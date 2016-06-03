@@ -46,7 +46,6 @@ let packages =
     "Deedle.RPlugin"
     "FSharp.Charting"
     "FSharp.Data"
-    "Foogle.Charts"
     "MathNet.Numerics"
     "MathNet.Numerics.FSharp"
     "DynamicInterop"
@@ -96,6 +95,12 @@ let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", releas
 
 Target "Clean" (fun _ ->
   CleanDirs ["temp"; "nuget"; "bin"]
+)
+
+Target "DownloadDependencies" (fun _ ->
+  CleanDir "paket-files/fslaborg"
+  Git.Repository.cloneSingleBranch "paket-files/fslaborg" "https://github.com/fslaborg/FsLab.Templates.git" "journal" "FsLab.Templates"
+  Git.Repository.cloneSingleBranch "paket-files/fslaborg" "https://github.com/fslaborg/FsLab.Formatters.git" "master" "FsLab.Formatters"
 )
 
 Target "GenerateFsLab" (fun _ ->
@@ -273,6 +278,7 @@ Target "BuildTemplate" (fun _ ->
 Target "All" DoNothing
 
 "Clean"
+  ==> "DownloadDependencies"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
   ==> "UpdateNuSpec"

@@ -26,9 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "journal", "journal", "{FF1A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{1C1EFF4D-C6E1-4DEC-B3D6-60E50C103534}"
 	ProjectSection(SolutionItems) = preProject
-		src\misc\tools\build.cmd = src\misc\tools\build.cmd
-		src\misc\tools\build.fsx = src\misc\tools\build.fsx
-		src\misc\tools\build.sh = src\misc\tools\build.sh
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		build.sh = build.sh
 	EndProjectSection
 EndProject
 Global
