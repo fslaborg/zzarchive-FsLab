@@ -27,12 +27,12 @@ let handleError(err:FsiEvaluationFailedInfo) =
     sprintf "Evaluating F# snippet failed:\n%s\nThe snippet evaluated:\n%s" err.StdErr err.Text
     |> traceImportant
 
-let ctx = ProcessingContext.Create(__SOURCE_DIRECTORY__).With(fun p ->
-  { p with
+let ctx = 
+  { ProcessingContext.Create(__SOURCE_DIRECTORY__) with
       OutputKind = OutputKind.Html
       Output = __SOURCE_DIRECTORY__ </> "output";
       TemplateLocation = Some(__SOURCE_DIRECTORY__ </> "packages/FsLab.Runner")
-      FailedHandler = handleError })
+      FailedHandler = handleError }
 
 // --------------------------------------------------------------------------------------
 // Processes journals and runs Suave server to host them on localhost
@@ -103,8 +103,12 @@ Target "help" (fun _ ->
   printfn "  build pdf    - Generate LaTeX output & compile using 'pdflatex'"
 )
 
-Target "html" (fun _ ->
-    indexJournal.Value <- Some(generateJournals ctx)
+Target "livehtml" (fun _ ->
+    indexJournal.Value <- Some(generateJournals { ctx with Standalone = false })
+)
+
+Target "html" (fun _ ->    
+    indexJournal.Value <- Some(generateJournals { ctx with Standalone = true })
 )
 
 Target "latex" (fun _ ->
@@ -148,8 +152,8 @@ Target "pdf" (fun _ ->
       info.FileName <- "pdflatex" ) TimeSpan.MaxValue |> ignore
 )
 
-"html" ==> "run"
+"livehtml" ==> "run"
 "latex" ==> "pdf"
-"html" ==> "webpreview"
+"livehtml" ==> "webpreview"
 
 RunTargetOrDefault "help"
