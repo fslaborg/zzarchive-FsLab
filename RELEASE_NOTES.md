@@ -47,3 +47,5 @@
 * 0.4.2-beta - Fix dependencies and load scripts
 * 0.4.3-beta - Fix scripts and styles in formatters
 * 0.4.4-beta - Fix grid server and template margins
+* 0.4.5-beta - Experimental BigDeedle support
+* 0.4.6-beta - Experimental BigDeedle support, including Series
