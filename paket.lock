@@ -2,13 +2,13 @@ NUGET
   remote: https://www.nuget.org/api/v2
     Chessie (0.5.1)
       FSharp.Core
-    Deedle (1.2.4)
-    Deedle.RPlugin (1.2.4)
-      Deedle (>= 1.2.4)
+    Deedle (1.2.5)
+    Deedle.RPlugin (1.2.5)
+      Deedle (>= 1.2.5)
       R.NET.Community (>= 1.6.4)
       R.NET.Community.FSharp (>= 1.6.4)
       RProvider (>= 1.1.13)
-    DotNetZip (1.9.8)
+    DotNetZip (1.9.9)
     DynamicInterop (0.7.4)
     FAKE (4.28)
     FSharp.Charting (0.90.14)
@@ -30,7 +30,7 @@ NUGET
       MathNet.Numerics (3.11.1)
     Newtonsoft.Json (8.0.3)
     NuGet.CommandLine (3.3)
-    Paket.Core (2.66.8)
+    Paket.Core (2.66.9)
       Chessie
       FSharp.Core
       Newtonsoft.Json

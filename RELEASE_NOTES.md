@@ -49,3 +49,4 @@
 * 0.4.4-beta - Fix grid server and template margins
 * 0.4.5-beta - Experimental BigDeedle support
 * 0.4.6-beta - Experimental BigDeedle support, including Series
+* 0.4.7-beta - Update Deedle dependency, tweaking styles
