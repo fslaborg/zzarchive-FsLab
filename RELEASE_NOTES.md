@@ -50,3 +50,4 @@
 * 0.4.5-beta - Experimental BigDeedle support
 * 0.4.6-beta - Experimental BigDeedle support, including Series
 * 0.4.7-beta - Update Deedle dependency, tweaking styles
+* 0.4.8-beta - Fix bug in Deedle formatter
