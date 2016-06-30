@@ -5,7 +5,7 @@
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
 #r "packages/Paket.Core/lib/net45/Paket.Core.dll"
-#r "packages/DotNetZip/lib/net20/Ionic.Zip.dll"
+#r "packages/DotNetZip/lib/net20/DotNetZip.dll"
 #r "System.Xml.Linq"
 open System
 open System.IO
