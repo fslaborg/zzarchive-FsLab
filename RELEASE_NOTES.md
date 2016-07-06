@@ -54,3 +54,4 @@
 * 0.4.8-beta - Fix bug in Deedle formatter
 * 0.4.9-beta - Formatters for Plotly, Math.NET, F# Charting
 * 0.4.10-beta - Fix default styles
+* 1.0.0 - Ionide support via AddHtmlPrinter, update dependencies
