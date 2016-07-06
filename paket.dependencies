@@ -1,3 +1,4 @@
+framework: net40
 source https://nuget.org/api/v2
 
 nuget FsLab
