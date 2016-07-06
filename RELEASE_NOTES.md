@@ -42,6 +42,7 @@
 * 0.3.18 - RProvider and R.NET update
 * 0.3.19 - Update RProvider (cross-plat support)
 * 0.3.20 - Paket update, fix websocket location in HTML template
+* 0.3.21 - Update Deedle and F# Data dependencies
 * 0.4.0-beta - Support AddHtmlPrinter, deprecate Foogle
 * 0.4.1-beta - Attach files as fsx for auto-loading
 * 0.4.2-beta - Fix dependencies and load scripts
@@ -51,3 +52,5 @@
 * 0.4.6-beta - Experimental BigDeedle support, including Series
 * 0.4.7-beta - Update Deedle dependency, tweaking styles
 * 0.4.8-beta - Fix bug in Deedle formatter
+* 0.4.9-beta - Formatters for Plotly, Math.NET, F# Charting
+* 0.4.10-beta - Fix default styles

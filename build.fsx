@@ -5,7 +5,7 @@
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
 #r "packages/Paket.Core/lib/net45/Paket.Core.dll"
-#r "packages/DotNetZip/lib/net20/Ionic.Zip.dll"
+#r "packages/DotNetZip/lib/net20/DotNetZip.dll"
 #r "System.Xml.Linq"
 open System
 open System.IO
@@ -128,7 +128,7 @@ Target "GenerateFsLab" (fun _ ->
 
   // Copy formatter source files to the temp directory
   let formattersDir = "paket-files/fslaborg/FsLab.Formatters/src"
-  let copyAsFsx target fn = 
+  let copyAsFsx target fn =
     ensureDirectory target
     CopyFile (target </> (Path.GetFileNameWithoutExtension(fn) + ".fsx")) fn
   !! (formattersDir + "/Shared/*.*") -- "**/Mock.fs" |> Seq.iter (copyAsFsx "temp/Shared")
@@ -139,15 +139,15 @@ Target "GenerateFsLab" (fun _ ->
   // Generate #load commands to load AddHtmlPrinter and AddPrinter calls
   let loads =
     [ yield ""
-      for f in Directory.GetFiles("temp/Shared") do 
+      for f in Directory.GetFiles("temp/Shared") do
         yield sprintf "#load \"Shared/%s\"" (Path.GetFileName f)
       yield "#if NO_FSI_ADDPRINTER"
       yield "#else"
       yield "#if HAS_FSI_ADDHTMLPRINTER"
-      for f in Directory.GetFiles("temp/Html") do 
+      for f in Directory.GetFiles("temp/Html") do
         yield sprintf "#load \"Html/%s\"" (Path.GetFileName f)
       yield "#else"
-      for f in Directory.GetFiles("temp/Text") do 
+      for f in Directory.GetFiles("temp/Text") do
         yield sprintf "#load \"Text/%s\"" (Path.GetFileName f)
       yield "#endif"
       yield "#endif\n" ]
@@ -176,10 +176,10 @@ Target "UpdateNuSpec" (fun _ ->
       |> Seq.map Directory.GetFiles |> Seq.concat
     for f in includes do
       let subdir = Path.GetDirectoryName(f).Substring(5)
-      files.Add(XElement(!"file", XAttribute(!"src", "..\\" + f), XAttribute(!"target", subdir)))        
+      files.Add(XElement(!"file", XAttribute(!"src", "..\\" + f), XAttribute(!"target", subdir)))
     doc.Save(path + ".updated")
     DeleteFile path
-    Rename path (path + ".updated")  
+    Rename path (path + ".updated")
 )
 
 Target "NuGet" (fun _ ->
@@ -243,9 +243,9 @@ Target "GenerateTemplate" (fun _ ->
 
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
-  !! "paket-files/fslaborg/FsLab.Templates/build.*" 
-  ++ "paket-files/fslaborg/FsLab.Templates/*.dependencies" 
-  ++ "paket-files/fslaborg/FsLab.Templates/*.fs*" 
+  !! "paket-files/fslaborg/FsLab.Templates/build.*"
+  ++ "paket-files/fslaborg/FsLab.Templates/*.dependencies"
+  ++ "paket-files/fslaborg/FsLab.Templates/*.fs*"
   |> CopyFiles "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
   ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"

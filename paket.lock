@@ -1,3 +1,4 @@
+FRAMEWORK: NET20, NET40, NET45
 NUGET
   remote: https://www.nuget.org/api/v2
     Chessie (0.5.1)
@@ -8,14 +9,13 @@ NUGET
       R.NET.Community (>= 1.6.4)
       R.NET.Community.FSharp (>= 1.6.4)
       RProvider (>= 1.1.13)
-    DotNetZip (1.9.9)
+    DotNetZip (1.10.1)
     DynamicInterop (0.7.4)
-    FAKE (4.28)
+    FAKE (4.29.2)
     FSharp.Charting (0.90.14)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
-    FSharp.Data (2.3)
-      Zlib.Portable (>= 1.11) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
+    FSharp.Data (2.3.1)
     FSharp.Formatting (2.14.4)
       FSharp.Compiler.Service (2.0.0.6)
       FSharpVSPowerTools.Core (>= 2.3 < 2.4)
@@ -23,16 +23,17 @@ NUGET
       FSharp.Compiler.Service (>= 2.0.0.3)
     Google.DataTable.Net.Wrapper (3.1.2)
     Http.fs (1.5.1)
-    MathNet.Numerics (3.11.1)
-      TaskParallelLibrary (>= 1.0.2856) - framework: net35
-    MathNet.Numerics.FSharp (3.11.1)
+    MathNet.Numerics (3.12)
+    MathNet.Numerics.FSharp (3.12)
       FSharp.Core (>= 3.1.2.5)
-      MathNet.Numerics (3.11.1)
-    Newtonsoft.Json (8.0.3)
+      MathNet.Numerics (3.12)
+    Mono.Cecil (0.9.6.1)
+    Newtonsoft.Json (9.0.1)
     NuGet.CommandLine (3.3)
-    Paket.Core (2.66.9)
+    Paket.Core (3.4)
       Chessie
       FSharp.Core
+      Mono.Cecil
       Newtonsoft.Json
     R.NET.Community (1.6.5)
       DynamicInterop (0.7.4)
@@ -42,9 +43,8 @@ NUGET
       DynamicInterop (0.7.4)
       R.NET.Community (1.6.5)
       R.NET.Community.FSharp (1.6.5)
-    Suave (1.1.2)
+    Suave (1.1.3)
       FSharp.Core (>= 3.1.2.5)
-    TaskParallelLibrary (1.0.2856) - framework: net35
     XPlot.GoogleCharts (1.3.1)
       Google.DataTable.Net.Wrapper
       Newtonsoft.Json
@@ -54,4 +54,3 @@ NUGET
     XPlot.Plotly (1.3.1)
       Http.fs
       Newtonsoft.Json
-    Zlib.Portable (1.11) - framework: portable-net45+sl5+win8, portable-net45+win8, portable-net45+win8+wp8+wpa81
