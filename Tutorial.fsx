@@ -13,16 +13,17 @@ to document you research.
 Next steps
 ----------
 
- * To learn more about FsLab Journal, go to "Solution Explorer", right click
+ * If you are using Visual Studio template, go to "Solution Explorer", right click
    on your newly created project, select "Add", "New item.." and choose
-   "FsLab Walkthrough" (if you do not have R statistics environment installed)
-   or "FsLab Walkthrough with R" (if you do have R).
+   "FsLab Walkthrough". This contains addtional examples you can explore.
 
- * To add new experiments to your project, got to "Add", "New item" and choose
+ * To add new experiments to your project, just clone this file and rename it.
+   In Visual Studio, you can got to "Add", "New item" and choose
    new "FsLab Experiment". You can have multiple scripts in a single project.
 
- * To see how things work, hit **F5** and see how FsLab Journal turns this
-   Markdown document with simple F# script into a nice report!
+ * To see how things work, run `build run` from the terminal to start the journal
+   runner in the background (or hit **F5** in Visual Studio). FsLab Journal will
+   turn this Markdown document with simple F# script into a nice report!
 
  * To generate PDF from your experiments, you need to install `pdflatex` and
    have it accessible in the system `PATH` variable. Then you can run
