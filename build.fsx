@@ -291,6 +291,4 @@ Target "All" DoNothing
   ==> "BuildTemplate"
   ==> "All"
 
-"All" ==> "PublishNuGet" ==> "Publish"
-
 RunTargetOrDefault "All"

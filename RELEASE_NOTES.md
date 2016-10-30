@@ -1,3 +1,6 @@
+### 1.0.2 (30 October 2016)
+ - Update XPlot (with new Plotly.js wrapper) and Math.Net
+
 ### 1.0.1 (6 September 2016)
  - Update FsLab.Runner with latest build.fsx
 
