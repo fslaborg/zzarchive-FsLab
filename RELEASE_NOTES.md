@@ -1,3 +1,9 @@
+### 1.0.1 (6 September 2016)
+ - Update FsLab.Runner with latest build.fsx
+
+### 1.0.0 (6 July 2016)
+ - Ionide support via AddHtmlPrinter, update dependencies
+
 * 0.0.10-beta - Update RProvider and Deedle references
 * 0.0.11-beta - Add logo
 * 0.0.12-beta - Fix the NuGet package
@@ -54,4 +60,3 @@
 * 0.4.8-beta - Fix bug in Deedle formatter
 * 0.4.9-beta - Formatters for Plotly, Math.NET, F# Charting
 * 0.4.10-beta - Fix default styles
-* 1.0.0 - Ionide support via AddHtmlPrinter, update dependencies

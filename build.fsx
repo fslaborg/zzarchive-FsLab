@@ -275,6 +275,7 @@ Target "BuildTemplate" (fun _ ->
   "temp/template/bin/Debug/FsLab.Template.vsix" |> CopyFile "bin/FsLab.Template.vsix"
 )
 
+Target "Publish" DoNothing
 Target "All" DoNothing
 
 "Clean"
@@ -289,5 +290,7 @@ Target "All" DoNothing
   ==> "GenerateTemplate"
   ==> "BuildTemplate"
   ==> "All"
+
+"All" ==> "PublishNuGet" ==> "Publish"
 
 RunTargetOrDefault "All"
