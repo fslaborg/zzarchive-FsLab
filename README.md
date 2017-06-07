@@ -34,7 +34,7 @@ The source files in the repository are organized as follows:
 
 ### Building FsLab
 
-If you want to be able to build FsLab Journal template, you'll need Visual Studio 2013 SDK.
+If you want to be able to build FsLab Journal template, you'll need Visual Studio 2017 SDK.
 To update one or more dependencies, use the following steps:
 
  * Run `build Clean` to make sure that there are only source files around
