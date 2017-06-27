@@ -1,3 +1,6 @@
+### 1.0.3 (07 June 2017)
+ - Update template to target VS2017
+
 ### 1.0.2 (30 October 2016)
  - Update XPlot (with new Plotly.js wrapper) and Math.Net
 

@@ -1,4 +1,4 @@
-framework: net20, net40, net45
+framework: net20, net40, net45, net46, net461
 source https://nuget.org/api/v2
 
 nuget FAKE
@@ -6,6 +6,7 @@ nuget Paket.Core
 nuget Nuget.CommandLine 3.3
 nuget Deedle
 nuget Deedle.RPlugin
+nuget FSharp.Core 4.0.0.1
 nuget FSharp.Charting
 nuget FSharp.Data
 nuget FSharp.Formatting
