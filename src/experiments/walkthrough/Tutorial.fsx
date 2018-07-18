@@ -27,7 +27,7 @@ The FsLab package automatically references the following F# libraries:
 
  * [Deedle][deedle] for working with data frames and data series
  * [F# R type provider][rprovider] for interoperating with R
- * [XPlot][xplot] and [FSharp.Charting][fschart] for building interactive charts
+ * [FSharp.Charting][fschart] for building interactive charts
  * [FSharp.Data][fsdata] with data-access with F# type providers
  * [Math.NET Numerics][mathnet] for writing numerical calculations
 
