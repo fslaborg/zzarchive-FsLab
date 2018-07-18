@@ -23,19 +23,19 @@ open System.Text.RegularExpressions
 
 let project = "FsLab"
 let projectRunner = "FsLab.Runner"
-let authors = ["F# Data Science Working Group"]
-let summary = "F# Data science package"
-let summaryRunner = "F# Data science report generator"
+let authors = ["FsLab Contributors"]
+let summary = "F# packages for data science"
+let summaryRunner = "FsLab report generator"
 let description = """
-  FsLab is a single package that gives you all you need for doing data science with
-  F#. FsLab includes explorative data manipulation library, type providers for easy
-  data access, simple charting library, support for integration with R and numerical
+  FsLab is a combination package that supports doing data science with
+  F#. FsLab includes an explorative data manipulation library, type providers for easy
+  data access, a simple charting library, support for integration with R and numerical
   computing libraries. All available in a single package and ready to use!"""
 let descriptionRunner = """
   This package contains a library for turning FsLab experiments written as script files
   into HTML and LaTeX reports. The easiest way to use the library is to use the
   'FsLab Journal' Visual Studio template."""
-let tags = "F# fsharp deedle series statistics data science r type provider mathnet"
+let tags = "F# fsharp deedle series statistics data science r type provider mathnet machine learning ML"
 
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
