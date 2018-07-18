@@ -1,3 +1,6 @@
+### 1.0.4 (unreleased)
+ - Update doc links
+
 ### 1.0.3 (07 June 2017)
  - Update template to target VS2017
 

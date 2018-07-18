@@ -27,15 +27,15 @@ The FsLab package automatically references the following F# libraries:
 
  * [Deedle][deedle] for working with data frames and data series
  * [F# R type provider][rprovider] for interoperating with R
- * [F# Charting][fschart] for building interactive charts
- * [F# Data][fsdata] with data-access with F# type providers
+ * [XPlot][xplot] and [FSharp.Charting][fschart] for building interactive charts
+ * [FSharp.Data][fsdata] with data-access with F# type providers
  * [Math.NET Numerics][mathnet] for writing numerical calculations
 
-Sample data access with F# Data
+Sample data access with FSharp.Data
 -------------------------------
 
 The following snippet builds a simple Deedle data frame using data obtained 
-from the WorldBank type provider from the F# Data library:
+from the WorldBank type provider from the FSharp.Data library:
 
 *)
 open Deedle
@@ -162,13 +162,13 @@ commands:
    and store the results in `output` folder
 
  - `build pdf` Generate LaTeX output as when using `build latex` and then run `pdflatex` 
-   on the files (this only works when you have `pdflatex` accessible via the `PATH`
+   on the files (this only works when you have `pdflatex` accessible via the `PATH`)
 
  [fslab]: http://www.nuget.org/packages/FsLab
- [fsfmt]: http://tpetricek.github.io/FSharp.Formatting/
- [rprovider]: http://bluemountaincapital.github.io/FSharpRProvider/
- [deedle]: http://bluemountaincapital.github.io/Deedle/
- [fschart]: http://fsharp.github.io/FSharp.Charting/
+ [fsfmt]: https://github.com/fsprojects/FSharp.Formatting/
+ [rprovider]: http://fslab.org/RProvider/
+ [deedle]: http://fslab.org/Deedle/
+ [fschart]: http://fslab.org/FSharp.Charting/
  [fsdata]: http://fsharp.github.io/FSharp.Data/
  [mathnet]: http://numerics.mathdotnet.com/
  [fake]: http://fsharp.github.io/FAKE/

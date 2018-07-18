@@ -1,4 +1,4 @@
-Copyright 2011-2014, F# Data Science working group 
+Copyright 2011-2018, FsLab Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

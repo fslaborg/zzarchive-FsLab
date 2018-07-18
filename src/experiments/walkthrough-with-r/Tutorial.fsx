@@ -27,15 +27,15 @@ The FsLab package automatically references the following F# libraries:
 
  * [Deedle][deedle] for working with data frames and data series
  * [F# R type provider][rprovider] for interoperating with R
- * [F# Charting][fschart] for building interactive charts
- * [F# Data][fsdata] with data-access with F# type providers
+ * [XPlot][xplot] and [FSharp.Charting][fschart] for building interactive charts
+ * [FSharp.Data][fsdata] with data-access with F# type providers
  * [Math.NET Numerics][mathnet] for writing numerical calculations
 
-Sample data access with F# Data
+Sample data access with FSharp.Data
 -------------------------------
 
 The following snippet builds a simple Deedle data frame using data obtained 
-from the WorldBank type provider from the F# Data library:
+from the WorldBank type provider from the FSharp.Data library:
 
 *)
 open Deedle
@@ -196,13 +196,13 @@ that it requires). Then, the runner opens your default web browser with the gene
 file.
 
 If you have multiple files, the runner automatically generates an index file with
-links to all your notebooks and opens this instead. You can also create your 
+links to all your notebooks and opens that instead. You can also create your 
 own index file by adding a file named `Index.fsx` or `Index.md` (if you only 
 want to write Markdown text in your index).
 
 ### Command line
 
-The runner can be also invoked from command line - the template includes a simple
+The runner can be also invoked from the command line - the template includes a simple
 [FAKE][fake] build script that is copied to the root directory of your project
 (if you modify this, it will be overwritten). The build script supports the following
 commands:
@@ -214,13 +214,14 @@ commands:
    and store the results in `output` folder
 
  - `build pdf` Generate LaTeX output as when using `build latex` and then run `pdflatex` 
-   on the files (this only works when you have `pdflatex` accessible in `PATH`
+   on the files (this only works when you have `pdflatex` accessible via the `PATH`)
 
  [fslab]: http://www.nuget.org/packages/FsLab
- [fsfmt]: http://tpetricek.github.io/FSharp.Formatting/
- [rprovider]: http://bluemountaincapital.github.io/FSharpRProvider/
- [deedle]: http://bluemountaincapital.github.io/Deedle/
- [fschart]: http://fsharp.github.io/FSharp.Charting/
+ [fsfmt]: https://github.com/fsprojects/FSharp.Formatting/
+ [rprovider]: http://fslab.org/RProvider/
+ [deedle]: http://fslab.org/Deedle/
+ [fschart]: http://fslab.org/FSharp.Charting/
+ [xplot]: http://fslab.org/XPlot/
  [fsdata]: http://fsharp.github.io/FSharp.Data/
  [mathnet]: http://numerics.mathdotnet.com/
  [fake]: http://fsharp.github.io/FAKE/
