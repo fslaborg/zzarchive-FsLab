@@ -172,8 +172,8 @@ Target "UpdateNuSpec" (fun _ ->
     files.RemoveAll()
     files.Add(XElement(!"file", XAttribute(!"src", "..\\temp\\FsLab.fsx"), XAttribute(!"target", ".")))
     let includes =
-      [ "temp\\Shared"; "temp\\Text"; "temp\\Html"; "temp\\Themes" ]
-      |> Seq.map Directory.GetFiles |> Seq.concat
+      [ "temp/Shared"; "temp/Text"; "temp/Html"; "temp/Themes" ]
+      |> Seq.collect Directory.GetFiles
     for f in includes do
       let subdir = Path.GetDirectoryName(f).Substring(5)
       files.Add(XElement(!"file", XAttribute(!"src", "..\\" + f), XAttribute(!"target", subdir)))
