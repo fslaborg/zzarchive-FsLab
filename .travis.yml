@@ -1,0 +1,11 @@
+language: csharp
+
+sudo: false
+
+script: 
+  - ./build.sh NuGet
+
+branches:
+  except:
+    - gh-pages
+    - release
