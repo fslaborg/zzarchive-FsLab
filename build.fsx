@@ -176,7 +176,7 @@ Target "UpdateNuSpec" (fun _ ->
       |> Seq.collect Directory.GetFiles
     for f in includes do
       let subdir = Path.GetDirectoryName(f).Substring(5)
-      files.Add(XElement(!"file", XAttribute(!"src", "../" + f), XAttribute(!"target", subdir)))
+      files.Add(XElement(!"file", XAttribute(!"src", "../" + f.Replace("\\", "/")), XAttribute(!"target", subdir)))
     doc.Save(path + ".updated")
     DeleteFile path
     Rename path (path + ".updated")

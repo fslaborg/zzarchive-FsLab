@@ -17,16 +17,16 @@
     @dependencies@
   </metadata>
   <files>
-    <file src="..\temp\FsLab.fsx" target="." />
-    <file src="..\temp\Shared\Server.fsx" target="Shared" />
-    <file src="..\temp\Shared\Styles.fsx" target="Shared" />
-    <file src="..\temp\Text\FsLab.fsx" target="Text" />
-    <file src="..\temp\Html\Charting.fsx" target="Html" />
-    <file src="..\temp\Html\Deedle.fsx" target="Html" />
-    <file src="..\temp\Html\MathNet.fsx" target="Html" />
-    <file src="..\temp\Html\Text.fsx" target="Html" />
-    <file src="..\temp\Html\XPlot.fsx" target="Html" />
-    <file src="..\temp\Themes\AtomChester.fsx" target="Themes" />
-    <file src="..\temp\Themes\DefaultWhite.fsx" target="Themes" />
+    <file src="../temp/FsLab.fsx" target="." />
+    <file src="../temp/Shared/Server.fsx" target="Shared" />
+    <file src="../temp/Shared/Styles.fsx" target="Shared" />
+    <file src="../temp/Text/FsLab.fsx" target="Text" />
+    <file src="../temp/Html/Charting.fsx" target="Html" />
+    <file src="../temp/Html/Deedle.fsx" target="Html" />
+    <file src="../temp/Html/MathNet.fsx" target="Html" />
+    <file src="../temp/Html/Text.fsx" target="Html" />
+    <file src="../temp/Html/XPlot.fsx" target="Html" />
+    <file src="../temp/Themes/AtomChester.fsx" target="Themes" />
+    <file src="../temp/Themes/DefaultWhite.fsx" target="Themes" />
   </files>
 </package>
