@@ -37,8 +37,8 @@ type SimpleServer() =
         let rnd = System.Random()
         while true do
           let port = 8000 + rnd.Next(2000)
-          let local = Suave.Http.HttpBinding.mkSimple HTTP "127.0.0.1" port
-          let logger = Suave.Logging.Loggers.saneDefaultsFor Logging.LogLevel.Error
+          let local = Suave.Http.HttpBinding.createSimple HTTP "127.0.0.1" port
+          let logger = Suave.Logging.Log.create "SimpleServer"
           let config = { defaultConfig with bindings = [local]; logger = logger }
           let started, start = startWebServerAsync config app
           // If it starts OK, we get TCP binding & report success via event

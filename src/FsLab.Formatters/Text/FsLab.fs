@@ -12,7 +12,7 @@ let private displayHtml html =
 
 fsi.AddPrinter(fun (chart:XPlot.GoogleCharts.GoogleChart) ->
   let ch = chart |> XPlot.GoogleCharts.Chart.WithSize (800, 600)
-  ch.Html |> displayHtml
+  ch.GetHtml() |> displayHtml
   "(Google Chart)")
 
 fsi.AddPrinter(fun (chart:XPlot.Plotly.PlotlyChart) ->
