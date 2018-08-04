@@ -155,9 +155,8 @@ Target "GenerateFsLab" (fun _ ->
 )
 
 Target "BuildProjects" (fun _ ->
-    !! (project + ".sln")
-    |> MSBuildRelease "" "Rebuild"
-    |> ignore
+    MSBuildRelease buildDir "Restore" [ "FsLab.sln" ] |> ignore
+    MSBuildRelease buildDir "Rebuild" [ "FsLab.sln" ] |> ignore
 )
 
 Target "UpdateNuSpec" (fun _ ->
@@ -330,7 +329,7 @@ Target "BuildDotnetTemplates" (fun _ ->
 Target "TestDotnetTemplatesNuGet" (fun _ ->
 
     // Globally install the templates from the template nuget package we just built
-    DotNetCli.RunCommand id ("new -i " + buildDir + "/journal." + release.NugetVersion + ".nupkg")
+    DotNetCli.RunCommand id ("new -i " + buildDir + "/FsLab.Templates." + release.NugetVersion + ".nupkg")
 
     let testAppName = "testapp2" + string (abs (hash System.DateTime.Now.Ticks) % 100)
     // Instantiate the template. TODO: additional parameters and variations
@@ -378,6 +377,7 @@ Target "All" DoNothing
 
 "Clean"
   ==> "BuildProjects"
+  ==> "GenerateFsLab"
   ==> "UpdateNuSpec"
   ==> "NuGet"
   ==> "All"
