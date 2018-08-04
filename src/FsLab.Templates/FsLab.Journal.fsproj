@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{12670CAB-1F4A-4D02-AE1D-44CFC4E1E40A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <Name>FsLab Journal</Name>
+    <AssemblyName>FsLab.Journal</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Debug\FsLab_Journal.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Release\FsLab_Journal.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".paket\paket.bootstrapper.exe" />
+    <None Include="paket.dependencies" />
+    <None Include="build.fsx" />
+    <Compile Include="Runner.fs" />
+    <None Include="Tutorial.fsx" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(FSharpTargetsPath)" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <!--
+    Custom Paket targets. This is pretty much the same as standard paket.targets except that:
+
+      * We have to inline this in the journal FsProj file, otherwise VS is not able to build
+        the project after creating the template (I guess it loads `fsproj` before copying
+        `paket.targets` so we cannot import that..)
+
+      * This runs `paket install` on the first build so that you always get most recent FsLab
+        and we don't have to update the template too often (also, it needs no `paket.references`)
+        because it is not touching any projects.
+  -->
+  <PropertyGroup>
+    <!-- Enable the restore command to run before builds -->
+    <RestorePackages Condition=" '$(RestorePackages)' == '' ">true</RestorePackages>
+    <!-- Download Paket.exe if it does not already exist -->
+    <DownloadPaket Condition=" '$(DownloadPaket)' == '' ">true</DownloadPaket>
+    <PaketToolsPath>$(MSBuildThisFileDirectory).paket\</PaketToolsPath>
+    <PaketRootPath>$(MSBuildThisFileDirectory)</PaketRootPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Paket command -->
+    <PaketExePath Condition=" '$(PaketExePath)' == '' ">.paket\paket.exe</PaketExePath>
+    <PaketBootStrapperExePath Condition=" '$(PaketBootStrapperExePath)' == '' ">$(PaketToolsPath)paket.bootstrapper.exe</PaketBootStrapperExePath>
+    <PaketCommand Condition=" '$(OS)' == 'Windows_NT'">"$(PaketExePath)"</PaketCommand>
+    <PaketCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 $(PaketExePath)</PaketCommand>
+    <PaketBootStrapperCommand Condition=" '$(OS)' == 'Windows_NT'">"$(PaketBootStrapperExePath)"</PaketBootStrapperCommand>
+    <PaketBootStrapperCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 $(PaketBootStrapperExePath)</PaketBootStrapperCommand>
+    <!-- Commands -->
+    <RestoreCommand Condition="!Exists('$(MSBuildProjectDirectory)\paket.lock')">$(PaketCommand) install</RestoreCommand>
+    <RestoreCommand Condition="Exists('$(MSBuildProjectDirectory)\paket.lock')">$(PaketCommand) restore</RestoreCommand>
+    <DownloadPaketCommand>$(PaketBootStrapperCommand)</DownloadPaketCommand>
+    <!-- We need to ensure packages are restored prior to assembly resolve -->
+    <BuildDependsOn Condition="$(RestorePackages) == 'true'">RestorePackages; $(BuildDependsOn);</BuildDependsOn>
+  </PropertyGroup>
+  <Target Name="CheckPrerequisites">
+    <!-- Raise an error if we're unable to locate paket.exe -->
+    <Error Condition="'$(DownloadPaket)' != 'true' AND !Exists('$(PaketExePath)')" Text="Unable to locate '$(PaketExePath)'" />
+    <MsBuild Targets="DownloadPaket" Projects="$(MSBuildThisFileFullPath)" Properties="Configuration=DEBUG;DownloadPaket=$(DownloadPaket)" />
+  </Target>
+  <Target Name="DownloadPaket">
+    <Exec Command="$(DownloadPaketCommand)" Condition=" '$(DownloadPaket)' == 'true' AND !Exists('$(PaketExePath)')" />
+  </Target>
+  <Target Name="RestorePackages" DependsOnTargets="CheckPrerequisites">
+    <Exec Command="$(RestoreCommand)" WorkingDirectory="$(PaketRootPath)" />
+  </Target>
+</Project>

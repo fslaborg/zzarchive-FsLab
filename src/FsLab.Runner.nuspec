@@ -22,8 +22,8 @@
     <file src="../src/misc/styles/template.html" target="styles" />
     <file src="../src/misc/styles/template.tex" target="styles" />
     <file src="../src/misc/styles/tips.js" target="styles" />
-    <file src="../paket-files/fslaborg/FsLab.Templates/build.fsx" target="tools" />
-    <file src="../paket-files/fslaborg/FsLab.Templates/build.sh" target="tools" />
-    <file src="../paket-files/fslaborg/FsLab.Templates/build.cmd" target="tools" />
+    <file src="../src/FsLab.Templates/build.fsx" target="tools" />
+    <file src="../src/FsLab.Templates/build.sh" target="tools" />
+    <file src="../src/FsLab.Templates/build.cmd" target="tools" />
   </files>
 </package>
