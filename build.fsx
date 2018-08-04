@@ -97,11 +97,6 @@ Target "Clean" (fun _ ->
   CleanDirs ["temp"; "nuget"; "bin"]
 )
 
-Target "DownloadDependencies" (fun _ ->
-  CleanDir "paket-files/fslaborg"
-  Git.Repository.cloneSingleBranch "paket-files/fslaborg" "https://github.com/fslaborg/FsLab.Templates.git" "journal" "FsLab.Templates"
-  Git.Repository.cloneSingleBranch "paket-files/fslaborg" "https://github.com/fslaborg/FsLab.Formatters.git" "master" "FsLab.Formatters"
-)
 
 Target "GenerateFsLab" (fun _ ->
   // Get directory with binaries for a given package
@@ -127,7 +122,7 @@ Target "GenerateFsLab" (fun _ ->
     |> List.map (sprintf "#r \"%s\"")
 
   // Copy formatter source files to the temp directory
-  let formattersDir = "paket-files/fslaborg/FsLab.Formatters/src"
+  let formattersDir = "src/FsLab.Formatters"
   let copyAsFsx target fn =
     ensureDirectory target
     CopyFile (target </> (Path.GetFileNameWithoutExtension(fn) + ".fsx")) fn
@@ -141,8 +136,7 @@ Target "GenerateFsLab" (fun _ ->
     [ yield ""
       for f in Directory.GetFiles("temp/Shared") do
         yield sprintf "#load \"Shared/%s\"" (Path.GetFileName f)
-      yield "#if NO_FSI_ADDPRINTER"
-      yield "#else"
+      yield "#if !NO_FSI_ADDPRINTER"
       yield "#if HAS_FSI_ADDHTMLPRINTER"
       for f in Directory.GetFiles("temp/Html") do
         yield sprintf "#load \"Html/%s\"" (Path.GetFileName f)
@@ -223,7 +217,7 @@ Target "NuGet" (fun _ ->
 Target "UpdateVSIXManifest" (fun _ ->
   /// Update version number in the VSIX manifest file of the template
   let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
-  let path = "src/template/source.extension.vsixmanifest"
+  let path = "src/vstemplate/source.extension.vsixmanifest"
   let vsix = XDocument.Load(path)
   let ident = vsix.Descendants(!"Identity").First()
   ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
@@ -232,7 +226,7 @@ Target "UpdateVSIXManifest" (fun _ ->
   Rename path (path + ".updated")
 )
 
-Target "GenerateTemplate" (fun _ ->
+Target "PlaceFiles" (fun _ ->
   // Generate ZIPs with item templates
   ensureDirectory "temp/experiments"
   for experiment in [(*"walkthrough-with-r";*) "walkthrough"; "experiment"] do
@@ -242,55 +236,98 @@ Target "GenerateTemplate" (fun _ ->
     "misc/preview.png" |> CopyFile ("temp/experiments/" + experiment + "/__PreviewImage.png")
     !! ("temp/experiments/" + experiment + "/**")
     |> Zip ("temp/experiments/" + experiment) ("temp/experiments/" + experiment + ".zip")
+)
+  // Build Zip templates
+Target "BuildZipTemplates" (fun _ ->
 
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
-  !! "paket-files/fslaborg/FsLab.Templates/build.*"
-  ++ "paket-files/fslaborg/FsLab.Templates/*.dependencies"
-  ++ "paket-files/fslaborg/FsLab.Templates/*.fs*"
+  !! "src/FsLab.Templates/build.*"
+  ++ "src/FsLab.Templates/*.dependencies"
+  ++ "src/FsLab.Templates/*.fs*"
   |> CopyFiles "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
-  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.bootstrapper.exe"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.exe"
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
 
-  // Create directory for the Template project
-  CopyRecursive "src/template" "temp/template/" true |> ignore
-  // Copy ItemTemplates
-  ensureDirectory "temp/template/ItemTemplates"
-  !! "temp/experiments/*.zip"
-  |> CopyFiles "temp/template/ItemTemplates"
-  // Copy ProjectTemplates
-  ensureDirectory "temp/template/ProjectTemplates"
-  "temp/journal.zip" |> CopyFile "temp/template/FsLab Journal.zip"
-  "temp/journal.zip" |> CopyFile "temp/template/ProjectTemplates/FsLab Journal.zip"
-  // Copy other files
-  "misc/logo.png" |> CopyFile "temp/template/logo.png"
-  "misc/preview.png" |> CopyFile "temp/template/preview.png"
 )
 
-Target "BuildTemplate" (fun _ ->
-  !! "temp/template/FsLab.Template.sln"
+Target "BuildVsTemplate" (fun _ ->
+  // Create directory for the Template project
+  CopyRecursive "src/vstemplate" "temp/vstemplate/" true |> ignore
+  // Copy ItemTemplates
+  ensureDirectory "temp/vstemplate/ItemTemplates"
+  !! "temp/experiments/*.zip"
+  |> CopyFiles "temp/vstemplate/ItemTemplates"
+  // Copy ProjectTemplates
+  ensureDirectory "temp/vstemplate/ProjectTemplates"
+  "temp/journal.zip" |> CopyFile "temp/vstemplate/FsLab Journal.zip"
+  "temp/journal.zip" |> CopyFile "temp/vstemplate/ProjectTemplates/FsLab Journal.zip"
+  // Copy other files
+  "misc/logo.png" |> CopyFile "temp/vstemplate/logo.png"
+  "misc/preview.png" |> CopyFile "temp/vstemplate/preview.png"
+
+  !! "temp/vstemplate/FsLab.VsTemplates.sln"
   |> MSBuildDebug "" "Rebuild"
   |> ignore
-  "temp/template/bin/Debug/FsLab.Template.vsix" |> CopyFile "bin/FsLab.Template.vsix"
+  "temp/vstemplate/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile "bin/FsLab.VsTemplates.vsix"
 )
+
+(*
+// Build a NuGet package containing "dotnet new" templates
+Target "BuildDotnetTemplates" (fun _ ->
+
+  // Create directory for the Template project
+  CopyRecursive "src/templates" "temp/templates/" true |> ignore
+  // Copy ItemTemplates
+  //ensureDirectory "temp/templates/ItemTemplates"
+  //!! "temp/experiments/*.zip"
+  //|> CopyFiles "temp/vstemplate/ItemTemplates"
+  // Copy ProjectTemplates
+  //ensureDirectory "temp/vstemplate/ProjectTemplates"
+  CopyRecursive "temp/journal" "temp/templates/journal/" true |> ignore
+  // Copy other files
+  "misc/logo.png" |> CopyFile "temp/templates/logo.png"
+  "misc/preview.png" |> CopyFile "temp/templates/preview.png"
+
+  NuGetHelper.NuGetPack (fun p -> 
+        { p with
+            WorkingDir = "temp/templates"
+            OutputPath = "./bin/"
+            Version = release.NugetVersion
+            ReleaseNotes = toLines release.Notes}) @"temp/templates/FsLab.Templates.nuspec"
+)
+*)
 
 Target "Publish" DoNothing
 Target "All" DoNothing
 
 "Clean"
-  ==> "DownloadDependencies"
   ==> "GenerateFsLab"
   ==> "BuildRunner"
+  ==> "PlaceFiles"
+
+"PlaceFiles"
   ==> "UpdateNuSpec"
   ==> "NuGet"
-
-"NuGet"
-  ==> "UpdateVSIXManifest"
-  ==> "GenerateTemplate"
-  ==> "BuildTemplate"
   ==> "All"
+
+"PlaceFiles"
+  ==> "UpdateVSIXManifest"
+  ==> "BuildZipTemplates"
+  ==> "BuildVsTemplate"
+  ==> "All"
+
+"PlaceFiles"
+  ==> "BuildZipTemplates"
+  ==> "All"
+
+(*
+"PlaceFiles"
+  ==> "BuildDotnetTemplates"
+  ==> "All"
+*)
 
 RunTargetOrDefault "All"

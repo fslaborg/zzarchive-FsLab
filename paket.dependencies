@@ -1,4 +1,4 @@
-framework: net20, net40, net45, net46, net461
+frameworks: netstandard2.0, >= net461
 source https://nuget.org/api/v2
 
 nuget FAKE
@@ -20,10 +20,3 @@ nuget XPlot.Plotly
 nuget XPlot.GoogleCharts
 nuget XPlot.GoogleCharts.Deedle
 nuget Suave
-
-// Cannot do the following, because that copies all template dependencies
-//
-//   github fslaborg/FsLab.Formatters
-//   github fslaborg/FsLab.Templates:journal
-//
-// Instead, we do this in the `DownloadDependencies` FAKE target

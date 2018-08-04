@@ -1,0 +1,7 @@
+framework: >= net40
+source http://nuget.org/api/v2
+
+nuget FsLab
+nuget FsLab.Runner
+nuget FAKE
+nuget Suave
