@@ -179,11 +179,11 @@ Target "UpdateNuSpec" (fun _ ->
     Rename path (path + ".updated")
 )
 
-Target "TestInDirectoryBuildOfTemplates" (fun _ ->
-    exec @"src/journal" @".paket/paket.exe" "install" 
-    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-)
+//Target "TestInDirectoryBuildOfTemplates" (fun _ ->
+//    exec @"src/journal" @".paket/paket.exe" "install" 
+//    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
+//    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
+//)
 
 Target "NuGet" (fun _ ->
     let specificVersion (name, version) = name, sprintf "[%s]" version
@@ -372,9 +372,9 @@ Target "TestDotnetTemplatesNuGet" (fun _ ->
 Target "Publish" DoNothing
 Target "All" DoNothing
 
-"Clean"
-  ==> "TestInDirectoryBuildOfTemplates"
-  ==> "NuGet"
+//"Clean"
+//  ==> "TestInDirectoryBuildOfTemplates"
+//  ==> "NuGet"
 
 "Clean"
   ==> "BuildProjects"
