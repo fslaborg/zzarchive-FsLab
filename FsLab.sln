@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{386DF0A5-E9C0-444B-9A0A-BB13D3CA1AAF}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6
 		build.fsx = build.fsx
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsLab.Runner", "src\FsLab.Runner\FsLab.Runner.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FsLab.Runner", "src\FsLab.Runner\FsLab.Runner.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "journal", "journal", "{FF1AFB62-AC1A-4B2A-96BC-DC7F01CD10CF}"
 EndProject
@@ -30,6 +30,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{1C1EFF4D-C
 		build.fsx = build.fsx
 		build.sh = build.sh
 	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsLab.Formatters", "src\FsLab.Formatters\FsLab.Formatters.fsproj", "{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FsLab.Journal", "src\FsLab.Templates\FsLab.Journal.fsproj", "{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,8 +45,19 @@ Global
 		{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E49B90DE-72FA-4E54-80BE-EE493A1EBF18}
 	EndGlobalSection
 EndGlobal

@@ -1,7 +1,9 @@
-framework: >= net40
+framework: net461
+generate_load_scripts: true
+storage: packages
 source http://nuget.org/api/v2
 
 nuget FsLab
 nuget FsLab.Runner
-nuget FAKE
+nuget FAKE 4.64.13
 nuget Suave

@@ -11,7 +11,7 @@ NUGET
       RProvider (>= 1.1.13)
     DotNetZip (1.10.1)
     DynamicInterop (0.7.4)
-    FAKE (4.61.3)
+    FAKE (4.64.13)
     FSharp.Charting (0.90.14)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
@@ -28,7 +28,6 @@ NUGET
       MathNet.Numerics (3.19)
     Mono.Cecil (0.10.0-beta6)
     Newtonsoft.Json (9.0.1)
-    NuGet.CommandLine (3.3)
     Paket.Core (4.8.7)
       Chessie (>= 0.6)
       FSharp.Core

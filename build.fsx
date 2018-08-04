@@ -7,30 +7,29 @@
 #r "packages/Paket.Core/lib/net45/Paket.Core.dll"
 #r "packages/DotNetZip/lib/net20/DotNetZip.dll"
 #r "System.Xml.Linq"
-open System
 open System.IO
 open System.Xml.Linq
 open System.Linq
 open Fake
-open Fake.Git
-open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
-open System.Text.RegularExpressions
 
 // --------------------------------------------------------------------------------------
 // FsLab packages and configuration
 // --------------------------------------------------------------------------------------
 
+let buildDir = "bin"
 let project = "FsLab"
 let projectRunner = "FsLab.Runner"
 let authors = ["FsLab Contributors"]
 let summary = "F# packages for data science"
 let summaryRunner = "FsLab report generator"
+
 let description = """
   FsLab is a combination package that supports doing data science with
   F#. FsLab includes an explorative data manipulation library, type providers for easy
   data access, a simple charting library, support for integration with R and numerical
   computing libraries. All available in a single package and ready to use!"""
+
 let descriptionRunner = """
   This package contains a library for turning FsLab experiments written as script files
   into HTML and LaTeX reports. The easiest way to use the library is to use the
@@ -94,7 +93,7 @@ let release = LoadReleaseNotes "RELEASE_NOTES.md"
 let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
 
 Target "Clean" (fun _ ->
-  CleanDirs ["temp"; "nuget"; "bin"]
+  CleanDirs ["temp"; "nuget"; buildDir ]
 )
 
 
@@ -188,7 +187,7 @@ Target "NuGet" (fun _ ->
             Version = release.NugetVersion
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
-            OutputPath = "bin"
+            OutputPath = buildDir
             WorkingDir = "nuget"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
@@ -203,7 +202,7 @@ Target "NuGet" (fun _ ->
             Version = release.NugetVersion
             ReleaseNotes = release.Notes |> toLines
             Tags = tags
-            OutputPath = "bin"
+            OutputPath = buildDir
             WorkingDir = "nuget"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
@@ -236,22 +235,24 @@ Target "PlaceFiles" (fun _ ->
     "misc/preview.png" |> CopyFile ("temp/experiments/" + experiment + "/__PreviewImage.png")
     !! ("temp/experiments/" + experiment + "/**")
     |> Zip ("temp/experiments/" + experiment) ("temp/experiments/" + experiment + ".zip")
-)
-  // Build Zip templates
-Target "BuildZipTemplates" (fun _ ->
-
   // Generate ZIP with project template
   ensureDirectory "temp/journal"
   !! "src/FsLab.Templates/build.*"
   ++ "src/FsLab.Templates/*.dependencies"
+  ++ "src/FsLab.Templates/*.lock"
   ++ "src/FsLab.Templates/*.fs*"
   |> CopyFiles "temp/journal"
   CopyRecursive "src/journal" "temp/journal/" true |> ignore
-  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/paket.exe"
+  ensureDirectory "temp/journal/.paket"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/.paket/paket.exe"
+  ".paket/paket.bootstrapper.exe" |> CopyFile "temp/journal/.paket/paket.bootstrapper.exe"
+  ".paket/Paket.Restore.targets" |> CopyFile "temp/journal/.paket/Paket.Restore.targets"
   "misc/item.png" |> CopyFile "temp/journal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/journal/__PreviewImage.png"
+)
+  // Build Zip templates
+Target "BuildZipTemplates" (fun _ ->
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
-
 )
 
 Target "BuildVsTemplate" (fun _ ->
@@ -272,11 +273,10 @@ Target "BuildVsTemplate" (fun _ ->
   !! "temp/vstemplate/FsLab.VsTemplates.sln"
   |> MSBuildDebug "" "Rebuild"
   |> ignore
-  "temp/vstemplate/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile "bin/FsLab.VsTemplates.vsix"
+  "temp/vstemplate/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile (buildDir + "/FsLab.VsTemplates.vsix")
 )
 
-(*
-// Build a NuGet package containing "dotnet new" templates
+// Build a NuGet package containing "Dotnet new" templates
 Target "BuildDotnetTemplates" (fun _ ->
 
   // Create directory for the Template project
@@ -295,11 +295,52 @@ Target "BuildDotnetTemplates" (fun _ ->
   NuGetHelper.NuGetPack (fun p -> 
         { p with
             WorkingDir = "temp/templates"
-            OutputPath = "./bin/"
+            OutputPath = "./" + buildDir + "/"
             Version = release.NugetVersion
             ReleaseNotes = toLines release.Notes}) @"temp/templates/FsLab.Templates.nuspec"
 )
-*)
+let exec exe args =
+    let code = Shell.Exec(exe, args) 
+    if code <> 0 then failwithf "%s %s failed, error code %d" exe args code
+
+Target "TestDotnetTemplatesNuGet" (fun _ ->
+
+    // Globally install the templates from the template nuget package we just built
+    DotNetCli.RunCommand id ("new -i " + buildDir + "/FsLab.Templates." + release.NugetVersion + ".nupkg")
+
+    let testAppName = "testapp2" + string (abs (hash System.DateTime.Now.Ticks) % 100)
+    // Instantiate the template. TODO: additional parameters and variations
+    CleanDir testAppName
+    DotNetCli.RunCommand id (sprintf "new fslab-journal -n %s -lang F#" testAppName)
+
+    let pkgs = Path.GetFullPath(buildDir)
+    // When restoring, using the bin as a package source to pick up the package we just compiled
+    DotNetCli.RunCommand id (sprintf "restore %s/%s.fsproj  --source https://api.nuget.org/v3/index.json --source %s" testAppName testAppName pkgs)
+    
+    let slash = if isUnix then "\\" else ""
+    for c in ["Debug"; "Release"] do 
+        for p in ["Any CPU"] do 
+            exec "msbuild" (sprintf "%s/%s.fsproj /p:Platform=\"%s\" /p:Configuration=%s /p:PackageSources=%s\"https://api.nuget.org/v3/index.json%s;%s%s\"" testAppName testAppName p c  slash slash pkgs slash)
+
+    let slash = if isUnix then "\\" else ""
+    exec "fsc" (sprintf "%s/journal.fsx -r:FSharp.Compiler.Interactive.Settings.dll" testAppName)
+
+
+    (* Manual steps without building nupkg
+        .\build BuildDotnetTemplates
+        dotnet new -i  bin/FsLab.Templates.*.nupkg
+        rmdir /s /q testapp2
+        dotnet new fslab-journal -n testapp2 -lang F#
+        dotnet restore testapp2/testapp2.fsproj -s bin/
+        dotnet restore testapp2/testapp2.fsproj -s bin/
+        msbuild testapp2/testapp2.fsproj
+        fsc testapp2\journal.fsx -r:FSharp.Compiler.Interactive.Settings.dll
+        fsi  -r:FSharp.Compiler.Interactive.Settings.dll testapp2/Tutorial.fsx
+        fsi  -r:FSharp.Compiler.Interactive.Settings.dll --use:testapp2/Tutorial.fsx
+        *)
+
+)
+
 
 Target "Publish" DoNothing
 Target "All" DoNothing
@@ -324,10 +365,9 @@ Target "All" DoNothing
   ==> "BuildZipTemplates"
   ==> "All"
 
-(*
 "PlaceFiles"
   ==> "BuildDotnetTemplates"
+  ==> "TestDotnetTemplatesNuGet"
   ==> "All"
-*)
 
 RunTargetOrDefault "All"
