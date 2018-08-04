@@ -7,7 +7,7 @@
     <None Include="paket.dependencies" />
     <None Include="build.fsx" />
     <Compile Include="Runner.fs" />
-    <None Include="journal.fsx" />
+    <None Include="NewJournal.fsx" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

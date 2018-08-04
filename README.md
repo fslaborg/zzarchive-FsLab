@@ -24,7 +24,7 @@ The source files in the repository are organized as follows:
 |--------------------|---------------
 | `misc`             | Icons and other non-source-code things
 | `src/FsLab.Runner` | Source for the DLL in the `FsLab.Runner` NuGet package
-| `src/misc`         | Other files included in the `FsLab.Runner` NuGet package
+| `src/styles`       | Styles applied to literate scripts
 | `src/experiments`  | Item templates for Visual Studio template
 | `src/journal`      | Project template for Visual Studio template
 | `src/template`     | Build files for Visual Studio template
@@ -48,6 +48,6 @@ After running `build NuGet` for the first time, you can also edit the
 extensions in `src/FsLab.fsx`. 
 
 If there were any changes in the Journal template, you also need to update the
-[journal template](https://github.com/fslaborg/FsLab.Templates/tree/journal) in the
-[FsLab.Templates](https://github.com/fslaborg/FsLab.Templates) repository. At some
+[journal template](https://github.com/fslaborg/journal/tree/journal) in the
+[journal](https://github.com/fslaborg/journal) repository. At some
 point, these should be generated automatically too!

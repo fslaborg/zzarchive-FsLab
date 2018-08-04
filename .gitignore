@@ -1,8 +1,12 @@
 .fake
 bin
-src/FsLab.Runner/obj
+obj
 temp
 packages
+testapp*
+src/journal/packages
+src/journal/.paket/*.exe
+src/journal/.paket/load
 *.suo
 *.bak
 *.userprefs

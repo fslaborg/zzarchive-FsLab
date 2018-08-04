@@ -1,6 +1,7 @@
 module FsLab.Formatters.XPlot
 
 open XPlot
+open XPlot.GoogleCharts
 open FsLab.Formatters
 open Microsoft.FSharp.Quotations
 
@@ -66,7 +67,7 @@ let googleLoad = """<script type="text/javascript">
 fsi.AddHtmlPrinter(fun (chart:XPlot.GoogleCharts.GoogleChart) ->
   let ch = chart |> XPlot.GoogleCharts.Chart.WithSize (800, 450) |> applyTheme
   seq [ "script", googleJsapi; "script", googleLoad ], 
-  ch.GetInlineHtml())
+  ch.InlineHtml)
 
 
 // --------------------------------------------------------------------------------------
