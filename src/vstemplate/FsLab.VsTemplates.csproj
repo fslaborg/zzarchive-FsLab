@@ -34,8 +34,8 @@
     <ProjectGuid>{CD13C6F0-CE9A-4F1D-8AB7-50637FDFB7F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FsLab.Template</RootNamespace>
-    <AssemblyName>FsLab.Template</AssemblyName>
+    <RootNamespace>FsLab.VsTemplates</RootNamespace>
+    <AssemblyName>FsLab.VsTemplates</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
