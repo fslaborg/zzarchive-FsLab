@@ -1,10 +1,10 @@
 FsLab
 =====
 
-FsLab is a curated set of templates, libraries and literate scripting support for doing
+FsLab is a curated set of templates, libraries and scripts-as-journals support for doing
 data science with F#.
 
-See https://fslab.org for getting started
+See https://fslab.org for getting started.
 
 Developer notes
 ---------------
