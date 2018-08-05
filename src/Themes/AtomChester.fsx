@@ -1,4 +1,4 @@
-module FsLab.Formatters.AtomChesterTheme
+module FsLab.HtmlPrinters.AtomChesterTheme
 #if HAS_FSI_ADDHTMLPRINTER
 
 fsi.HtmlPrinterParameters.["background-color-highlighted"] <- "#2A333F"

@@ -5,9 +5,7 @@
     <OtherFlags>/warnon:1182</OtherFlags>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Config.fs" />
-    <Compile Include="Runner.fs" />
-    <Compile Include="Main.fs" />
+    <Compile Include="ScriptProcessing.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

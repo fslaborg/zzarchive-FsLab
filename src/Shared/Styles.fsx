@@ -1,9 +1,12 @@
-﻿module FsLab.Formatters.Styles
-open Suave
+﻿module FsLab.HtmlPrinters.Styles
 
 // --------------------------------------------------------------------------------------
 // Helpers for accessing styles & colors
 // --------------------------------------------------------------------------------------
+
+#if HAS_FSI_ADDHTMLPRINTER
+
+open Suave
 
 let private defaultStyles = 
   [ // Background colors
@@ -33,7 +36,6 @@ let private defaultStyles =
     "grid-column-counts", "3,3" ] |> dict
 
 
-#if HAS_FSI_ADDHTMLPRINTER
 /// Return value of a known style (or fail)
 let getStyle key = 
   match fsi.HtmlPrinterParameters.TryGetValue(key), defaultStyles.TryGetValue(key) with

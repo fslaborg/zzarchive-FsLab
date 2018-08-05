@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{790C05AB-929
 	ProjectSection(SolutionItems) = preProject
 		src\FsLab.fsx = src\FsLab.fsx
 		src\FsLab.nuspec = src\FsLab.nuspec
-		src\FsLab.Runner.nuspec = src\FsLab.Runner.nuspec
+		src\FSharp.Literate.Scripts.nuspec = src\FSharp.Literate.Scripts\FSharp.Literate.Scripts.nuspec
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6
 		build.fsx = build.fsx
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FsLab.Runner", "src\FsLab.Runner\FsLab.Runner.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Literate.Scripts", "src\FSharp.Literate.Scripts\FSharp.Literate.Scripts.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "journal", "journal", "{FF1AFB62-AC1A-4B2A-96BC-DC7F01CD10CF}"
 EndProject

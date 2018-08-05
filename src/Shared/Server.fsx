@@ -1,4 +1,4 @@
-module FsLab.Formatters.Server
+module FsLab.HtmlPrinters.Server
 open Suave
 
 // --------------------------------------------------------------------------------------

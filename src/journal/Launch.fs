@@ -11,9 +11,9 @@ let main argv =
   let currentDir = __SOURCE_DIRECTORY__
 
   // If the build file is empty (project was just created)
-  // we copy the latest version from the FsLab.Runner package
+  // we copy the latest version from the FSharp.Literate.Scripts package
   if File.ReadAllBytes(currentDir @@ "build.fsx").Length < 10 then
-    for f in Directory.GetFiles(currentDir @@ "packages/FsLab.Runner/tools") do
+    for f in Directory.GetFiles(currentDir @@ "packages/FSharp.Literate.Scripts/tools") do
       File.Copy(f, currentDir @@ Path.GetFileName(f), true)
 
   // Start the build script using the appropriate command

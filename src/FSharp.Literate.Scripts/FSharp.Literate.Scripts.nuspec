@@ -17,6 +17,6 @@
     @dependencies@
   </metadata>
   <files>
-    <file src="../bin/FsLab.Runner.dll" target="lib/net40" />
+    <file src="../bin/FSharp.Literate.Scripts.dll" target="lib/net40" />
   </files>
 </package>

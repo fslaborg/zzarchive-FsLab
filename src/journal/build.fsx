@@ -3,20 +3,24 @@
 // Reference FsLab together with FAKE for building & Suave for hosting Journals
 // --------------------------------------------------------------------------------------
 
+#nowarn "211"
 #load "packages/FSharp.Formatting/FSharp.Formatting.fsx"
 #I "packages/FAKE/tools"
 #I "packages/Suave/lib/net40"
-#I "packages/FsLab.Runner/lib/net40"
-#r "FsLab.Runner.dll"
+#I "../../packages/FAKE/tools"
+#I "../../packages/Suave/lib/net40"
+#I "../../bin"
+#I "packages/FSharp.Literate.Scripts/lib/net40"
+#r "FSharp.Literate.Scripts.dll"
 #r "FakeLib.dll"
 #r "Suave.dll"
 
 open Fake
-open FsLab
+open FSharp.Literate
+open FSharp.Literate.Scripts
 open System
 open System.Text
 open System.IO
-open FSharp.Literate
 
 // --------------------------------------------------------------------------------------
 // Runner configuration - You can change some basic settings of ProcessingContext here
@@ -28,11 +32,9 @@ let handleError(err:FsiEvaluationFailedInfo) =
 
 let ctx = 
   { ProcessingContext.Create(__SOURCE_DIRECTORY__) with
-      OutputKind = OutputKind.Html
-      Output = __SOURCE_DIRECTORY__ </> "output";
-      TemplateLocation = Some (if Directory.Exists (__SOURCE_DIRECTORY__ + "/styles") then  __SOURCE_DIRECTORY__ 
-                               elif Directory.Exists (__SOURCE_DIRECTORY__ + "/../styles") then  __SOURCE_DIRECTORY__ + "/.."
-                               else failwith "couldn't find styles")
+      //OutputKind = OutputKind.Html
+      //Output = __SOURCE_DIRECTORY__ </> "output";
+      //Styles = ...
       FailedHandler = handleError }
 
 // --------------------------------------------------------------------------------------

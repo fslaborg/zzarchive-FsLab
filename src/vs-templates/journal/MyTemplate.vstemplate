@@ -17,11 +17,13 @@
   </TemplateData>
   <TemplateContent>
     <Project TargetFileName="FsLab.Journal.fsproj" File="FsLab.Journal.fsproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\paket.bootstrapper.exe">paket.bootstrapper.exe</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\paket.bootstrapper.exe">.paket\paket.bootstrapper.exe</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\Paket.Restore.targets">.paket\Paket.Restore.targets</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="paket.dependencies">paket.dependencies</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.lock">paket.lock</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="build.fsx">build.fsx</ProjectItem>
-      <ProjectItem ReplaceParameters="false" TargetFileName="Tutorial.fsx">Tutorial.fsx</ProjectItem>
-      <ProjectItem ReplaceParameters="false" TargetFileName="Runner.fs">Runner.fs</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="NewJournal.fsx">NewJournal.fsx</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Launch.fs">Launch.fs</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

@@ -18,7 +18,7 @@ open Fake.ReleaseNotesHelper
 
 let buildDir = "bin"
 let project = "FsLab"
-let projectRunner = "FsLab.Runner"
+let projectRunner = "FSharp.Literate.Scripts"
 let authors = ["FsLab Contributors"]
 let summary = "F# packages for data science"
 let summaryRunner = "FsLab report generator"
@@ -31,8 +31,7 @@ let description = """
 
 let descriptionRunner = """
   This package contains a library for turning FsLab experiments written as script files
-  into HTML and LaTeX reports. The easiest way to use the library is to use the
-  'FsLab Journal' Visual Studio template."""
+  into HTML and LaTeX reports."""
 let tags = "F# fsharp deedle series statistics data science r type provider mathnet machine learning ML"
 
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
@@ -88,12 +87,12 @@ let exec workingDir exe args =
     if code <> 0 then failwithf "%s %s failed, error code %d" exe args code
 
 // --------------------------------------------------------------------------------------
-// FAKE targets for building FsLab and FsLab.Runner NuGet packages
+// FAKE targets for building FsLab and FSharp.Literate.Scripts NuGet packages
 // --------------------------------------------------------------------------------------
 
 // Read release notes & version info from RELEASE_NOTES.md
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
-let packageVersions = dict (packages @ journalPackages @ ["FsLab.Runner", release.NugetVersion])
+let packageVersions = dict (packages @ journalPackages @ ["FSharp.Literate.Scripts", release.NugetVersion])
 
 Target "Clean" (fun _ ->
   CleanDirs ["temp"; "nuget"; buildDir ]
@@ -144,6 +143,12 @@ Target "GenerateFsLab" (fun _ ->
   let oldLines = File.ReadAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx")
   if Array.ofList lines <> oldLines then
       File.WriteAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx", lines)
+
+  // Check that FsLab.fsx now compiles in FSI.EXE mode
+  exec "." "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore --out:bin/test-compile-FsLab.exe"
+
+  // Check that FsLab.fsx now compiles in HAS_FSI_ADDHTMLPRINTER (FAKE+Yaaf+FSharp.Literate.Scripts, iFSharp) ) mode
+  exec "." "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe"
 )
 
 Target "BuildProjects" (fun _ ->
@@ -207,7 +212,7 @@ Target "NuGet" (fun _ ->
             WorkingDir = "nuget"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
-        ("src/" + project + ".Runner.nuspec")
+        ("src/FSharp.Literate.Scripts/FSharp.Literate.Scripts.nuspec")
 )
 
 
@@ -239,7 +244,7 @@ Target "PlaceFiles" (fun _ ->
   let paketDepLines = File.ReadAllLines("paket.dependencies") |> Seq.takeWhile (fun s -> not (s.Contains("--CUT--")))
   File.WriteAllLines("src/journal/paket.dependencies", paketDepLines)
   File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FsLab %s" release.NugetVersion])
-  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FsLab.Runners %s" release.NugetVersion])
+  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FSharp.Literate.Scriptss %s" release.NugetVersion])
   
   // Create/update the paket.lock
   exec "src/journal" ".paket/paket.exe" "update"

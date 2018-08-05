@@ -1,35 +1,38 @@
-module FsLab.Formatters.TextPrinters
-open FsLab.Formatters
-open FSharp.Charting
+namespace FsLab.HtmlPrinters
 
-// --------------------------------------------------------------------------------------
-// Text-based printers using standard fsi.AddPrinter
-// --------------------------------------------------------------------------------------
 
-let private displayHtml html = 
-  let url = Server.instance.Value.AddPage(html)
-  System.Diagnostics.Process.Start(url) |> ignore
+module FsLabTextPrinters =
+  open FsLab.HtmlPrinters
+  open FSharp.Charting
 
-fsi.AddPrinter(fun (chart:XPlot.GoogleCharts.GoogleChart) ->
-  let ch = chart |> XPlot.GoogleCharts.Chart.WithSize (800, 600)
-  ch.GetHtml() |> displayHtml
-  "(Google Chart)")
+  // --------------------------------------------------------------------------------------
+  // Text-based printers using standard fsi.AddPrinter
+  // --------------------------------------------------------------------------------------
 
-fsi.AddPrinter(fun (chart:XPlot.Plotly.PlotlyChart) ->
-  """<!DOCTYPE html>
-  <html>
-  <head>
-      <title>Plotly Chart</title>
-      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  </head>
-  <body>""" + chart.GetInlineHtml() + "</body></html>" |> displayHtml
-  "(Plotly Chart)" )
+  let private displayHtml html = 
+    let url = Server.instance.Value.AddPage(html)
+    System.Diagnostics.Process.Start(url) |> ignore
 
-fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) ->
-  "\n" + (printer.Format()))
-fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) ->
-  ch.ShowChart() |> ignore; "(Chart)")
-#if RPROVIDER
-fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) ->
-  synexpr.Print())
-#endif
+  fsi.AddPrinter(fun (chart:XPlot.GoogleCharts.GoogleChart) ->
+    let ch = chart |> XPlot.GoogleCharts.Chart.WithSize (800, 600)
+    ch.GetHtml() |> displayHtml
+    "(Google Chart)")
+
+  fsi.AddPrinter(fun (chart:XPlot.Plotly.PlotlyChart) ->
+    """<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Plotly Chart</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    </head>
+    <body>""" + chart.GetInlineHtml() + "</body></html>" |> displayHtml
+    "(Plotly Chart)" )
+
+  fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) ->
+    "\n" + (printer.Format()))
+  fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) ->
+    ch.ShowChart() |> ignore; "(Chart)")
+  #if RPROVIDER
+  fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) ->
+    synexpr.Print())
+  #endif

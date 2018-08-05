@@ -1,4 +1,4 @@
-﻿namespace FsLab
+﻿namespace FSharp.Literate.Scripts
 
 open System.IO
 open FSharp.Literate
@@ -6,10 +6,52 @@ open FSharp.Markdown
 open System.Reflection
 open System.Collections.Generic
 
-// ----------------------------------------------------------------------------
-// Directory and location helpers
-// ----------------------------------------------------------------------------
-module internal Helpers =
+/// Represents state passed around during processing
+type ProcessingContext = 
+  { /// Root path with journals (see comment on `ProcessingContext.Create`)
+    Root : string 
+
+    /// Output folder (see comment on `ProcessingContext.Create`)
+    Output : string
+
+    /// What kind of output should be produced
+    OutputKind : OutputKind 
+
+    /// Template location (see comment on `ProcessingContext.Create`)
+    Styles : string option 
+
+    /// Should the output be standalone (without any background servers)?
+    Standalone : bool
+
+    /// Set this if you only want to process files in this list.
+    /// (For example, use `["MyJournal.fsx"]` to only generate this one jounral)
+    FileWhitelist : string list option
+
+    /// Specify an error handler when evaluation fails
+    FailedHandler : FsiEvaluationFailedInfo -> unit 
+  }
+
+  /// Creates a default processing context with all the 
+  /// basic things needed to produce journals. 
+  ///
+  /// ## Parameters
+  ///  - `root` is the root folder where you have your `*.fsx` journals
+  ///  - `output` is an output folder where HTML files are placed
+  ///  - `templateLocation` is the place with `styles` folder. A reasonable
+  ///    default is `"packages/FSharp.Literate.Scripts"`.
+  /// 
+  static member Create(root) = 
+    { Root = root 
+      Output = Path.Combine(root, "output")
+      OutputKind = OutputKind.Html 
+      Styles = Some (if Directory.Exists (__SOURCE_DIRECTORY__ + "/styles") then  __SOURCE_DIRECTORY__ 
+                               elif Directory.Exists (__SOURCE_DIRECTORY__ + "/../styles") then  __SOURCE_DIRECTORY__ + "/.."
+                               else failwith "couldn't find styles")
+      FileWhitelist = None 
+      Standalone = false
+      FailedHandler = ignore }
+
+module ScriptProcessing =
 
   /// Correctly combine two paths
   let (@@) a b = Path.Combine(a, b)
@@ -39,16 +81,15 @@ module internal Helpers =
       | _ -> None)
 
   // Process scripts in the 'root' directory and put them into output
-  let htmlTemplate (ctx:FsLab.ProcessingContext) = 
+  let htmlTemplate (ctx:ProcessingContext) = 
     File.ReadAllText(ctx.Output @@ "styles" @@ "template.html")
-  let texTemplate (ctx:FsLab.ProcessingContext) =  
+
+  let texTemplate (ctx:ProcessingContext) =  
     File.ReadAllText(ctx.Output @@ "styles" @@ "template.tex")
 
-// ----------------------------------------------------------------------------
-// Markdown document processing tools
-// ----------------------------------------------------------------------------
-module internal Runner =
-  open Helpers
+  // ----------------------------------------------------------------------------
+  // Markdown document processing tools
+  // ----------------------------------------------------------------------------
 
   /// Extract text from a list of spans such as document heading
   let rec extractText (spans:MarkdownSpans) =
@@ -89,7 +130,7 @@ module internal Runner =
       | Matching.ParagraphLeaf p -> Matching.ParagraphLeaf p )
 
   /// Generate file for the specified document, using a given template and title
-  let generateFile (ctx:FsLab.ProcessingContext) path (doc:LiterateDocument) title head = 
+  let generateFile (ctx:ProcessingContext) path (doc:LiterateDocument) title head = 
     if ctx.OutputKind = OutputKind.Html then
       let template = htmlTemplate ctx
       let html =
@@ -130,6 +171,13 @@ module internal Runner =
   // ----------------------------------------------------------------------------
 
   /// Extend the `fsi` object with `fsi.AddHtmlPrinter` 
+  /// ForwardInteractiveSettings comes from FAKE Yaaf scripting support. When your scripts are processed
+  /// FSharp.Literate.Scripts literate programming support the scripts are actually processed using FAKE.exe 
+  /// (FAKE version 4.x), which is a little mysterious but gives more hooks to intercept settings etc.
+  ///
+  /// https://github.com/fsharp/FAKE/blob/575330d8eab58177152bc79963b3b21599aef76e/paket-files/matthid/Yaaf.FSharp.Scripting/src/source/Yaaf.FSharp.Scripting/YaafFSharpScripting.fs#L1388
+
+
   let addHtmlPrinter = """
     module FsInteractiveService = 
       let mutable htmlPrinters = []
@@ -188,14 +236,14 @@ module internal Runner =
 
     // use the provided template location or use one in the NuGet package source
     let templateLocation =
-      match ctx.TemplateLocation with
+      match ctx.Styles with
       | Some loc -> loc
       | _ ->
         let rootPackages =
           if Directory.Exists(root @@ "packages") then root @@ "packages"
           else root @@ "../packages"
         Directory.GetDirectories(rootPackages) |> Seq.find (fun p ->
-          Path.GetFileName(p).StartsWith "FsLab.Runner")
+          Path.GetFileName(p).StartsWith "FSharp.Literate.Scripts")
 
     // Copy content of 'styles' to the output
     copyFiles (templateLocation @@ "styles") (ctx.Output @@ "styles")
@@ -269,9 +317,21 @@ module internal Runner =
               [ for file, title in generated ->
                   [Paragraph [ DirectLink([Literal title], (file,None)) ]] ]
             let pars =
-              [ Heading(1, [Literal "FsLab Journals"])
+              [ Heading(1, [Literal "FSharp Literate Scripts"])
                 ListBlock(Unordered, items) ]
             let doc = LiterateDocument(pars, "", dict[], LiterateSource.Markdown "", "", Seq.empty)
-            generateFile ctx (ctx.Output @@ "index.html") doc "FsLab Journals" ""
+            generateFile ctx (ctx.Output @@ "index.html") doc "FSharp Literate Scripts" ""
             "index.html"
         | Some fn -> fn
+
+  /// Process journals as specified by the provided `ProcessingContext`
+  /// and return a list of names and headings of the journals
+  let processJournals ctx = processScriptFiles true ctx
+
+  /// Update all journals. Call this after `processJournals` to 
+  /// regenerate journals that have been changed.
+  let updateJournals ctx = processScriptFiles false ctx |> ignore
+
+  /// Get default "index" journal. If there are multiple journals,
+  /// this generates a new index file. If there is one, returns it.
+  let getIndexJournal ctx files = getDefaultFile ctx files
