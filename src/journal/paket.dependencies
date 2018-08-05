@@ -9,7 +9,7 @@ nuget FSharp.Core 4.1.18
 
 # Literate programming
 nuget FAKE 4.64.13
-nuget Suave 2.1
+nuget Suave 2.1.1
 nuget FSharp.Formatting 2.14.4
 
 # RProvider
@@ -38,5 +38,5 @@ nuget XPlot.GoogleCharts.Deedle 1.4.5
 
 
 source https://api.nuget.org/v3/index.json
-nuget FsLab 1.1.0
-nuget FSharp.Literate.Scripts 1.1.0
+nuget FsLab 1.1.1
+nuget FSharp.Literate.Scripts 1.1.1

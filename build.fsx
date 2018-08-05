@@ -82,7 +82,8 @@ let getAssemblies package =
     | "R.NET.Community.FSharp" -> ["RDotNet.FSharp.dll"]
     | package -> [package + ".dll"]
 
-let exec workingDir exe args =
+let exec exe args workingDir =
+    printfn "%s %s (in %s)" exe args workingDir
     let code = Shell.Exec(exe, args, workingDir) 
     if code <> 0 then failwithf "%s %s failed, error code %d" exe args code
 
@@ -145,16 +146,16 @@ Target "UpdateFsLabScript" (fun _ ->
       File.WriteAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx", lines)
 
   // Check that FsLab.fsx now compiles in FSI.EXE mode
-  exec "." "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:bin/test-compile-FsLab.exe"
+  exec "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:bin/test-compile-FsLab.exe" "."
 
   // Check that FsLab.fsx now compiles in HAS_FSI_ADDHTMLPRINTER (fsx2html, iFSharp) ) mode
-  exec "." "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe"
+  exec "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe" "."
 
 )
 
 Target "BuildProjects" (fun _ ->
-    MSBuildRelease buildDir "Restore" [ "FsLab.sln" ] |> ignore
-    MSBuildRelease buildDir "Rebuild" [ "FsLab.sln" ] |> ignore
+    MSBuildRelease "" "Restore" [ "FsLab.sln" ] |> ignore
+    MSBuildRelease "" "Rebuild" [ "FsLab.sln" ] |> ignore
 )
 
 Target "UpdateNuSpec" (fun _ ->
@@ -175,12 +176,6 @@ Target "UpdateNuSpec" (fun _ ->
     DeleteFile path
     Rename path (path + ".updated")
 )
-
-//Target "TestInDirectoryBuildOfTemplates" (fun _ ->
-//    exec @"src/journal" @".paket/paket.exe" "install" 
-//    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-//    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-//)
 
 Target "BuildNuGets" (fun _ ->
     let specificVersion (name, version) = name, sprintf "[%s]" version
@@ -234,14 +229,14 @@ Target "UpdateAndCheckTemplates" (fun _ ->
   File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FSharp.Literate.Scripts %s" release.NugetVersion])
   
   // Create/update the paket.lock and do a local install of packages
-  exec "src/journal" ".paket/paket.exe" "update"
+  exec ".paket/paket.exe" "update" "src/journal"
 
   // Check that journal/build.fsx compiles in FSI.EXE mode
-  exec "src/journal" "fsc" "build.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:../../bin/test-compile-journal-build.fsx"
+  exec "fsc" "build.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:../../bin/test-compile-journal-build.fsx" "src/journal"
 
   // Check that journal/build.fsx runs in FAKE mode
-  exec "src/journal" "packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx"
-  exec "src/journal" "packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx"
+  exec "packages/FAKE/tools/FAKE.exe" "build.fsx html" "src/journal"
+  exec "packages/FAKE/tools/FAKE.exe" "build.fsx latex" "src/journal"
 
   // Replace the reference to the local source with the place where it will be when published
   File.WriteAllText("src/journal/paket.dependencies", File.ReadAllText("src/journal/paket.dependencies").Replace("source ../../bin", "source https://api.nuget.org/v3/index.json"))
@@ -386,14 +381,14 @@ Target "TestDotnetTemplatesNuGet" (fun _ ->
     let slash = if isUnix then "\\" else ""
     for c in ["Debug"; "Release"] do 
         for p in ["Any CPU"] do 
-            exec "." "msbuild" (sprintf "%s/%s.fsproj /p:Platform=\"%s\" /p:Configuration=%s /p:PackageSources=%s\"https://api.nuget.org/v3/index.json%s;%s%s\"" testAppName testAppName p c  slash slash pkgs slash)
+            exec "msbuild" (sprintf "%s/%s.fsproj /p:Platform=\"%s\" /p:Configuration=%s /p:PackageSources=%s\"https://api.nuget.org/v3/index.json%s;%s%s\"" testAppName testAppName p c  slash slash pkgs slash) "."
 
     let slash = if isUnix then "\\" else ""
-    exec "." "fsc" (sprintf "%s/%s.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore" testAppName testAppName)
+    exec "fsc" (sprintf "%s/%s.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore" testAppName testAppName) "."
     
     // Check the processing of the scripts to HTML and LaTeX works
-    exec testAppName @"packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-    exec testAppName @"packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
+    exec "packages/FAKE/tools/FAKE.exe" "build.fsx html" testAppName
+    exec "packages/FAKE/tools/FAKE.exe" "build.fsx latex"  testAppName
 
 
     (* Manual steps without building nupkg
