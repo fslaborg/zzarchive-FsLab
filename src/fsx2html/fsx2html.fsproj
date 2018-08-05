@@ -3,9 +3,16 @@
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
     <OtherFlags>/warnon:1182</OtherFlags>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Some limitation in FSharp.Formatting prevents this from running in x64 -->
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ScriptProcessing.fs" />
+    <Compile Include="Tool.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

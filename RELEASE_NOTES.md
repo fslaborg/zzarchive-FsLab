@@ -1,3 +1,6 @@
+### 1.1.1
+- Simplify FSharp.Literate.Scripts so it only contains a tool fsx2html
+
 ### 1.1.0
  - Ensure packages are consistent
  - Rename FsLab.Runners to FSharp.Literate.Scripts
@@ -13,7 +16,7 @@
  - Update XPlot (with new Plotly.js wrapper) and Math.Net
 
 ### 1.0.1 (6 September 2016)
- - Update FSharp.Literate.Scripts with latest build.fsx
+ - Update fsx2html with latest build.fsx
 
 ### 1.0.0 (6 July 2016)
  - Ionide support via AddHtmlPrinter, update dependencies
@@ -35,14 +38,14 @@
 * 0.1.4 - Update dependencies (Foogle.Charts)
 * 0.2.0 - Update dependencies, rework runner for FsLab Journal
 * 0.2.1 - Update F# Formatting, more cross-platform journals
-* 0.2.2 - Minor fixes in new FSharp.Literate.Scripts (for journals)
+* 0.2.2 - Minor fixes in new fsx2html (for journals)
 * 0.2.3 - Update F# Formatting
 * 0.2.4 - Initial integration with XPlot
 * 0.2.5 - Include Google DataTable wrapper and JSON.NET references
 * 0.2.6 - Autoload Google Charts in the Journal template
 * 0.2.7 - Add fsi printer for XPlot charts
 * 0.3.0 - Use no-op 'fsi' in journal, update dependencies
-* 0.3.1 - Include new F# Formatting styles in FSharp.Literate.Scripts
+* 0.3.1 - Include new F# Formatting styles in fsx2html
 * 0.3.2 - Update Deedle and remove FAKE workaround (now fixed)
 * 0.3.3 - Update JSON.NET and other references (to avoid NuGet resolve issues)
 * 0.3.4 - Fixed Plotly chart size issue. Removed default (#91, #93)

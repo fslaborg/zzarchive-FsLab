@@ -36,10 +36,6 @@ type ProcessingContext =
   ///
   /// ## Parameters
   ///  - `root` is the root folder where you have your `*.fsx` journals
-  ///  - `output` is an output folder where HTML files are placed
-  ///  - `templateLocation` is the place with `styles` folder. A reasonable
-  ///    default is `"packages/FSharp.Literate.Scripts"`.
-  /// 
   static member Create(root) = 
     { Root = root 
       Output = Path.Combine(root, "output")
@@ -109,7 +105,7 @@ module ScriptProcessing =
   /// so we can remove it from the rest of the document
   let rec dropTitle (pars:MarkdownParagraphs) : MarkdownParagraphs =
     pars |> List.collect (function
-      | Heading(1, text) -> []
+      | Heading(1, _text) -> []
       | Matching.ParagraphNested(o, pars) ->
           [ Matching.ParagraphNested(o, pars |> List.map dropTitle) ]
       | other -> [other] )
@@ -172,7 +168,7 @@ module ScriptProcessing =
 
   /// Extend the `fsi` object with `fsi.AddHtmlPrinter` 
   /// ForwardInteractiveSettings comes from FAKE Yaaf scripting support. When your scripts are processed
-  /// FSharp.Literate.Scripts literate programming support the scripts are actually processed using FAKE.exe 
+  /// fsx2html literate programming support the scripts are actually processed using FAKE.exe 
   /// (FAKE version 4.x), which is a little mysterious but gives more hooks to intercept settings etc.
   ///
   /// https://github.com/fsharp/FAKE/blob/575330d8eab58177152bc79963b3b21599aef76e/paket-files/matthid/Yaaf.FSharp.Scripting/src/source/Yaaf.FSharp.Scripting/YaafFSharpScripting.fs#L1388
@@ -218,10 +214,10 @@ module ScriptProcessing =
       | _ -> failwith "Failed to get tryFormatHtml function"
 
     let head = new ResizeArray<_>()
-    fsi.RegisterTransformation(fun (o, t) ->
+    fsi.RegisterTransformation(fun (o, _t) ->
       match tryFormatHtml o with
       | Some (args, html) -> 
-          for k, v in args do if not (head.Contains(v)) then head.Add(v)
+          for _k, v in args do if not (head.Contains(v)) then head.Add(v)
           Some [InlineBlock("<div class=\"fslab-html-output\">" + html + "</div>")]
       | None -> None )
 
@@ -243,7 +239,7 @@ module ScriptProcessing =
           if Directory.Exists(root @@ "packages") then root @@ "packages"
           else root @@ "../packages"
         Directory.GetDirectories(rootPackages) |> Seq.find (fun p ->
-          Path.GetFileName(p).StartsWith "FSharp.Literate.Scripts")
+          Path.GetFileName(p).StartsWith "fsx2html")
 
     // Copy content of 'styles' to the output
     copyFiles (templateLocation @@ "styles") (ctx.Output @@ "styles")

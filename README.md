@@ -15,14 +15,14 @@ The project produces three things:
 
  1. **FsLab** A NuGet package containing the `FsLab.fsx` load script for a consistent set of packages, plus some extra formatters
  2. **FsLab.Templates** Templates for 'dotnet new' and Visual Studio. Each template includes an FsLab build script and F5 launcher for processing the literate scripts into reports.
- 3. **FSharp.Literate.Scripts** Used by FsLab build scripts to process F# literate scripts into HTML and LaTex
+ 3. **fsx2html** Used by FsLab build scripts to process F# literate scripts into HTML and LaTex
 
 The source files in the repository are organized as follows:
 
 | Directory or file  | Comment
 |--------------------|---------------
 | `misc`             | Icons and other non-source-code things
-| `src/FSharp.Literate.Scripts` | Source for the DLL in the `FSharp.Literate.Scripts` NuGet package
+| `src/fsx2html` | Source for the DLL in the `fsx2html` NuGet package
 | `src/Html`         | HTML formatters for literate scripts not included in other packages
 | `src/Text`         | Text formatters for literate scripts not included in other packages
 | `src/Shared`       | Styling and server support for literate scripts not included in other packages

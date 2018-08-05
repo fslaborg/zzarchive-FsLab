@@ -147,7 +147,7 @@ Target "UpdateFsLabScript" (fun _ ->
   // Check that FsLab.fsx now compiles in FSI.EXE mode
   exec "." "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:bin/test-compile-FsLab.exe"
 
-  // Check that FsLab.fsx now compiles in HAS_FSI_ADDHTMLPRINTER (FAKE+Yaaf+FSharp.Literate.Scripts, iFSharp) ) mode
+  // Check that FsLab.fsx now compiles in HAS_FSI_ADDHTMLPRINTER (fsx2html, iFSharp) ) mode
   exec "." "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe"
 
 )
@@ -213,7 +213,7 @@ Target "BuildNuGets" (fun _ ->
             WorkingDir = "nuget"
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
-        ("src/FSharp.Literate.Scripts/FSharp.Literate.Scripts.nuspec")
+        ("src/fsx2html/FSharp.Literate.Scripts.nuspec")
 )
 
 
@@ -273,6 +273,7 @@ Target "PlaceTempFiles" (fun _ ->
 
   !! "src/journal/build.*"
   ++ "src/journal/paket.dependencies"
+  ++ "src/journal/paket.references"
   ++ "src/journal/paket.lock"
   ++ "src/journal/*.fs*"
   |> CopyFiles "temp/journal"

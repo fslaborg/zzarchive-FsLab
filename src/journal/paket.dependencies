@@ -3,7 +3,9 @@ source https://nuget.org/api/v2
 
 # These are the various packges that make up FsLab
 
-nuget FSharp.Core 4.3.4
+# We are stuck on FSharp.Core 4.4.1.0 (package 4.1.18) because the FAKE.exe we use to
+# process literate scripts uses this FSharp.Core.  
+nuget FSharp.Core 4.1.18
 
 # Literate programming
 nuget FAKE 4.64.13
@@ -35,6 +37,6 @@ nuget XPlot.GoogleCharts 1.4.5
 nuget XPlot.GoogleCharts.Deedle 1.4.5
 
 
-source ../../bin
-nuget FsLab 1.0.4
-nuget FSharp.Literate.Scripts 1.0.4
+source https://api.nuget.org/v3/index.json
+nuget FsLab 1.1.0
+nuget FSharp.Literate.Scripts 1.1.0

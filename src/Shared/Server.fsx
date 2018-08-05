@@ -37,12 +37,14 @@ type SimpleServer() =
         let rnd = System.Random()
         while true do
           let port = 8000 + rnd.Next(2000)
+          printfn "Trying to start HTML content server on port %d...." port
           let local = Suave.Http.HttpBinding.createSimple HTTP "127.0.0.1" port
-          let logger = Suave.Logging.Log.create "SimpleServer"
-          let config = { defaultConfig with bindings = [local]; logger = logger }
+          //let logger = Suave.Logging.Log.create "SimpleServer"
+          let config = { defaultConfig with bindings = [local]; (* logger = logger *) }
           let started, start = startWebServerAsync config app
           // If it starts OK, we get TCP binding & report success via event
           async { let! running = started
+                  printfn "HTML content server runnning on port %d...." port
                   startedEvent.Trigger(running) } |> Async.Start
           // Try starting the server and handle SocketException
           try do! start

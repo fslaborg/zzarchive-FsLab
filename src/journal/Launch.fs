@@ -5,27 +5,24 @@
 open System.IO
 open System.Diagnostics
 
+let scriptDir = __SOURCE_DIRECTORY__
+
+let exec shell exe args workingDir =
+    let info = ProcessStartInfo (exe, UseShellExecute = shell, WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = workingDir, Arguments = args)
+    let proc = new Process(StartInfo = info)
+
+    proc.Start() |> ignore
+    proc.WaitForExit()
+    let code = proc.ExitCode
+    if code <> 0 then failwithf "%s %s failed, error code %d" exe args code
+
+let fsx2html args = 
+  if System.Type.GetType("Mono.Runtime") <> null then
+    exec false "mono" ("packages/FSharp.Literate.Scripts/tools/fsx2html.exe " + args) scriptDir
+  else
+    exec false "packages/FSharp.Literate.Scripts/tools/fsx2html.exe" args scriptDir
+
 [<EntryPoint>]
 let main argv = 
-  let (@@) p1 p2 = Path.Combine(p1, p2)
-  let currentDir = __SOURCE_DIRECTORY__
-
-  // If the build file is empty (project was just created)
-  // we copy the latest version from the FSharp.Literate.Scripts package
-  if File.ReadAllBytes(currentDir @@ "build.fsx").Length < 10 then
-    for f in Directory.GetFiles(currentDir @@ "packages/FSharp.Literate.Scripts/tools") do
-      File.Copy(f, currentDir @@ Path.GetFileName(f), true)
-
-  // Start the build script using the appropriate command
-  let info = 
-    if System.Type.GetType("Mono.Runtime") <> null then
-      new ProcessStartInfo("bash", "build.sh quickrun")
-    else
-      new ProcessStartInfo("cmd", "/c build.cmd quickrun")
-  info.UseShellExecute <- false
-  info.WorkingDirectory <- currentDir
-
-  // Run the process and wait for it to complete
-  let proc = Process.Start(info)
-  proc.WaitForExit()
-  proc.ExitCode
+  // Start fx2html using the appropriate command
+  fsx2html "--show --watch"

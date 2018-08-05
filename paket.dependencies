@@ -3,11 +3,13 @@ source https://nuget.org/api/v2
 
 # These are the various packges that make up FsLab
 
-nuget FSharp.Core 4.3.4
+# We are stuck on FSharp.Core 4.4.1.0 (package 4.1.18) because the FAKE.exe we use to
+# process literate scripts uses this FSharp.Core.  
+nuget FSharp.Core 4.1.18
 
 # Literate programming
 nuget FAKE 4.64.13
-nuget Suave 2.1
+nuget Suave 2.1.1
 nuget FSharp.Formatting 2.14.4
 
 # RProvider
