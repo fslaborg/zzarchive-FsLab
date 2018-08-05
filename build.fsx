@@ -41,15 +41,15 @@ System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 /// (Version information is generated automatically based on 'FsLab.nuspec')
 let packages =
   [ "Deedle"
-    "Deedle.RPlugin"
+    //"Deedle.RPlugin"
     "FSharp.Charting"
     "FSharp.Data"
     "MathNet.Numerics"
     "MathNet.Numerics.FSharp"
     "DynamicInterop"
-    "R.NET.Community"
-    "R.NET.Community.FSharp"
-    "RProvider"
+    //"R.NET.Community"
+    //"R.NET.Community.FSharp"
+    //"RProvider"
     "Suave"
     // XPlot + dependencies
     "XPlot.Plotly"
@@ -108,13 +108,14 @@ Target "GenerateFsLab" (fun _ ->
   // Additional lines to be included in FsLab.fsx
   let nowarn = ["#nowarn \"211\""; "#I __SOURCE_DIRECTORY__"]
   let extraInitAll  = File.ReadLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx")  |> Array.ofSeq
-  let startIndex = extraInitAll |> Seq.findIndex (fun s -> s.Contains "***FsLab.fsx***")
-  let extraInit = extraInitAll.[startIndex + 1 ..] |> List.ofSeq
+  let extraInit = extraInitAll |> Array.skipWhile (fun s -> not  (s.Contains "***FsLab.fsx***")) |> List.ofArray
 
   // Generate #I for all library, for all possible folder
   let includes =
     [ for package, _ in packages do
+        yield sprintf "#I \"../packages/%s\"" (getLibDir package)
         yield sprintf "#I \"../%s\"" (getLibDir package)
+        yield sprintf "#I \"../packages/%s\"" (getLibDirVer package)
         yield sprintf "#I \"../%s\"" (getLibDirVer package) ]
 
   // Generate #r for all libraries

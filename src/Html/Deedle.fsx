@@ -1,4 +1,4 @@
-module formatters.Deedle
+module FsLab.Formatters.Deedle
 
 // --------------------------------------------------------------------------------------
 // Formatting for Deedle frames and series
@@ -9,7 +9,7 @@ open Suave.Operators
 open Deedle
 open Deedle.Internal
 open FSharp.Data
-open formatters
+open FsLab.Formatters
 
 // --------------------------------------------------------------------------------------
 // CSS styles for the table, scrollbars & c.

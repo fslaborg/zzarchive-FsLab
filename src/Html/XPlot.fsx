@@ -1,8 +1,8 @@
-module formatters.XPlot
+module FsLab.Formatters.XPlot
 
 open XPlot
 open XPlot.GoogleCharts
-open formatters
+open FsLab.Formatters
 open Microsoft.FSharp.Quotations
 
 // --------------------------------------------------------------------------------------

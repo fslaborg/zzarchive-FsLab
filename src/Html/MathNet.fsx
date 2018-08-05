@@ -1,6 +1,6 @@
-module formatters.MathNet
+module FsLab.Formatters.MathNet
 
-open formatters
+open FsLab.Formatters
 open MathNet.Numerics.LinearAlgebra
 
 // --------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-﻿module formatters.Styles
+﻿module FsLab.Formatters.Styles
 open Suave
 
 // --------------------------------------------------------------------------------------
