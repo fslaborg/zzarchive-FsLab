@@ -4,6 +4,7 @@ obj
 tmp
 packages
 testapp*
+temp
 src/journal/output
 src/journal/packages
 src/journal/.paket/*.exe

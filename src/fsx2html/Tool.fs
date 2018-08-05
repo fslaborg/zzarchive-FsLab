@@ -80,14 +80,17 @@ let generateHtml ctx =
 
 let startServer ctx = 
     printfn "watching in %s" ctx.Root
+    let lockObj = obj()
     let handleWatcherEvents (e:IO.FileSystemEventArgs) =
-        printfn "%s" <| sprintf "%s was changed." e.FullPath
-        let fi = FileInfo e.FullPath
-        printfn "%s" <| sprintf "%s was changed ok." fi.Name
-        if fi.Attributes.HasFlag IO.FileAttributes.Hidden ||
-           fi.Attributes.HasFlag IO.FileAttributes.Directory then ()
-        else ScriptProcessing.updateJournals ctx |> ignore
-        refreshEvent.Trigger()
+        lock lockObj (fun () -> 
+            printfn "%s" <| sprintf "%s was changed." e.FullPath
+            let fi = FileInfo e.FullPath
+            printfn "%s" <| sprintf "%s was changed ok." fi.Name
+            if fi.Attributes.HasFlag IO.FileAttributes.Hidden || fi.Attributes.HasFlag IO.FileAttributes.Directory then 
+                ()
+            else 
+                ScriptProcessing.updateJournals ctx |> ignore
+            refreshEvent.Trigger())
 
     let watcher = new System.IO.FileSystemWatcher(ctx.Root, "*.fsx")
     watcher.IncludeSubdirectories <- true
@@ -190,7 +193,10 @@ let main argv =
             showHtml(fileNameToShow)
 
         if watch then 
-            printfn "%s" "Waiting for journal edits...."
+            printf "%s" "Waiting for journal edits...."
+            while true do 
+                printf "."
+                System.Threading.Thread.Sleep 1000
 
         System.GC.KeepAlive(watcher)
     0
