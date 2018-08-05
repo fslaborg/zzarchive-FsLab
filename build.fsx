@@ -99,7 +99,7 @@ Target "Clean" (fun _ ->
 )
 
 
-Target "GenerateFsLab" (fun _ ->
+Target "UpdateFsLabScript" (fun _ ->
   // Get directory with binaries for a given package
   let getLibDir package = package + "/" + (getNetSubfolder package)
   let getLibDirVer package = package + "." + packageVersions.[package] + "/" + (getNetSubfolder package)
@@ -145,10 +145,11 @@ Target "GenerateFsLab" (fun _ ->
       File.WriteAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx", lines)
 
   // Check that FsLab.fsx now compiles in FSI.EXE mode
-  exec "." "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore --out:bin/test-compile-FsLab.exe"
+  exec "." "fsc" "src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:bin/test-compile-FsLab.exe"
 
   // Check that FsLab.fsx now compiles in HAS_FSI_ADDHTMLPRINTER (FAKE+Yaaf+FSharp.Literate.Scripts, iFSharp) ) mode
-  exec "." "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe"
+  exec "." "fsc" "src/Mock/Mock.fsx src/FsLab.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --define:HAS_FSI_ADDHTMLPRINTER --nocopyfsharpcore --out:bin/test-compile-FsLab-HtmlPrinters.exe"
+
 )
 
 Target "BuildProjects" (fun _ ->
@@ -163,12 +164,12 @@ Target "UpdateNuSpec" (fun _ ->
     let doc = XDocument.Load(path)
     let files = doc.Descendants(XName.Get "files").First()
     files.RemoveAll()
-    files.Add(XElement(!"file", XAttribute(!"src", "../temp/FsLab.fsx"), XAttribute(!"target", ".")))
+    files.Add(XElement(!"file", XAttribute(!"src", "../src/FsLab.fsx"), XAttribute(!"target", ".")))
     let includes =
-      [ "temp/Shared"; "temp/Text"; "temp/Html"; "temp/Themes" ]
+      [ "src/Shared"; "src/Text"; "src/Html"; "src/Themes" ]
       |> Seq.collect Directory.GetFiles
     for f in includes do
-      let subdir = Path.GetDirectoryName(f).Substring(5)
+      let subdir = Path.GetDirectoryName(f).Substring(4)
       files.Add(XElement(!"file", XAttribute(!"src", "../" + f.Replace("\\", "/")), XAttribute(!"target", subdir)))
     doc.Save(path + ".updated")
     DeleteFile path
@@ -181,7 +182,7 @@ Target "UpdateNuSpec" (fun _ ->
 //    exec @"src/journal" @"src/journal/packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
 //)
 
-Target "NuGet" (fun _ ->
+Target "BuildNuGets" (fun _ ->
     let specificVersion (name, version) = name, sprintf "[%s]" version
     NuGet (fun p ->
         { p with
@@ -216,23 +217,8 @@ Target "NuGet" (fun _ ->
 )
 
 
-// --------------------------------------------------------------------------------------
-// FAKE targets for building the FsLab templates
-// --------------------------------------------------------------------------------------
-
-Target "UpdateVSIXManifest" (fun _ ->
-  /// Update version number in the VSIX manifest file of the template
-  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
-  let path = "src/vs-templates/source.extension.vsixmanifest"
-  let vsix = XDocument.Load(path)
-  let ident = vsix.Descendants(!"Identity").First()
-  ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
-  vsix.Save(path + ".updated")
-  DeleteFile path
-  Rename path (path + ".updated")
-)
-
-Target "PlaceFiles" (fun _ ->
+// Update some files in the template directories and check the templates build and run
+Target "UpdateAndCheckTemplates" (fun _ ->
 
   // Place the paket support in the templates
   ensureDirectory "src/journal/.paket"
@@ -243,11 +229,32 @@ Target "PlaceFiles" (fun _ ->
   // Copy the paket.dependencies to the various templates
   let paketDepLines = File.ReadAllLines("paket.dependencies") |> Seq.takeWhile (fun s -> not (s.Contains("--CUT--")))
   File.WriteAllLines("src/journal/paket.dependencies", paketDepLines)
+  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "source ../../bin"])
   File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FsLab %s" release.NugetVersion])
-  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FSharp.Literate.Scriptss %s" release.NugetVersion])
+  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FSharp.Literate.Scripts %s" release.NugetVersion])
   
-  // Create/update the paket.lock
+  // Create/update the paket.lock and do a local install of packages
   exec "src/journal" ".paket/paket.exe" "update"
+
+  // Check that journal/build.fsx compiles in FSI.EXE mode
+  exec "src/journal" "fsc" "build.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nowarn:988 --nocopyfsharpcore --out:../../bin/test-compile-journal-build.fsx"
+
+  // Check that journal/build.fsx runs in FAKE mode
+  exec "src/journal" "packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx"
+  exec "src/journal" "packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx"
+
+  // Replace the reference to the local source with the place where it will be when published
+  File.WriteAllText("src/journal/paket.dependencies", File.ReadAllText("src/journal/paket.dependencies").Replace("source ../../bin", "source https://api.nuget.org/v3/index.json"))
+  File.WriteAllText("src/journal/paket.lock", File.ReadAllText("src/journal/paket.lock").Replace("remote: ../../bin", "remote: https://api.nuget.org/v3/index.json"))
+
+)
+
+
+// --------------------------------------------------------------------------------------
+// FAKE targets for building the FsLab templates
+// --------------------------------------------------------------------------------------
+
+Target "PlaceTempFiles" (fun _ ->
 
   // Generate ZIPs with item templates
   ensureDirectory "temp/experiments"
@@ -265,8 +272,8 @@ Target "PlaceFiles" (fun _ ->
   ensureDirectory "temp/journal/styles"
 
   !! "src/journal/build.*"
-  ++ "src/journal/*.dependencies"
-  ++ "src/journal/*.lock"
+  ++ "src/journal/paket.dependencies"
+  ++ "src/journal/paket.lock"
   ++ "src/journal/*.fs*"
   |> CopyFiles "temp/journal"
 
@@ -278,10 +285,24 @@ Target "PlaceFiles" (fun _ ->
   ".paket/Paket.Restore.targets" |> CopyFile "temp/journal/.paket/Paket.Restore.targets"
 
 )
-  // Build Zip templates
+
+// Build Zip templates
 Target "BuildZipTemplates" (fun _ ->
   !! "temp/journal/**" |> Zip "temp/journal" "temp/journal.zip"
 )
+
+Target "UpdateVSIXManifest" (fun _ ->
+  /// Update version number in the VSIX manifest file of the template
+  let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
+  let path = "src/vs-templates/source.extension.vsixmanifest"
+  let vsix = XDocument.Load(path)
+  let ident = vsix.Descendants(!"Identity").First()
+  ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
+  vsix.Save(path + ".updated")
+  DeleteFile path
+  Rename path (path + ".updated")
+)
+
 
 Target "BuildVsTemplates" (fun _ ->
 
@@ -317,7 +338,7 @@ Target "BuildVsTemplates" (fun _ ->
   "temp/vs-templates/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile (buildDir + "/FsLab.VsTemplates.vsix")
 )
 
-// Build a NuGet package containing "Dotnet new" templates
+// Build a BuildNuGets package containing "Dotnet new" templates
 Target "BuildDotnetTemplates" (fun _ ->
 
   // Create directory for the Template project
@@ -350,6 +371,13 @@ Target "TestDotnetTemplatesNuGet" (fun _ ->
     CleanDir testAppName
     DotNetCli.RunCommand id (sprintf "new fslab-journal -n %s -lang F#" testAppName)
 
+    // Enable the local package source in paket.dependencies and paket.lock.  A total hack.
+    let paketDepFile = sprintf "%s/paket.dependencies" testAppName
+    File.WriteAllText(paketDepFile, File.ReadAllText(paketDepFile).Replace("source https://api.nuget.org/v3/index.json","source ../bin"))
+
+    let paketLockFile = sprintf "%s/paket.lock" testAppName
+    File.WriteAllText(paketLockFile, File.ReadAllText(paketLockFile).Replace("remote: https://api.nuget.org/v3/index.json","remote: ../bin"))
+
     let pkgs = Path.GetFullPath(buildDir)
     // When restoring, using the bin as a package source to pick up the package we just compiled
     DotNetCli.RunCommand id (sprintf "restore %s/%s.fsproj  --source https://api.nuget.org/v3/index.json --source %s" testAppName testAppName pkgs)
@@ -360,10 +388,11 @@ Target "TestDotnetTemplatesNuGet" (fun _ ->
             exec "." "msbuild" (sprintf "%s/%s.fsproj /p:Platform=\"%s\" /p:Configuration=%s /p:PackageSources=%s\"https://api.nuget.org/v3/index.json%s;%s%s\"" testAppName testAppName p c  slash slash pkgs slash)
 
     let slash = if isUnix then "\\" else ""
-    exec "." "fsc" (sprintf "%s/journal.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore" testAppName)
+    exec "." "fsc" (sprintf "%s/%s.fsx -r:FSharp.Compiler.Interactive.Settings.dll --nocopyfsharpcore" testAppName testAppName)
+    
+    // Check the processing of the scripts to HTML and LaTeX works
     exec testAppName @"packages/FAKE/tools/FAKE.exe" "html --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
     exec testAppName @"packages/FAKE/tools/FAKE.exe" "latex --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
-// Also run F5    exec testAppName @"packages/FAKE/tools/FAKE.exe" "run --fsiargs -d:NO_FSI_ADDPRINTER build.fsx" 
 
 
     (* Manual steps without building nupkg
@@ -387,33 +416,35 @@ Target "All" DoNothing
 
 //"Clean"
 //  ==> "TestInDirectoryBuildOfTemplates"
-//  ==> "NuGet"
+//  ==> "BuildNuGets"
 
 "Clean"
   ==> "BuildProjects"
-  ==> "GenerateFsLab"
+  ==> "UpdateFsLabScript"
   ==> "UpdateNuSpec"
-  ==> "NuGet"
+  ==> "BuildNuGets"
   ==> "All"
 
 "Clean"
-  ==> "GenerateFsLab"
-  ==> "PlaceFiles"
+  ==> "UpdateFsLabScript"
+  ==> "BuildNuGets"
+  ==> "UpdateAndCheckTemplates"
+  ==> "PlaceTempFiles"
 
-"PlaceFiles"
+"PlaceTempFiles"
   ==> "BuildZipTemplates"
   ==> "All"
 
-"PlaceFiles"
+"PlaceTempFiles"
   ==> "UpdateVSIXManifest"
   ==> "BuildVsTemplates"
   ==> "All"
 
-"PlaceFiles"
+"PlaceTempFiles"
   ==> "BuildZipTemplates"
   ==> "All"
 
-"PlaceFiles"
+"PlaceTempFiles"
   ==> "BuildDotnetTemplates"
   ==> "TestDotnetTemplatesNuGet"
   ==> "All"

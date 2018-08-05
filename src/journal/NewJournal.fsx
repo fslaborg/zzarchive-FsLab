@@ -34,7 +34,7 @@ open System.IO
 open XPlot.GoogleCharts
 open XPlot.GoogleCharts.Deedle
 
-let file = __SOURCE_DIRECTORY__ + "/journal.fsx"
+let file = __SOURCE_DIRECTORY__ + "/NewJournal.fsx"
 let contents = File.ReadAllText(file)
 printfn "Loaded '%s' of length %d" file contents.Length
 (*** include-output:loading ***)

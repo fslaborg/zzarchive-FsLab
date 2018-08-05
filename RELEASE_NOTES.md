@@ -1,4 +1,9 @@
-### 1.0.4 (unreleased)
+### 1.1.0
+ - Ensure packages are consistent
+ - Rename FsLab.Runners to FSharp.Literate.Scripts
+ - Add "dotnet new" templates
+
+### 1.0.4
  - Update doc links
 
 ### 1.0.3 (07 June 2017)

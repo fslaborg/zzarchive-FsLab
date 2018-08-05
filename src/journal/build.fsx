@@ -7,10 +7,11 @@
 #load "packages/FSharp.Formatting/FSharp.Formatting.fsx"
 #I "packages/FAKE/tools"
 #I "packages/Suave/lib/net40"
+#I "packages/FSharp.Literate.Scripts/lib/net40"
 #I "../../packages/FAKE/tools"
 #I "../../packages/Suave/lib/net40"
 #I "../../bin"
-#I "packages/FSharp.Literate.Scripts/lib/net40"
+
 #r "FSharp.Literate.Scripts.dll"
 #r "FakeLib.dll"
 #r "Suave.dll"
@@ -51,9 +52,9 @@ open Suave.Filters
 let localPort = 8901
 
 let generateJournals ctx =
-  let builtFiles = Journal.processJournals ctx
+  let builtFiles = ScriptProcessing.processJournals ctx
   traceImportant "All journals updated."
-  Journal.getIndexJournal ctx builtFiles
+  ScriptProcessing.getIndexJournal ctx builtFiles
 
 let refreshEvent = new Event<_>()
 
@@ -63,7 +64,7 @@ let socketHandler (webSocket : WebSocket) ctx = socket {
       refreshEvent.Publish
       |> Control.Async.AwaitEvent
       |> Suave.Sockets.SocketOp.ofAsync
-    do! webSocket.send Text (Encoding.UTF8.GetBytes "refreshed") true }
+    do! webSocket.send Text (ByteSegment (Encoding.UTF8.GetBytes "refreshed")) true }
 
 let startWebServer fileName =
     let defaultBinding = defaultConfig.bindings.[0]
@@ -86,7 +87,7 @@ let handleWatcherEvents (e:IO.FileSystemEventArgs) =
     traceImportant <| sprintf "%s was changed." fi.Name
     if fi.Attributes.HasFlag IO.FileAttributes.Hidden ||
        fi.Attributes.HasFlag IO.FileAttributes.Directory then ()
-    else Journal.updateJournals ctx |> ignore
+    else ScriptProcessing.updateJournals ctx |> ignore
     refreshEvent.Trigger()
 
 // --------------------------------------------------------------------------------------
