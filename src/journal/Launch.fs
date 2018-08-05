@@ -22,9 +22,9 @@ let exec fail shell exe args workingDir =
 
 let fsx2html fail args = 
   if System.Type.GetType("Mono.Runtime") <> null then
-    exec fail false "mono" ("packages/FSharp.Literate.Scripts/tools/fsx2html.exe " + args) scriptDir
+    exec fail true "mono" (__SOURCE_DIRECTORY__ + "/packages/FSharp.Literate.Scripts/tools/fsx2html.exe " + args) scriptDir
   else
-    exec fail false "packages/FSharp.Literate.Scripts/tools/fsx2html.exe" args scriptDir
+    exec fail false (__SOURCE_DIRECTORY__ + @"\packages\FSharp.Literate.Scripts\tools\fsx2html.exe") args scriptDir
 
 [<EntryPoint>]
 let main argv = 

@@ -25,9 +25,10 @@ let summaryRunner = "FsLab report generator"
 
 let description = """
   FsLab is a combination package that supports doing data science with
-  F#. FsLab includes an explorative data manipulation library, type providers for easy
-  data access, a simple charting library, support for integration with R and numerical
-  computing libraries. All available in a single package and ready to use!"""
+  F#. FsLab includes literate scripting converted to HTML and PDF, and
+  by default references Deedle (a data frame library), FSharp.Data (for
+  data access) and XPlot (for visualization). You can optionally add any
+  other nuget packages."""
 
 let descriptionRunner = """
   This package contains a library for turning FsLab experiments written as script files

@@ -1,4 +1,7 @@
 ### 1.1.3
+- Fix silly bug
+
+### 1.1.2
 - Don't use ReadKey
 
 ### 1.1.1

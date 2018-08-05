@@ -4,10 +4,10 @@ FsLab
 FsLab is a curated set of templates, libraries and scripts-as-journals support for doing
 data science with F#.
 
-See https://fslab.org for getting started. 
+See https://fslab.org for getting started. One way is as follows:
 
     dotnet new -i FsLab.Templates
-    dotnet new fslab-journal -lang F# experiment1
+    dotnet new fslab-journal -lang F# -n experiment1
     cd experiment1
     build html
     build run
