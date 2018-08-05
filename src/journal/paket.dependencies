@@ -1,42 +1,45 @@
-frameworks: >= net461
-source https://nuget.org/api/v2
-
 # These are the various packges that make up FsLab
 
-# We are stuck on FSharp.Core 4.4.1.0 (package 4.1.18) because the FAKE.exe we use to
-# process literate scripts uses this FSharp.Core.  
-nuget FSharp.Core 4.1.18
+# net461 is used for F# Interactive scripting
+framework: net461
+source https://nuget.org/api/v2
 
-# Literate programming
+
+nuget FSharp.Core 4.5.0
+
+# The build.fsx script uses this
 nuget FAKE 4.64.13
-nuget Suave 2.1.1
-nuget FSharp.Formatting 2.14.4
 
-# RProvider
-nuget R.NET.Community
-nuget R.NET.Community.FSharp
-nuget RProvider 1.1.20
+# Serve localhost images and other linked content from HTML printers in literate programming
+# Also used by fsx2html tool
+# TODO: upgrade to latest Suave
+nuget Suave 2.1.1
 
 # DataFrames
 nuget Deedle 1.2.5
-nuget Deedle.RPlugin 1.2.5
 
 # FSharp.Data
-nuget FSharp.Data 2.3.3
+nuget FSharp.Data 2.4.6
 
 # MathNet.Numerics
-nuget MathNet.Numerics 3.19
-nuget MathNet.Numerics.FSharp 3.19
-
-# FSharp.Charting
-nuget FSharp.Charting 0.90.14
+nuget MathNet.Numerics 3.20.2
+nuget MathNet.Numerics.FSharp 3.20.2
 
 # XPlot
-nuget XPlot.Plotly 1.4.5
-nuget XPlot.GoogleCharts 1.4.5
-nuget XPlot.GoogleCharts.Deedle 1.4.5
+nuget XPlot.Plotly
+nuget XPlot.GoogleCharts
+nuget XPlot.GoogleCharts.Deedle
+
+# FSharp.Charting - not referenced by FsLab.fsx by default but you can use it
+# nuget FSharp.Charting
+
+# RProvider - not referenced by FsLab.fsx by default but you can use this version
+# nuget R.NET.Community
+# nuget R.NET.Community.FSharp
+# nuget RProvider 1.1.20
+# nuget Deedle.RPlugin 1.2.5
 
 
 source https://api.nuget.org/v3/index.json
-nuget FsLab 1.1.1
-nuget FSharp.Literate.Scripts 1.1.1
+nuget FsLab 1.1.2
+nuget FSharp.Literate.Scripts 1.1.2

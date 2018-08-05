@@ -3,7 +3,6 @@ namespace FsLab.HtmlPrinters
 
 module FsLabTextPrinters =
   open FsLab.HtmlPrinters
-  open FSharp.Charting
 
   // --------------------------------------------------------------------------------------
   // Text-based printers using standard fsi.AddPrinter
@@ -30,9 +29,13 @@ module FsLabTextPrinters =
 
   fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) ->
     "\n" + (printer.Format()))
+
+#if PKG_FSHARP_CHARTING
   fsi.AddPrinter(fun (ch:FSharp.Charting.ChartTypes.GenericChart) ->
     ch.ShowChart() |> ignore; "(Chart)")
-  #if RPROVIDER
+#endif
+
+#if PKG_RPROVIDER
   fsi.AddPrinter(fun (synexpr:RDotNet.SymbolicExpression) ->
     synexpr.Print())
-  #endif
+#endif

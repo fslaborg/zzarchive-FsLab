@@ -101,9 +101,6 @@ let startServer ctx =
 let showHtml(fileName) = 
     Diagnostics.Process.Start(sprintf "http://localhost:%d/%s" localPort fileName) |> ignore
 
-let readkey() = 
-    System.Console.ReadKey() |> ignore
-
 let exec shell workingDir exe args =
     let info = ProcessStartInfo (exe, UseShellExecute = shell, WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = workingDir, Arguments = args)
     let proc = new Process(StartInfo = info)
@@ -115,10 +112,6 @@ let exec shell workingDir exe args =
 
 let help() = 
     printfn "usage: fsx2html.exe (--help|--html|--latex|--run|--watch|--pdf|--output directory|--source directory|directory)"
-    printfn "Use 'build run' to produce HTML journals in the background "
-    printfn "and host them locally using a simple web server."
-    printfn ""
-    printfn "Other usage options:"
     printfn "  fsx2html.exe --html   - Generate HTML output for all scripts"
     printfn "  fsx2html.exe --run    - Generate HTML, host it and keep it up-to-date"
     printfn "  fsx2html.exe --latex  - Generate LaTeX output for all scripts"
@@ -197,8 +190,7 @@ let main argv =
             showHtml(fileNameToShow)
 
         if watch then 
-            printfn "%s" "Waiting for journal edits. Press any key to stop."
-            readkey()
+            printfn "%s" "Waiting for journal edits...."
 
         System.GC.KeepAlive(watcher)
     0

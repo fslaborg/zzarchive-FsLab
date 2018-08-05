@@ -14,12 +14,6 @@
         <Assembly>Deedle</Assembly>
       </Reference>
       <Reference>
-        <Assembly>Deedle.RProvider.Plugin</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>FSharp.Charting</Assembly>
-      </Reference>
-      <Reference>
         <Assembly>FSharp.Core</Assembly>
       </Reference>
       <Reference>
@@ -30,21 +24,6 @@
       </Reference>
       <Reference>
         <Assembly>MathNet.Numerics.FSharp</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>RDotNet</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>RDotNet.FSharp</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>RDotNet.NativeLibrary</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>RProvider</Assembly>
-      </Reference>
-      <Reference>
-        <Assembly>RProvider.Runtime</Assembly>
       </Reference>
     </References>
     <ProjectItem SubType="" TargetFileName="$fileinputname$.fsx" ReplaceParameters="false">Tutorial.fsx</ProjectItem>

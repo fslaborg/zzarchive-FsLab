@@ -24,7 +24,7 @@ Next steps
 Sample experiment
 -----------------
 
-We start by referencing `Deedle` and `FSharp.Charting` libraries and then we
+We start by referencing `Deedle` and `XPlot.GoogleCharts` libraries and then we
 load the contents of *this* file:
 *)
 
@@ -32,7 +32,6 @@ load the contents of *this* file:
 open Deedle
 open System.IO
 open XPlot.GoogleCharts
-open XPlot.GoogleCharts.Deedle
 
 let file = __SOURCE_DIRECTORY__ + "/NewJournal.fsx"
 let contents = File.ReadAllText(file)

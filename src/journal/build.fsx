@@ -7,36 +7,49 @@ open Fake
 
 let scriptDir =  __SOURCE_DIRECTORY__
 
-let fsx2html args = 
+let exec exe args workingDir = 
+  printfn "%s %s (in %s)" exe args workingDir
+  Shell.Exec(exe, args, workingDir)
+
+let fsx2html fail args = 
   let code = 
     if System.Type.GetType("Mono.Runtime") <> null then
-      Shell.Exec("mono", "packages/FSharp.Literate.Scripts/tools/fsx2html.exe " + args, scriptDir)
+      exec "mono" ("packages/FSharp.Literate.Scripts/tools/fsx2html.exe " + args) scriptDir
     else
-      Shell.Exec("packages/FSharp.Literate.Scripts/tools/fsx2html.exe", args, scriptDir)
-  if code <> 0 then failwithf "fsx2html.exe %s failed" args
+      exec "packages/FSharp.Literate.Scripts/tools/fsx2html.exe" args scriptDir
+  if fail && code <> 0 then 
+      printfn  "fsx2html.exe %s failed" args
+      exit code
 
 Target "help" (fun _ ->
-  fsx2html "--help"
+    printfn "  build run    - Generate HTML, show and update dynamically"
+    printfn "  build html   - Generate HTML output for all scripts"
+    printfn "  build latex  - Generate LaTeX output for all scripts"
+    printfn "  build pdf    - Generate PDF output for all scripts"
+    exit 1
 )
 
 Target "html" (fun _ ->    
-  fsx2html (sprintf "--html")
+  fsx2html true "--html"
 )
 
 Target "latex" (fun _ ->
-  fsx2html (sprintf "--latex")
+  fsx2html true "--latex"
 )
 
 Target "run" (fun _ ->
-  fsx2html (sprintf "--html --serve --show")
+  fsx2html false "--html --watch --show"
+  while true do 
+      printfn "restarting fsx2html, perhaps due to OutOfMemoryException"
+      fsx2html false "--html --watch"
 )
 
-Target "webpreview" (fun _ ->
-  fsx2html (sprintf "--html --serve")
+Target "watch" (fun _ ->
+  fsx2html true "--html --watch"
 )
 
 Target "pdf" (fun _ ->
-  fsx2html (sprintf "--pdf --serve")
+  fsx2html true "--pdf --watch"
 )
 
 RunTargetOrDefault "help"

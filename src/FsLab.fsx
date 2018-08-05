@@ -4,26 +4,18 @@
 #I "../Deedle/lib/net40"
 #I "../packages/Deedle.1.2.5/lib/net40"
 #I "../Deedle.1.2.5/lib/net40"
-#I "../packages/FSharp.Charting/lib/net40"
-#I "../FSharp.Charting/lib/net40"
-#I "../packages/FSharp.Charting.0.90.14/lib/net40"
-#I "../FSharp.Charting.0.90.14/lib/net40"
-#I "../packages/FSharp.Data/lib/net40"
-#I "../FSharp.Data/lib/net40"
-#I "../packages/FSharp.Data.2.3.3/lib/net40"
-#I "../FSharp.Data.2.3.3/lib/net40"
+#I "../packages/FSharp.Data/lib/net45"
+#I "../FSharp.Data/lib/net45"
+#I "../packages/FSharp.Data.2.4.6/lib/net45"
+#I "../FSharp.Data.2.4.6/lib/net45"
 #I "../packages/MathNet.Numerics/lib/net40"
 #I "../MathNet.Numerics/lib/net40"
-#I "../packages/MathNet.Numerics.3.19.0/lib/net40"
-#I "../MathNet.Numerics.3.19.0/lib/net40"
+#I "../packages/MathNet.Numerics.3.20.2/lib/net40"
+#I "../MathNet.Numerics.3.20.2/lib/net40"
 #I "../packages/MathNet.Numerics.FSharp/lib/net40"
 #I "../MathNet.Numerics.FSharp/lib/net40"
-#I "../packages/MathNet.Numerics.FSharp.3.19.0/lib/net40"
-#I "../MathNet.Numerics.FSharp.3.19.0/lib/net40"
-#I "../packages/DynamicInterop/lib/net40"
-#I "../DynamicInterop/lib/net40"
-#I "../packages/DynamicInterop.0.7.4/lib/net40"
-#I "../DynamicInterop.0.7.4/lib/net40"
+#I "../packages/MathNet.Numerics.FSharp.3.20.2/lib/net40"
+#I "../MathNet.Numerics.FSharp.3.20.2/lib/net40"
 #I "../packages/Suave/lib/net40"
 #I "../Suave/lib/net40"
 #I "../packages/Suave.2.1.1/lib/net40"
@@ -49,12 +41,9 @@
 #I "../packages/Newtonsoft.Json.11.0.2/lib/net40"
 #I "../Newtonsoft.Json.11.0.2/lib/net40"
 #r "Deedle.dll"
-#r "System.Windows.Forms.DataVisualization.dll"
-#r "FSharp.Charting.dll"
 #r "FSharp.Data.dll"
 #r "MathNet.Numerics.dll"
 #r "MathNet.Numerics.FSharp.dll"
-#r "DynamicInterop.dll"
 #r "Suave.dll"
 #r "XPlot.Plotly.dll"
 #r "XPlot.GoogleCharts.dll"
@@ -77,54 +66,67 @@
 #endif
 
 // ***FsLab.fsx*** (DO NOT REMOVE THIS COMMENT, everything below is copied to the output)
+
+#if PKG_FSHARP_CHARTING
+// TODO: Move these to the FSharp.Charting package somehow. If necessary have that pacakge dynamically probe
+// for Series-like functionality. Or make Series implement IEnumerable, yielding observations.
 namespace FSharp.Charting
-open FSharp.Charting
-open Deedle
+  open Deedle
+  open XPlot.GoogleCharts
 
-[<AutoOpen>]
-module FsLabExtensions =
-  type FSharp.Charting.Chart with
-    static member Line(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
-      Chart.Line(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
-    static member Column(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
-      Chart.Column(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
-    static member Pie(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
-      Chart.Pie(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
-    static member Area(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
-      Chart.Area(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
-    static member Bar(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
-      Chart.Bar(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+  [<AutoOpen>]
+  module FsLabExtensions =
+    type FSharp.Charting.Chart with
+      static member Line(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
+        Chart.Line(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+      static member Column(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
+        Chart.Column(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+      static member Pie(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
+        Chart.Pie(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+      static member Area(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
+        Chart.Area(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+      static member Bar(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
+        Chart.Bar(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
+#endif
 
+// TODO: Consider how to move these to Deedle or MathNet.Numerics, i.e. magically make these packages work
+// nicely together through an IFrame or ISeries etc.
 namespace MathNet.Numerics.LinearAlgebra
-open MathNet.Numerics.LinearAlgebra
-open Deedle
+  open Deedle
 
-module Matrix =
-  let inline toFrame matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
-module DenseMatrix =
-  let inline ofFrame frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
-module SparseMatrix =
-  let inline ofFrame frame = frame |> Frame.toArray2D |> SparseMatrix.ofArray2
-module Vector =
-  let inline toSeries vector = vector |> Vector.toSeq |> Series.ofValues
-module DenseVector =
-  let inline ofSeries series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
-module SparseVector =
-  let inline ofSeries series = series |> Series.values |> Seq.map (float) |> SparseVector.ofSeq
+  module Matrix =
+    let inline toFrame matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
 
+  module DenseMatrix =
+    let inline ofFrame frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
+
+  module SparseMatrix =
+    let inline ofFrame frame = frame |> Frame.toArray2D |> SparseMatrix.ofArray2
+
+  module Vector =
+    let inline toSeries vector = vector |> Vector.toSeq |> Series.ofValues
+
+  module DenseVector =
+    let inline ofSeries series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
+
+  module SparseVector =
+    let inline ofSeries series = series |> Series.values |> Seq.map (float) |> SparseVector.ofSeq
+
+// TODO: Consider how to move these to Deedle or MathNet.Numerics or FSharp.Data, i.e. magically make these packages work
+// nicely together through an IFrame or ISeries etc.
 namespace Deedle
-open Deedle
-open MathNet.Numerics.LinearAlgebra
+  open Deedle
+  open MathNet.Numerics.LinearAlgebra
 
-module Frame =
-  let inline ofMatrix matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
-  let inline toMatrix frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
+  module Frame =
+    let inline ofMatrix matrix = matrix |> Matrix.toArray2 |> Frame.ofArray2D
+    let inline toMatrix frame = frame |> Frame.toArray2D |> DenseMatrix.ofArray2
 
-  let ofCsvRows (data:FSharp.Data.Runtime.CsvFile<'T>) =
-    match data.Headers with
-    | None -> Frame.ofRecords data.Rows
-    | Some names -> Frame.ofRecords data.Rows |> Frame.indexColsWith names
+    let ofCsvRows (data:FSharp.Data.Runtime.CsvFile<'T>) =
+      match data.Headers with
+      | None -> Frame.ofRecords data.Rows
+      | Some names -> Frame.ofRecords data.Rows |> Frame.indexColsWith names
 
-module Series =
-  let inline ofVector vector = vector |> Vector.toSeq |> Series.ofValues
-  let inline toVector series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq
+  module Series =
+    let inline ofVector vector = vector |> Vector.toSeq |> Series.ofValues
+    let inline toVector series = series |> Series.values |> Seq.map (float) |> DenseVector.ofSeq

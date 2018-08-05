@@ -1,9 +1,10 @@
 .fake
 bin
 obj
-temp
+tmp
 packages
 testapp*
+src/journal/output
 src/journal/packages
 src/journal/.paket/*.exe
 src/journal/.paket/load

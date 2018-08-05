@@ -1,5 +1,6 @@
 namespace FsLab.HtmlPrinters
 
+#if PKG_FSHARP_CHARTING
 #if HAS_FSI_ADDHTMLPRINTER
 
 module FSharpChartingHtmlPrinter =
@@ -14,7 +15,7 @@ module FSharpChartingHtmlPrinter =
   open FsLab.HtmlPrinters
 
   // --------------------------------------------------------------------------------------
-  // Formatting for F# Charting charts
+  // Formatting for FSharp.Charting charts
   // --------------------------------------------------------------------------------------
 
   /// Add web part that serves bytes as PNG image
@@ -62,4 +63,5 @@ module FSharpChartingHtmlPrinter =
     img.Save(ms, Imaging.ImageFormat.Png)
     let url = servePngImage (ms.ToArray())
     seq [], sprintf "<img src='%s' style='width:%dpx; height:%dpx' />" url img.Width img.Height)
+#endif
 #endif

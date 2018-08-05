@@ -22,9 +22,9 @@
     <file src="../src/fsx2html/bin/Release/net461/CSharpFormat.dll" target="tools" />
     <file src="../src/fsx2html/bin/Release/net461/FSharp.CodeFormat.dll" target="tools" />
     <file src="../src/fsx2html/bin/Release/net461/FSharp.Compiler.Service.dll" target="tools" />
-    <file src="../src/fsx2html/bin/Release/net461/FSharp.Core.dll" target="tools" />
-    <file src="../src/fsx2html/bin/Release/net461/FSharp.Core.optdata" target="tools" />
-    <file src="../src/fsx2html/bin/Release/net461/FSharp.Core.sigdata" target="tools" />
+    <file src="../packages/FSharp.Core/lib/net45/FSharp.Core.dll" target="tools" />
+    <file src="../packages/FSharp.Core/lib/net45/FSharp.Core.optdata" target="tools" />
+    <file src="../packages/FSharp.Core/lib/net45/FSharp.Core.sigdata" target="tools" />
     <file src="../src/fsx2html/bin/Release/net461/FSharp.Formatting.Common.dll" target="tools" />
     <file src="../src/fsx2html/bin/Release/net461/FSharp.Literate.dll" target="tools" />
     <file src="../src/fsx2html/bin/Release/net461/FSharp.Markdown.dll" target="tools" />

@@ -41,11 +41,11 @@ System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let packages =
   [ "Deedle"
     //"Deedle.RPlugin"
-    "FSharp.Charting"
+    //"FSharp.Charting"
     "FSharp.Data"
     "MathNet.Numerics"
     "MathNet.Numerics.FSharp"
-    "DynamicInterop"
+    //"DynamicInterop"
     //"R.NET.Community"
     //"R.NET.Community.FSharp"
     //"RProvider"
@@ -58,17 +58,11 @@ let packages =
     "Newtonsoft.Json" ]
   |> List.map (fun p -> p, GetPackageVersion "packages" p)
 
-let journalPackages =
-  [ "FSharp.Compiler.Service"
-    "FSharpVSPowerTools.Core"
-    "FSharp.Formatting" ]
- |> List.map (fun p -> p, GetPackageVersion "packages" p)
-
 /// Returns the subfolder where the DLLs are located
 let getNetSubfolder package =
     match package with
     | "Google.DataTable.Net.Wrapper" -> "lib"
-    | "FSharpVSPowerTools.Core" -> "lib/net45"
+    | "FSharp.Data" -> "lib/net45"
     | _ when package.StartsWith("XPlot") -> "lib/net45"
     | _ -> "lib/net40"
 
@@ -93,7 +87,7 @@ let exec exe args workingDir =
 
 // Read release notes & version info from RELEASE_NOTES.md
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
-let packageVersions = dict (packages @ journalPackages @ ["FSharp.Literate.Scripts", release.NugetVersion])
+let packageVersions = dict (packages @ ["FSharp.Literate.Scripts", release.NugetVersion])
 
 Target "Clean" (fun _ ->
   CleanDirs ["temp"; "nuget"; buildDir ]
@@ -196,7 +190,7 @@ Target "BuildNuGets" (fun _ ->
         ("src/" + project + ".nuspec")
     NuGet (fun p ->
         { p with
-            Dependencies = packages @ journalPackages |> List.map specificVersion
+            Dependencies = packages |> List.map specificVersion
             Authors = authors
             Project = projectRunner
             Summary = summaryRunner
