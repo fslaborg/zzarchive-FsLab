@@ -1,0 +1,21 @@
+frameworks: >= net461
+source https://nuget.org/api/v2
+
+nuget FAKE 4.64.13
+nuget Paket.Core 4.8.7
+nuget Deedle 1.2.5
+nuget Deedle.RPlugin 1.2.5
+nuget FSharp.Core 4.3.4
+nuget FSharp.Charting 0.90.14
+nuget FSharp.Data 2.3.3
+nuget FSharp.Formatting 2.14.4
+nuget MathNet.Numerics 3.19
+nuget MathNet.Numerics.FSharp 3.19
+nuget R.NET.Community
+nuget R.NET.Community.FSharp
+nuget RProvider 1.1.20
+nuget DotNetZip 1.10.1
+nuget XPlot.Plotly 1.4.5
+nuget XPlot.GoogleCharts 1.4.5
+nuget XPlot.GoogleCharts.Deedle 1.4.5
+nuget Suave 2.1

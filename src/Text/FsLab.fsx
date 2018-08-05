@@ -1,5 +1,5 @@
-module FsLab.Formatters.TextPrinters
-open FsLab.Formatters
+module formatters.TextPrinters
+open formatters
 open FSharp.Charting
 
 // --------------------------------------------------------------------------------------

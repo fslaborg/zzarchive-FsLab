@@ -1,4 +1,4 @@
-module FsLab.Formatters.DefaultWhiteTheme
+module formatters.DefaultWhiteTheme
 #if HAS_FSI_ADDHTMLPRINTER
 
 // Background colors

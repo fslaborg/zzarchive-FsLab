@@ -1,4 +1,4 @@
-module FsLab.Formatters.Server
+module formatters.Server
 open Suave
 
 // --------------------------------------------------------------------------------------

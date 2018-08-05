@@ -18,12 +18,5 @@
   </metadata>
   <files>
     <file src="../bin/FsLab.Runner.dll" target="lib/net40" />
-    <file src="../src/styles/style.css" target="styles" />
-    <file src="../src/styles/template.html" target="styles" />
-    <file src="../src/styles/template.tex" target="styles" />
-    <file src="../src/styles/tips.js" target="styles" />
-    <file src="../src/journal/build.fsx" target="tools" />
-    <file src="../src/journal/build.sh" target="tools" />
-    <file src="../src/journal/build.cmd" target="tools" />
   </files>
 </package>

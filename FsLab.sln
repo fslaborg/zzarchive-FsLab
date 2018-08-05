@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{1C1EFF4D-C
 		build.sh = build.sh
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsLab.Formatters", "src\FsLab.Formatters\FsLab.Formatters.fsproj", "{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "formatters", "src\formatters\formatters.fsproj", "{801E7E57-D8A0-4428-95E4-85DBE7D3D25E}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "NewJournal", "src\journal\NewJournal.fsproj", "{A44AC8F5-97FD-420E-8751-BA0C486DDCCD}"
 EndProject

@@ -4,7 +4,6 @@
 
 #I "packages/FAKE/tools"
 #r "packages/FAKE/tools/FakeLib.dll"
-#r "packages/Paket.Core/lib/net45/Paket.Core.dll"
 #r "packages/DotNetZip/lib/net20/DotNetZip.dll"
 #r "System.Xml.Linq"
 open System.IO
@@ -124,34 +123,26 @@ Target "GenerateFsLab" (fun _ ->
     |> List.collect (fst >> getAssemblies)
     |> List.map (sprintf "#r \"%s\"")
 
-  // Copy formatter source files to the temp directory
-  let formattersDir = "src/FsLab.Formatters"
-  let copyAsFsx target fn =
-    ensureDirectory target
-    CopyFile (target </> (Path.GetFileNameWithoutExtension(fn) + ".fsx")) fn
-  !! (formattersDir + "/Shared/*.*") -- "**/Mock.fs" |> Seq.iter (copyAsFsx "temp/Shared")
-  !! (formattersDir + "/Text/*.*") |> Seq.iter (copyAsFsx "temp/Text")
-  !! (formattersDir + "/Html/*.*") |> Seq.iter (copyAsFsx "temp/Html")
-  !! (formattersDir + "/Themes/*.*") |> Seq.iter (copyAsFsx "temp/Themes")
-
   // Generate #load commands to load AddHtmlPrinter and AddPrinter calls
   let loads =
     [ yield ""
-      for f in Directory.GetFiles("temp/Shared") do
+      for f in Directory.GetFiles("src/Shared") do
         yield sprintf "#load \"Shared/%s\"" (Path.GetFileName f)
       yield "#if !NO_FSI_ADDPRINTER"
       yield "#if HAS_FSI_ADDHTMLPRINTER"
-      for f in Directory.GetFiles("temp/Html") do
+      for f in Directory.GetFiles("src/Html") do
         yield sprintf "#load \"Html/%s\"" (Path.GetFileName f)
       yield "#else"
-      for f in Directory.GetFiles("temp/Text") do
+      for f in Directory.GetFiles("src/Text") do
         yield sprintf "#load \"Text/%s\"" (Path.GetFileName f)
       yield "#endif"
       yield "#endif\n" ]
 
   // Write everything to the 'temp/FsLab.fsx' file
   let lines = nowarn @ includes @ references @ loads @ extraInit
-  File.WriteAllLines(__SOURCE_DIRECTORY__ + "/temp/FsLab.fsx", lines)
+  let oldLines = File.ReadAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx")
+  if Array.ofList lines <> oldLines then
+      File.WriteAllLines(__SOURCE_DIRECTORY__ + "/src/FsLab.fsx", lines)
 )
 
 Target "BuildProjects" (fun _ ->
@@ -220,13 +211,13 @@ Target "NuGet" (fun _ ->
 
 
 // --------------------------------------------------------------------------------------
-// FAKE targets for building the FsLab template project
+// FAKE targets for building the FsLab templates
 // --------------------------------------------------------------------------------------
 
 Target "UpdateVSIXManifest" (fun _ ->
   /// Update version number in the VSIX manifest file of the template
   let (!) n = XName.Get(n, "http://schemas.microsoft.com/developer/vsx-schema/2011")
-  let path = "src/vstemplates/source.extension.vsixmanifest"
+  let path = "src/vs-templates/source.extension.vsixmanifest"
   let vsix = XDocument.Load(path)
   let ident = vsix.Descendants(!"Identity").First()
   ident.Attribute(XName.Get "Version").Value <- release.AssemblyVersion
@@ -236,6 +227,22 @@ Target "UpdateVSIXManifest" (fun _ ->
 )
 
 Target "PlaceFiles" (fun _ ->
+
+  // Place the paket support in the templates
+  ensureDirectory "src/journal/.paket"
+
+  !! ".paket/paket.bootstrapper.exe" |> CopyFiles "src/journal/.paket"
+  !! ".paket/Paket.Restore.targets" |> CopyFiles "src/journal/.paket"
+
+  // Copy the paket.dependencies to the various templates
+  let paketDepLines = File.ReadAllLines("paket.dependencies") |> Seq.takeWhile (fun s -> not (s.Contains("--CUT--")))
+  File.WriteAllLines("src/journal/paket.dependencies", paketDepLines)
+  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FsLab %s" release.NugetVersion])
+  File.AppendAllLines("src/journal/paket.dependencies", [sprintf "nuget FsLab.Runners %s" release.NugetVersion])
+  
+  // Create/update the paket.lock
+  exec "src/journal" ".paket/paket.exe" "update"
+
   // Generate ZIPs with item templates
   ensureDirectory "temp/experiments"
 
@@ -274,57 +281,58 @@ Target "BuildVsTemplates" (fun _ ->
 
   // Create directory for the Template project
   CopyRecursive "temp/journal" "temp/vsjournal/" true |> ignore
-  CopyRecursive "src/vstemplates/journal" "temp/vsjournal/" true |> ignore
+  CopyRecursive "src/vs-templates/journal" "temp/vsjournal/" true |> ignore
   !! "temp/vsjournal/**" |> Zip "temp/vsjournal" "temp/vsjournal.zip"
 
   "misc/item.png" |> CopyFile "temp/vsjournal/__TemplateIcon.png"
   "misc/preview.png" |> CopyFile "temp/vsjournal/__PreviewImage.png"
 
   // Zip it up
-  CopyRecursive "src/vstemplates" "temp/vstemplates/" true |> ignore
+  CopyRecursive "src/vs-templates" "temp/vs-templates/" true |> ignore
 
   // Copy ItemTemplates
-  ensureDirectory "temp/vstemplates/ItemTemplates"
+  ensureDirectory "temp/vs-templates/ItemTemplates"
+
   !! "temp/experiments/*.zip"
-  |> CopyFiles "temp/vstemplates/ItemTemplates"
+  |> CopyFiles "temp/vs-templates/ItemTemplates"
 
   // Copy ProjectTemplates
-  ensureDirectory "temp/vstemplates/ProjectTemplates"
-  "temp/vsjournal.zip" |> CopyFile "temp/vstemplates/FsLab Journal.zip"
-  "temp/vsjournal.zip" |> CopyFile "temp/vstemplates/ProjectTemplates/FsLab Journal.zip"
+  ensureDirectory "temp/vs-templates/ProjectTemplates"
+  "temp/vsjournal.zip" |> CopyFile "temp/vs-templates/FsLab Journal.zip"
+  "temp/vsjournal.zip" |> CopyFile "temp/vs-templates/ProjectTemplates/FsLab Journal.zip"
 
   // Copy other files
-  "misc/logo.png" |> CopyFile "temp/vstemplates/logo.png"
-  "misc/preview.png" |> CopyFile "temp/vstemplates/preview.png"
+  "misc/logo.png" |> CopyFile "temp/vs-templates/logo.png"
+  "misc/preview.png" |> CopyFile "temp/vs-templates/preview.png"
 
-  !! "temp/vstemplates/FsLab.VsTemplates.sln"
+  !! "temp/vs-templates/FsLab.VsTemplates.sln"
   |> MSBuildDebug "" "Rebuild"
   |> ignore
-  "temp/vstemplates/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile (buildDir + "/FsLab.VsTemplates.vsix")
+  "temp/vs-templates/bin/Debug/FsLab.VsTemplates.vsix" |> CopyFile (buildDir + "/FsLab.VsTemplates.vsix")
 )
 
 // Build a NuGet package containing "Dotnet new" templates
 Target "BuildDotnetTemplates" (fun _ ->
 
   // Create directory for the Template project
-  CopyRecursive "src/templates" "temp/templates/" true |> ignore
+  CopyRecursive "src/dotnet-templates" "temp/dotnet-templates/" true |> ignore
   // Copy ItemTemplates
-  //ensureDirectory "temp/templates/ItemTemplates"
+  //ensureDirectory "temp/dotnet-templates/ItemTemplates"
   //!! "temp/experiments/*.zip"
-  //|> CopyFiles "temp/vstemplates/ItemTemplates"
+  //|> CopyFiles "temp/vs-templates/ItemTemplates"
   // Copy ProjectTemplates
-  //ensureDirectory "temp/vstemplates/ProjectTemplates"
-  CopyRecursive "temp/journal" "temp/templates/journal/" true |> ignore
+  //ensureDirectory "temp/vs-templates/ProjectTemplates"
+  CopyRecursive "temp/journal" "temp/dotnet-templates/journal/" true |> ignore
   // Copy other files
-  "misc/logo.png" |> CopyFile "temp/templates/logo.png"
-  "misc/preview.png" |> CopyFile "temp/templates/preview.png"
+  "misc/logo.png" |> CopyFile "temp/dotnet-templates/logo.png"
+  "misc/preview.png" |> CopyFile "temp/dotnet-templates/preview.png"
 
   NuGetHelper.NuGetPack (fun p -> 
         { p with
-            WorkingDir = "temp/templates"
+            WorkingDir = "temp/dotnet-templates"
             OutputPath = "./" + buildDir + "/"
             Version = release.NugetVersion
-            ReleaseNotes = toLines release.Notes}) @"temp/templates/FsLab.Templates.nuspec"
+            ReleaseNotes = toLines release.Notes}) @"temp/dotnet-templates/FsLab.Templates.nuspec"
 )
 Target "TestDotnetTemplatesNuGet" (fun _ ->
 

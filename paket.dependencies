@@ -1,22 +1,40 @@
 frameworks: >= net461
 source https://nuget.org/api/v2
 
-nuget FAKE 4.64.13
-nuget Paket.Core 4.8.7
-nuget Nuget.CommandLine 3.3
-nuget Deedle 1.2.5
-nuget Deedle.RPlugin 1.2.5
+# These are the various packges that make up FsLab
+
 nuget FSharp.Core 4.3.4
-nuget FSharp.Charting 0.90.14
-nuget FSharp.Data 2.3.3
+
+# Literate programming
+nuget FAKE 4.64.13
+nuget Suave 2.1
 nuget FSharp.Formatting 2.14.4
-nuget MathNet.Numerics 3.19
-nuget MathNet.Numerics.FSharp 3.19
+
+# RProvider
 nuget R.NET.Community
 nuget R.NET.Community.FSharp
 nuget RProvider 1.1.20
-nuget DotNetZip 1.10.1
+
+# DataFrames
+nuget Deedle 1.2.5
+nuget Deedle.RPlugin 1.2.5
+
+# FSharp.Data
+nuget FSharp.Data 2.3.3
+
+# MathNet.Numerics
+nuget MathNet.Numerics 3.19
+nuget MathNet.Numerics.FSharp 3.19
+
+# FSharp.Charting
+nuget FSharp.Charting 0.90.14
+
+# XPlot
 nuget XPlot.Plotly 1.4.5
 nuget XPlot.GoogleCharts 1.4.5
 nuget XPlot.GoogleCharts.Deedle 1.4.5
-nuget Suave 2.1
+
+
+#---CUT---
+#-------- Anything below here is build support ------------------
+nuget DotNetZip 1.10.1
