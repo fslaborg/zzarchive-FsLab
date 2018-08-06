@@ -26,9 +26,9 @@ nuget MathNet.Numerics 3.20.2
 nuget MathNet.Numerics.FSharp 3.20.2
 
 # XPlot
-nuget XPlot.Plotly
-nuget XPlot.GoogleCharts
-nuget XPlot.GoogleCharts.Deedle
+nuget XPlot.Plotly 1.5.0
+nuget XPlot.GoogleCharts 1.5.0
+nuget XPlot.GoogleCharts.Deedle 1.5.0
 
 # FSharp.Charting - not referenced by FsLab.fsx by default but you can use it
 # nuget FSharp.Charting

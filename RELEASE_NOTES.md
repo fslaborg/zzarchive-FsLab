@@ -1,3 +1,9 @@
+### 1.1.5
+- Update www.google.com --> gstatic.com
+
+### 1.1.4
+- Update to XPlot 1.5.0
+
 ### 1.1.3
 - Fix silly bug
 

@@ -22,16 +22,16 @@
 #I "../Suave.2.1.1/lib/net40"
 #I "../packages/XPlot.Plotly/lib/net45"
 #I "../XPlot.Plotly/lib/net45"
-#I "../packages/XPlot.Plotly.1.4.5/lib/net45"
-#I "../XPlot.Plotly.1.4.5/lib/net45"
+#I "../packages/XPlot.Plotly.1.5.0/lib/net45"
+#I "../XPlot.Plotly.1.5.0/lib/net45"
 #I "../packages/XPlot.GoogleCharts/lib/net45"
 #I "../XPlot.GoogleCharts/lib/net45"
-#I "../packages/XPlot.GoogleCharts.1.4.5/lib/net45"
-#I "../XPlot.GoogleCharts.1.4.5/lib/net45"
+#I "../packages/XPlot.GoogleCharts.1.5.0/lib/net45"
+#I "../XPlot.GoogleCharts.1.5.0/lib/net45"
 #I "../packages/XPlot.GoogleCharts.Deedle/lib/net45"
 #I "../XPlot.GoogleCharts.Deedle/lib/net45"
-#I "../packages/XPlot.GoogleCharts.Deedle.1.4.5/lib/net45"
-#I "../XPlot.GoogleCharts.Deedle.1.4.5/lib/net45"
+#I "../packages/XPlot.GoogleCharts.Deedle.1.5.0/lib/net45"
+#I "../XPlot.GoogleCharts.Deedle.1.5.0/lib/net45"
 #I "../packages/Google.DataTable.Net.Wrapper/lib"
 #I "../Google.DataTable.Net.Wrapper/lib"
 #I "../packages/Google.DataTable.Net.Wrapper.3.1.2.0/lib"
@@ -72,7 +72,6 @@
 // for Series-like functionality. Or make Series implement IEnumerable, yielding observations.
 namespace FSharp.Charting
   open Deedle
-  open XPlot.GoogleCharts
 
   [<AutoOpen>]
   module FsLabExtensions =
@@ -88,6 +87,29 @@ namespace FSharp.Charting
       static member Bar(data:Series<'K, 'V>, ?Name, ?Title, ?Labels, ?Color, ?XTitle, ?YTitle) =
         Chart.Bar(Series.observations data, ?Name=Name, ?Title=Title, ?Labels=Labels, ?Color=Color, ?XTitle=XTitle, ?YTitle=YTitle)
 #endif
+
+// TODO: There is an XPlot.GoogleCharts.Deedle package.  Move its contents XPlot.GoogleCharts and/or Deedle somehow. 
+// If necessary have XPlot.GoogleCharts pacakge dynamically probe for Series-like functionality. 
+// Or make Series implement IEnumerable, yielding observations.
+
+// TODO: Move these to the XPlot.Plotly package somehow. If necessary have that pacakge dynamically probe
+// for Series-like functionality. Or make Series implement IEnumerable, yielding observations.
+namespace XPlot.Plotly
+  open Deedle
+
+  [<AutoOpen>]
+  module FsLabExtensions =
+    type XPlot.Plotly.Chart with
+      static member Line(data:Series<'K, 'V>) =
+        Chart.Line(Series.observations data)
+      static member Column(data:Series<'K, 'V>) =
+        Chart.Column(Series.observations data)
+      static member Pie(data:Series<'K, 'V>) =
+        Chart.Pie(Series.observations data)
+      static member Area(data:Series<'K, 'V>) =
+        Chart.Area(Series.observations data)
+      static member Bar(data:Series<'K, 'V>) =
+        Chart.Bar(Series.observations data)
 
 // TODO: Consider how to move these to Deedle or MathNet.Numerics, i.e. magically make these packages work
 // nicely together through an IFrame or ISeries etc.

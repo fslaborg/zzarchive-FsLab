@@ -60,11 +60,11 @@ module XPlotHtmlPrinters =
     <@ opts.colors @> <-- palette.Split(',')
     ch
 
-  let private googleJsapi = """<script type="text/javascript" src="https://www.google.com/jsapi"></script>"""
+  let private googleJsapi = """<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>"""
   let private googleLoad = """<script type="text/javascript">
-      google.load("visualization", "1.1",
-        { packages: ["corechart", "annotationchart", "calendar",
-            "gauge", "geochart", "map", "sankey", "table", "timeline", "treemap"] })
+        google.charts.load('current', {
+            packages: ["corechart", "annotationchart", "calendar", "gauge", "geochart", "map", "sankey", "table", "timeline", "treemap"]
+        });
       $(function() { if (window.fsiResizeContent) window.fsiResizeContent($("body").height() + 10); });
     </script>"""
 
