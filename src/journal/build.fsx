@@ -22,16 +22,22 @@ let fsx2html fail args =
       exit code
 
 Target "help" (fun _ ->
-    printfn "  build run    - Generate HTML, show and update dynamically"
-    printfn "  build html   - Generate HTML output for all scripts"
-    printfn "  build latex  - Generate LaTeX output for all scripts"
-    printfn "  build pdf    - Generate PDF output for all scripts"
+    printfn "  build run      - Generate HTML, show and update dynamically"
+    printfn "  build html     - Generate HTML output for all scripts"
+    printfn "  build show     - Generate HTML output for all scripts and show it"
+    printfn "  build latex    - Generate LaTeX output for all scripts"
+    printfn "  build pdf      - Generate PDF output for all scripts"
     exit 1
 )
 
 Target "html" (fun _ ->    
   fsx2html true "--html"
 )
+
+Target "show" (fun _ ->    
+  fsx2html true "--html --show"
+)
+
 
 Target "latex" (fun _ ->
   fsx2html true "--latex"
