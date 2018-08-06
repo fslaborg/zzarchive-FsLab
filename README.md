@@ -7,11 +7,15 @@ data science with F#.
 See https://fslab.org for getting started. One way is as follows:
 
     dotnet new -i FsLab.Templates
-    dotnet new fslab-journal -lang F# -n experiment1
-    cd experiment1
+    dotnet new fslab-journal -lang F# -n Experiment1
+
+then 
+
+    cd Experiment1
     build html
-    build run
-    open 
+    build show
+    build run  (watches for changes)
+    edit Experiment1.fsx or open Experiment1.fsproj
 
 Developer notes
 ---------------
