@@ -10,7 +10,7 @@ This file is a sample experiment that demonstrates the capabilities of FsLab
 journal. FsLab experiments automatically includes a reference to the [FsLab 
 NuGet package][fslab], so you can use all the great data science F# packages.
 The template also contains a runner that formats your script files nicely using
-[F# Formatting][fsfmt] and generates nice HTML or LaTeX reports. To write your 
+[FSharp.Formatting][fsfmt] and generates nice HTML or LaTeX reports. To write your 
 experiments, you can include Markdown-formatted text in comments starting with 
 `**` such as this one. The report is generated and opened automatically when 
 you hit **F5**. 
@@ -26,8 +26,8 @@ FsLab libraries
 The FsLab package automatically references the following F# libraries:
 
  * [Deedle][deedle] for working with data frames and data series
- * [F# R type provider][rprovider] for interoperating with R
- * [XPlot][xplot] and [FSharp.Charting][fschart] for building interactive charts
+ * [RProvider][rprovider] for interoperating with R
+ * [XPlot][xplot] for building interactive charts
  * [FSharp.Data][fsdata] with data-access with F# type providers
  * [Math.NET Numerics][mathnet] for writing numerical calculations
 
@@ -115,26 +115,6 @@ how the matrix with debts (filled with zeros for missing values) is formatted as
 matrix. Then, the code shows how to use a simple matrix multiplication using 
 Math.NET.
 
-Embedding sample F# Charting charts
------------------------------------
-
-The generated report can also automatically embed charts created using the 
-F# Charting library. Here, we plot the debts of the 3 countries with the largest
-debt based on the previous table:
-
-*)
-(*** define-output:chart ***)
-open FSharp.Charting
-
-// Combine three line charts and add a legend
-Chart.Combine(
-  [ Chart.Line(recent?Cyprus, Name="Cyprus")
-    Chart.Line(recent?Malta, Name="Malta")
-    Chart.Line(recent?Greece, Name="Greece") ])
-  .WithLegend()
-(*** include-it:chart ***)
-
-(**
 Interoperating with R 
 ---------------------
 

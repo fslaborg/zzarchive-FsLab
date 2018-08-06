@@ -14,10 +14,10 @@
         <Assembly>Deedle</Assembly>
       </Reference>
       <Reference>
-        <Assembly>Deedle.RProvider.Plugin</Assembly>
+        <Assembly>Deedle.RPlugin</Assembly>
       </Reference>
       <Reference>
-        <Assembly>FSharp.Charting</Assembly>
+        <Assembly>XPlot.Plotly</Assembly>
       </Reference>
       <Reference>
         <Assembly>FSharp.Core</Assembly>

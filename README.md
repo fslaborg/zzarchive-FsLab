@@ -1,10 +1,21 @@
-FsLab 
+FsLab
 =====
 
-FsLab is a single package that gives you all you need for doing data science with
-F#. FsLab includes an explorative data manipulation library, type providers for easy
-data access, a simple charting library and support for integration with R and numerical
-computing libraries. All available in a single package and ready to use!
+FsLab is a curated set of templates, libraries and scripts-as-journals support for doing
+data science with F#.
+
+See https://fslab.org for getting started. One way is as follows:
+
+    dotnet new -i FsLab.Templates
+    dotnet new fslab-journal -lang F# -n Experiment1
+
+then 
+
+    cd Experiment1
+    build html
+    build show
+    build run  (watches for changes)
+    edit Experiment1.fsx or open Experiment1.fsproj
 
 Developer notes
 ---------------
@@ -13,21 +24,23 @@ Developer notes
 
 The project produces three things:
 
- 1. **FsLab** NuGet package with references to all FsLab libraries and `FsLab.fsx` load script
- 2. **FsLab.Runner** NuGet package that is used by the Journal template and contains formatters
-   (for embedding output into HTML), Journal generation code & styles and build scripts for Journals
- 3. **FsLab Journal** Template for Visual Studio (which is a simple wrapper for the above)
+ 1. **FsLab** A NuGet package containing the `FsLab.fsx` load script for a consistent set of packages, plus some extra formatters
+ 2. **FsLab.Templates** Templates for 'dotnet new' and Visual Studio. Each template includes an FsLab build script and F5 launcher for processing the literate scripts into reports.
+ 3. **fsx2html** Used by FsLab build scripts to process F# literate scripts into HTML and LaTex
 
 The source files in the repository are organized as follows:
 
 | Directory or file  | Comment
 |--------------------|---------------
 | `misc`             | Icons and other non-source-code things
-| `src/FsLab.Runner` | Source for the DLL in the `FsLab.Runner` NuGet package
-| `src/misc`         | Other files included in the `FsLab.Runner` NuGet package
-| `src/experiments`  | Item templates for Visual Studio template
-| `src/journal`      | Project template for Visual Studio template
-| `src/template`     | Build files for Visual Studio template
+| `src/fsx2html` | Source for the DLL in the `fsx2html` NuGet package
+| `src/Html`         | HTML formatters for literate scripts not included in other packages
+| `src/Text`         | Text formatters for literate scripts not included in other packages
+| `src/Shared`       | Styling and server support for literate scripts not included in other packages
+| `src/experiments`  | Item templates
+| `src/journal`      | Journal project template
+| `src/dotnet-templates` | Extra files for 'dotnet new' template support
+| `src/vs-templates` | Extra files for Visual Studio template support
 | `src/FsLab.fsx`    | Script included in the `FsLab` NuGet package
 | `src/*.nuspec`     | NuGet files for building the packages
 | `build.fsx`        | FAKE script that does all the magic (below)
@@ -37,17 +50,13 @@ The source files in the repository are organized as follows:
 If you want to be able to build FsLab Journal template, you'll need Visual Studio 2017 SDK.
 To update one or more dependencies, use the following steps:
 
- * Run `build Clean` to make sure that there are only source files around
- * Run `.paket/paket.exe update` to update the dependencies
- * Run `build` to build everything or `build NuGet` to build everything except for
-   the FsLab Journal template (useful if you don't have the SDK installed)
- * Add new line with version information to `RELEASE_NOTES.md`!
- * Run `publish` from command line to upload NuGet package (if you have the rights)
- 
-After running `build NuGet` for the first time, you can also edit the
-extensions in `src/FsLab.fsx`. 
+* Run `git clean -xfd` to make sure that there are only source files around
+* Run `.paket/paket.exe update` to update the dependencies
+* Run `build` to build and test everything
+* Add new line with version information to `RELEASE_NOTES.md`!
+* Run `publish` from command line to upload NuGet package (if you have the rights)
 
-If there were any changes in the Journal template, you also need to update the
-[journal template](https://github.com/fslaborg/FsLab.Templates/tree/journal) in the
-[FsLab.Templates](https://github.com/fslaborg/FsLab.Templates) repository. At some
-point, these should be generated automatically too!
+### Releasing
+
+    set APIKEY=...
+    .nuget\NuGet.exe push bin\*.nupkg  %APIKEY% -Source https://www.nuget.org

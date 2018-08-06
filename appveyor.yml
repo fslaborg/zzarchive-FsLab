@@ -1,6 +1,7 @@
 os: Visual Studio 2017
 
 build_script: 
+  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"
   - cmd: .\build.cmd All
 
 test: off

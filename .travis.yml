@@ -3,7 +3,7 @@ language: csharp
 sudo: false
 
 script: 
-  - ./build.sh NuGet
+  - ./build.sh All
 
 branches:
   except:

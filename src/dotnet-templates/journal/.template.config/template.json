@@ -1,0 +1,87 @@
+﻿{
+    "author": "fslaborg",
+    "classifications": [
+        "FsLab",
+        "Statistics",
+        "Data Science",
+        "Machine Learning",
+        "Cross-platform"
+    ],
+    "name": "FsLab.Journal",
+    "groupIdentity": "FsLab",
+    "identity": "FsLab.Journal",
+    "shortName": "fslab-journal",
+    "tags": {
+        "language": "F#",
+        "type": "project"
+    },
+    "sourceName": "NewJournal",
+    "primaryOutputs": [
+        //{
+        //    "path": "NewApp\\NewApp.fs"
+        //}
+        //{
+        //    "condition": "CreateBackendProject",
+        //    "path": "NewApp.MobileAppService\\NewApp.MobileAppService.fsproj"
+        //},
+        //{
+        //    "condition": "CreateUITestProject",
+        //    "path": "NewApp.UITests\\NewApp.UITests.fsproj"
+        //}
+    ],
+    "defaultName": "journal",
+    "preferNameDirectory": "true",
+    "guids": [
+        //"99E19497-29A6-4B77-B773-BEC55F9B55DC"
+    ],
+    "symbols": {
+        "kind": {
+            "type": "parameter",
+            "datatype": "choice",
+            "defaultValue": "blank",
+            "choices": [
+                {
+                    "choice": "blank",
+                    "description": "An empty FsLab journal"
+                }
+            ]
+        },
+        "CreateAndroidProject": {
+            "type": "parameter",
+            "dataType": "bool",
+            "defaultValue": "true"
+        }
+    },
+    //"postActions": [
+    //    {
+    //        "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
+    //        "description": "Opens Tutorial.fs in the editor.",
+    //        "manualInstructions": [],
+    //        "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+    //        "args": {
+    //            "files": "0"
+    //        },
+    //        "continueOnError": true
+    //    }
+    //],
+    "sources": [
+        {
+        },
+        {
+            "source": "./",
+            "condition": "(kind == \"blank\")",
+            "modifiers": [
+                //{
+                //    "condition": "CreateSharedProject",
+                //    "exclude": [
+                //        "NewApp/NewApp.fsproj"
+                //    ]
+                //},
+                //{
+            ],
+            "copyOnly": [
+                "**/*.targets"
+            ]
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{386DF0A5-E9C0-444B-9A0A-BB13D3CA1AAF}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,9 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{790C05AB-929E-4242-B4C8-3FB83689604F}"
 	ProjectSection(SolutionItems) = preProject
 		src\FsLab.fsx = src\FsLab.fsx
-		src\FsLab.nuspec = src\FsLab.nuspec
-		src\FsLab.Runner.nuspec = src\FsLab.Runner.nuspec
-		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6-92F9-4326-AD2A-AD451873DA46}"
@@ -20,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{7CF0FAF6
 		build.fsx = build.fsx
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsLab.Runner", "src\FsLab.Runner\FsLab.Runner.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "fsx2html", "src\fsx2html\fsx2html.fsproj", "{AF99159A-43C9-460D-98D1-4E0DB7EC61FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "journal", "journal", "{FF1AFB62-AC1A-4B2A-96BC-DC7F01CD10CF}"
 EndProject
@@ -31,7 +28,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{1C1EFF4D-C
 		build.sh = build.sh
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Html", "Html", "{8B3F7243-B3A1-477C-B1BD-965F4FA9D0F1}"
+	ProjectSection(SolutionItems) = preProject
+		src\Html\Charting.fsx = src\Html\Charting.fsx
+		src\Html\Deedle.fsx = src\Html\Deedle.fsx
+		src\Html\MathNet.fsx = src\Html\MathNet.fsx
+		src\Html\Text.fsx = src\Html\Text.fsx
+		src\Html\XPlot.fsx = src\Html\XPlot.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{349AC4FD-DC8F-403F-96FB-C7AACDF4BA8E}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\Server.fsx = src\Shared\Server.fsx
+		src\Shared\Styles.fsx = src\Shared\Styles.fsx
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -44,5 +59,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8B3F7243-B3A1-477C-B1BD-965F4FA9D0F1} = {790C05AB-929E-4242-B4C8-3FB83689604F}
+		{349AC4FD-DC8F-403F-96FB-C7AACDF4BA8E} = {790C05AB-929E-4242-B4C8-3FB83689604F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E49B90DE-72FA-4E54-80BE-EE493A1EBF18}
 	EndGlobalSection
 EndGlobal

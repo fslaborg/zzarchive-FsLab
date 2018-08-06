@@ -1,0 +1,29 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>FsLab Journal</Name>
+    <Description>Template that makes it easy to do interactive data analysis using F# Interactive and produce nice HTML reports of your work.</Description>
+    <ProjectType>FSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>FsLab Journal</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.png</Icon>
+    <PreviewImage>__PreviewImage.png</PreviewImage>
+	<BuildProjectOnLoad>true</BuildProjectOnLoad>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="FsLab.Journal.fsproj" File="FsLab.Journal.fsproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\paket.bootstrapper.exe">.paket\paket.bootstrapper.exe</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName=".paket\Paket.Restore.targets">.paket\Paket.Restore.targets</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.dependencies">paket.dependencies</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="paket.lock">paket.lock</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="build.fsx">build.fsx</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="NewJournal.fsx">NewJournal.fsx</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Launch.fs">Launch.fs</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

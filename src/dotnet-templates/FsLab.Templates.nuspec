@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <id>FsLab.Templates</id>
+        <title>FsLab Template Pack</title>
+        <version>0.0.1</version>
+        <authors>https://fslab.org contributors</authors>
+        <description>Templates for FsLab journals and workbooks.</description>
+        <projectUrl>https://fslab.org/</projectUrl>
+        <iconUrl>https://github.com/fslaborg/FsLab/raw/master/misc/logo.png</iconUrl>
+        <copyright>Copyright 2018</copyright>
+        <packageTypes>
+            <packageType name="Template" />
+        </packageTypes>
+    </metadata>
+</package>
